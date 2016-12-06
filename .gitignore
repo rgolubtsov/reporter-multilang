@@ -1,20 +1,28 @@
-/blib/
-/.build/
-_build/
-cover_db/
-inc/
-Build
-!Build/
-Build.bat
-.last_cover_stats
-/Makefile
-/Makefile.old
-/MANIFEST.bak
-/META.yml
-/META.json
-/MYMETA.*
-nytprof.out
-/pm_to_blib
+#
+# .gitignore
+# =============================================================================
+# Reporter Multilang. Version 0.1
+# =============================================================================
+# A tool to generate human-readable reports based on data from various sources
+# with the focus on its implementation using a series of programming languages.
+#
+# This is the configuration of the project Git ignorables,
+# i.e. objects that should not be put into the repository.
+#
+
+# === Object files ============================================================
 *.o
-*.bs
-/_eumm/
+
+# === Intermediates ===========================================================
+*.pyc
+
+# === Libraries ===============================================================
+lib/
+
+# === Executables =============================================================
+bin/
+
+# === Generated docs ==========================================================
+doxygen/
+
+# vim:set nu:et:ts=4:sw=4:
