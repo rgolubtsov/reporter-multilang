@@ -1,5 +1,5 @@
 #
-# reporter-core/sql-pdf/perl/src/PDFAPI2PKG.pm
+# reporter-core/sql-pdf/perl/src/PDFAPI2PKG/ReporterModel.pm
 # =============================================================================
 # Reporter Multilang. Version 0.1
 # =============================================================================
@@ -18,53 +18,23 @@
 # (See the LICENSE file at the top of the source tree.)
 #
 
-package PDFAPI2PKG;
+package PDFAPI2PKG::ReporterModel;
 
 use strict;
 use warnings;
 use utf8;
 use v5.10;
 
-use PDFAPI2PKG::ControllerHelper
-    "EXIT_FAILURE",
-    "EXIT_SUCCESS",
-    "COLON_SPACE_SEP",
-    "ERROR_PREFIX",
-    "ERROR_NO_DB_CONNECT";
+# TODO: ...:-).
 
-use PDFAPI2PKG::ReporterController;
+## Default constructor.
+sub new {
+    my $class = shift();
+    my $self  = [];
 
-##
-# Starts up the app.
-#
-# @param {String[]} args - The array of command-line arguments.
-#
-sub startup {
-    my  $self  = shift();
-    my ($args) = @_;
+    bless($self, $class);
 
-    my $status = 1;
-
-    # TODO: ...:-).
-
-    $self = 2;
-
-         if ($args->[0] eq "mysql") {
-        $self = 0;
-    } elsif ($args->[0] eq "pgsql") {
-        $self = 1;
-    } else {
-        $args->[0] = "--";
-    }
-
-    # Instantiating the controller component.
-    my $ctrl = PDFAPI2PKG::ReporterController->new();
-
-    say("$self $args->[0] $ctrl");
-
-    # TODO: ...:-).
-
-    return $status;
+    return $self;
 }
 
 1;

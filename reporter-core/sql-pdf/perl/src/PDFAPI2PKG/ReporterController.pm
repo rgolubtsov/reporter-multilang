@@ -1,5 +1,5 @@
 #
-# reporter-core/sql-pdf/perl/src/PDFAPI2PKG.pm
+# reporter-core/sql-pdf/perl/src/PDFAPI2PKG/ReporterController.pm
 # =============================================================================
 # Reporter Multilang. Version 0.1
 # =============================================================================
@@ -18,7 +18,7 @@
 # (See the LICENSE file at the top of the source tree.)
 #
 
-package PDFAPI2PKG;
+package PDFAPI2PKG::ReporterController;
 
 use strict;
 use warnings;
@@ -29,42 +29,37 @@ use PDFAPI2PKG::ControllerHelper
     "EXIT_FAILURE",
     "EXIT_SUCCESS",
     "COLON_SPACE_SEP",
+    "CURRENT_DIR",
+    "EMPTY_STRING",
+    "NEW_LINE",
     "ERROR_PREFIX",
-    "ERROR_NO_DB_CONNECT";
+    "ERROR_NO_DATA";
 
-use PDFAPI2PKG::ReporterController;
+use PDFAPI2PKG::ReporterModel;
 
-##
-# Starts up the app.
-#
-# @param {String[]} args - The array of command-line arguments.
-#
-sub startup {
-    my  $self  = shift();
-    my ($args) = @_;
+## Constant: The PDF basic measurement unit -- PostScript point.
+use constant PT =>   1;
 
-    my $status = 1;
+## Constant: The one inch       (in PDF measurement terms).
+use constant IN => ( 1   / 72);
 
-    # TODO: ...:-).
+## Constant: The one millimeter (in PDF measurement terms).
+use constant MM => (25.4 / 72);
 
-    $self = 2;
+# TODO: ...:-).
 
-         if ($args->[0] eq "mysql") {
-        $self = 0;
-    } elsif ($args->[0] eq "pgsql") {
-        $self = 1;
-    } else {
-        $args->[0] = "--";
-    }
+## Default constructor.
+sub new {
+    my $class = shift();
+    my $self  = [];
 
-    # Instantiating the controller component.
-    my $ctrl = PDFAPI2PKG::ReporterController->new();
+    bless($self, $class);
 
-    say("$self $args->[0] $ctrl");
+    # FIXME: Move this instantiation to the action method.
+    # Instantiating the model component.
+    my $model = PDFAPI2PKG::ReporterModel->new();
 
-    # TODO: ...:-).
-
-    return $status;
+    return $self;
 }
 
 1;

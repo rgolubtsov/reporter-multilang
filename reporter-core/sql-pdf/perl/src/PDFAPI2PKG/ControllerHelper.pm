@@ -1,5 +1,5 @@
 #
-# reporter-core/sql-pdf/perl/src/PDFAPI2PKG.pm
+# reporter-core/sql-pdf/perl/src/PDFAPI2PKG/ControllerHelper.pm
 # =============================================================================
 # Reporter Multilang. Version 0.1
 # =============================================================================
@@ -18,54 +18,46 @@
 # (See the LICENSE file at the top of the source tree.)
 #
 
-package PDFAPI2PKG;
+package PDFAPI2PKG::ControllerHelper;
 
 use strict;
 use warnings;
 use utf8;
 use v5.10;
 
-use PDFAPI2PKG::ControllerHelper
+use Exporter "import";
+
+# Helper constants.
+use constant EXIT_FAILURE    =>    0; #    Failing exit status.
+use constant EXIT_SUCCESS    =>    1; # Successful exit status.
+use constant COLON_SPACE_SEP => ": ";
+use constant CURRENT_DIR     => "./";
+use constant EMPTY_STRING    =>   "";
+use constant NEW_LINE        => "\n";
+use constant PIPE            =>  "|";
+use constant PLUS            =>  "+";
+use constant MINUS           =>  "-";
+
+# Common error messages.
+use constant ERROR_PREFIX        => "Error";
+use constant ERROR_NO_DB_CONNECT => "Could not connect to the database.";
+use constant ERROR_NO_DATA       => "No data found.";
+
+## Props to export.
+our @EXPORT_OK = (
     "EXIT_FAILURE",
     "EXIT_SUCCESS",
     "COLON_SPACE_SEP",
+    "CURRENT_DIR",
+    "EMPTY_STRING",
+    "NEW_LINE",
+    "PIPE",
+    "PLUS",
+    "MINUS",
     "ERROR_PREFIX",
-    "ERROR_NO_DB_CONNECT";
-
-use PDFAPI2PKG::ReporterController;
-
-##
-# Starts up the app.
-#
-# @param {String[]} args - The array of command-line arguments.
-#
-sub startup {
-    my  $self  = shift();
-    my ($args) = @_;
-
-    my $status = 1;
-
-    # TODO: ...:-).
-
-    $self = 2;
-
-         if ($args->[0] eq "mysql") {
-        $self = 0;
-    } elsif ($args->[0] eq "pgsql") {
-        $self = 1;
-    } else {
-        $args->[0] = "--";
-    }
-
-    # Instantiating the controller component.
-    my $ctrl = PDFAPI2PKG::ReporterController->new();
-
-    say("$self $args->[0] $ctrl");
-
-    # TODO: ...:-).
-
-    return $status;
-}
+    "ERROR_NO_DB_CONNECT",
+    "ERROR_NO_DATA",
+);
 
 1;
 
