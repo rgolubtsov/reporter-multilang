@@ -37,13 +37,17 @@ use PDFAPI2PKG::ReporterController;
 ##
 # Starts up the app.
 #
-# @param {String[]} args - The array of command-line arguments.
+# @param   {String[]} args - The array of command-line arguments.
+#
+# @returns {Number}          TODO: Provide description.
 #
 sub startup {
     my  $self  = shift();
     my ($args) = @_;
 
-    my $status = 1;
+    my $ret = EXIT_SUCCESS;
+
+    my $dbh;
 
     # TODO: ...:-).
 
@@ -60,11 +64,16 @@ sub startup {
     # Instantiating the controller component.
     my $ctrl = PDFAPI2PKG::ReporterController->new();
 
+    if (!($dbh)) {
+        # Generating the PDF report.
+        $ret = $ctrl->pdf_report_generate($dbh);
+    }
+
     say("$self $args->[0] $ctrl");
 
     # TODO: ...:-).
 
-    return $status;
+    return $ret;
 }
 
 1;

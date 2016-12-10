@@ -37,6 +37,30 @@ use PDFAPI2PKG::ControllerHelper
 
 use PDFAPI2PKG::ReporterModel;
 
+##
+# Constant: The start datetime to retrieve data set.
+#    FIXME: Move to cli args.
+#
+use constant FROM => "2016-12-01 16:25:25";
+
+##
+# Constant: The end   datetime to retrieve data set.
+#    FIXME: Move to cli args.
+#
+use constant TO   => "2016-12-09 22:55:55";
+
+##
+# Constant: The PDF report filename.
+#    FIXME: Move to cli args.
+#
+use constant PDF_REPORT_FILENAME => "packages.pdf";
+
+##
+# Constant: The number of pages generated in a PDF report.
+#    FIXME: Move to cli args.
+#
+use constant MAX_PAGES => 200;
+
 ## Constant: The PDF basic measurement unit -- PostScript point.
 use constant PT =>   1;
 
@@ -46,7 +70,63 @@ use constant IN => ( 1   / 72);
 ## Constant: The one millimeter (in PDF measurement terms).
 use constant MM => (25.4 / 72);
 
-# TODO: ...:-).
+##
+# Draws the PDF report page body (data).
+#
+# @param   {Object} report  - TODO: Provide description.
+# @param   {Object} hdr_set - TODO: Provide description.
+# @param   {Object} row_set - TODO: Provide description.
+#
+# @returns {Number}           TODO: Provide description.
+#
+sub _page_body_draw {
+    my ($report, $hdr_set, $row_set) = @_;
+
+    my $ret = EXIT_SUCCESS;
+
+    # TODO: ...:-).
+
+    return $ret;
+}
+
+##
+# Generates the PDF report.
+#
+# @param   {Object} dbh - TODO: Provide description.
+#
+# @returns {Number}       TODO: Provide description.
+#
+sub pdf_report_generate {
+    my  $self = shift();
+    my ($dbh) = @_;
+
+    my $ret = EXIT_SUCCESS;
+
+    # Instantiating the model component.
+    my $model = PDFAPI2PKG::ReporterModel->new();
+
+    # Retrieving a list of all data items currently registered.
+#    my ($hdr_set, $row_set) = $model->get_all_data_items($dbh);
+
+    # Retrieving data items (a list of) currently registered
+    # for a given period of time.
+#    my ($hdr_set, $row_set) = $model->get_data_items_by_date(FROM, TO, $dbh);
+
+    my $hdr_set = [];
+    my $row_set = [];
+
+    # In case of getting an empty result set, informing the user.
+    if (!(@{$row_set})) {
+        $ret = EXIT_FAILURE;
+
+        say(__PACKAGE__ . COLON_SPACE_SEP . ERROR_PREFIX
+                        . COLON_SPACE_SEP . ERROR_NO_DATA);
+
+        return $ret;
+    }
+
+    return $ret;
+}
 
 ## Default constructor.
 sub new {
@@ -54,10 +134,6 @@ sub new {
     my $self  = [];
 
     bless($self, $class);
-
-    # FIXME: Move this instantiation to the action method.
-    # Instantiating the model component.
-    my $model = PDFAPI2PKG::ReporterModel->new();
 
     return $self;
 }
