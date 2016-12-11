@@ -106,14 +106,11 @@ sub pdf_report_generate {
     my $model = PDFAPI2PKG::ReporterModel->new();
 
     # Retrieving a list of all data items currently registered.
-#    my ($hdr_set, $row_set) = $model->get_all_data_items($dbh);
+    my ($hdr_set, $row_set) = $model->get_all_data_items($dbh);
 
     # Retrieving data items (a list of) currently registered
     # for a given period of time.
 #    my ($hdr_set, $row_set) = $model->get_data_items_by_date(FROM, TO, $dbh);
-
-    my $hdr_set = [];
-    my $row_set = [];
 
     # In case of getting an empty result set, informing the user.
     if (!(@{$row_set})) {

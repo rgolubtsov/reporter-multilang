@@ -25,7 +25,64 @@ use warnings;
 use utf8;
 use v5.10;
 
-# TODO: ...:-).
+use PDFAPI2PKG::ControllerHelper
+    "COLON_SPACE_SEP";
+
+##
+# Retrieves a list of all data items currently registered.
+#
+# @param   {Object} dbh   - TODO: Provide description.
+#
+# @returns {Object, Object} TODO: Provide description.
+#
+sub get_all_data_items {
+    my  $self = shift();
+    my ($dbh) = @_;
+
+    my $sql_select = "select"
+            . " attr_x0,"
+            . " attr_x1,"
+            . " name,"
+            . " attr_x2,"
+            . " description,"
+            . " attr_x3,"
+            . " attr_x4"
+        . " from"
+            . " data_items"
+        . " order by"
+            . " name,"
+            . " attr_x3";
+
+    # -------------------------------------------------------------------------
+    # --- Debug output - Begin ------------------------------------------------
+    # -------------------------------------------------------------------------
+    say(__PACKAGE__ . COLON_SPACE_SEP . $sql_select);
+    # -------------------------------------------------------------------------
+    # --- Debug output - End --------------------------------------------------
+    # -------------------------------------------------------------------------
+
+    # Preparing the SQL statement.
+    my $sth = $dbh->prepare($sql_select);
+
+    $sth->execute();
+
+    # Retrieving the result set metadata -- table headers.
+    my $hdr_set = $sth->{NAME};
+
+    # The result set. Finally it will be a quasi-two-dimensional array.
+    my @row_set; # <== Declare it as an initially empty.
+
+    my $i = 0;
+
+    # Retrieving and processing the result set -- table rows.
+    while (my @row_ary = $sth->fetchrow_array()) {
+        $row_set[$i] = [@row_ary];
+
+        $i++;
+    }
+
+    return (\@$hdr_set, \@row_set);
+}
 
 ## Default constructor.
 sub new {

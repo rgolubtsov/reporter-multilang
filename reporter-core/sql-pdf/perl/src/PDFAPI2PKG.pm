@@ -47,7 +47,7 @@ sub startup {
 
     my $ret = EXIT_SUCCESS;
 
-    my $dbh;
+    my $dbh = [];
 
     # TODO: ...:-).
 
@@ -64,7 +64,7 @@ sub startup {
     # Instantiating the controller component.
     my $ctrl = PDFAPI2PKG::ReporterController->new();
 
-    if (!($dbh)) {
+    if ($dbh) {
         # Generating the PDF report.
         $ret = $ctrl->pdf_report_generate($dbh);
     }
