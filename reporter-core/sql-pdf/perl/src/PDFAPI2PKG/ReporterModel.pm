@@ -40,18 +40,24 @@ sub get_all_data_items {
     my ($dbh) = @_;
 
     my $sql_select = "select"
-            . " attr_x0,"
-            . " attr_x1,"
-            . " name,"
-            . " attr_x2,"
-            . " description,"
-            . " attr_x3,"
-            . " attr_x4"
+            . "      x0.name as arch,"
+            . "      x1.name as repo,"
+            . "   items.name,"
+            . " attr_x2      as version,"
+#            . "   items.description,"
+            . " attr_x3      as last_updated,"
+            . " attr_x4      as flag_date"
         . " from"
-            . " data_items"
+            . " data_items items,"
+            . "   attr_x0s x0,"
+            . "   attr_x1s x1"
+        . " where"
+            . " (items.attr_x0_id  = x0.id) and"
+            . " (items.attr_x1_id  = x1.id) and"
+            . " (      attr_x4 is not null)"
         . " order by"
-            . " name,"
-            . " attr_x3";
+            . " last_updated,"
+            . "   items.name";
 
     # -------------------------------------------------------------------------
     # --- Debug output - Begin ------------------------------------------------

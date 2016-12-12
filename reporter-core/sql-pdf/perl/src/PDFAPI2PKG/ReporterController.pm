@@ -25,6 +25,8 @@ use warnings;
 use utf8;
 use v5.10;
 
+use Text::TabularDisplay;
+
 use PDFAPI2PKG::ControllerHelper
     "EXIT_FAILURE",
     "EXIT_SUCCESS",
@@ -38,16 +40,16 @@ use PDFAPI2PKG::ControllerHelper
 use PDFAPI2PKG::ReporterModel;
 
 ##
-# Constant: The start datetime to retrieve data set.
+# Constant: The start date to retrieve data set.
 #    FIXME: Move to cli args.
 #
-use constant FROM => "2016-12-01 16:25:25";
+use constant FROM => "2016-06-01";
 
 ##
-# Constant: The end   datetime to retrieve data set.
+# Constant: The end   date to retrieve data set.
 #    FIXME: Move to cli args.
 #
-use constant TO   => "2016-12-09 22:55:55";
+use constant TO   => "2016-12-01";
 
 ##
 # Constant: The PDF report filename.
@@ -59,7 +61,8 @@ use constant PDF_REPORT_FILENAME => "packages.pdf";
 # Constant: The number of pages generated in a PDF report.
 #    FIXME: Move to cli args.
 #
-use constant MAX_PAGES => 200;
+use constant MAX_PAGES => 20;
+#use constant MAX_PAGES => 200;
 
 ## Constant: The PDF basic measurement unit -- PostScript point.
 use constant PT =>   1;
@@ -121,6 +124,20 @@ sub pdf_report_generate {
 
         return $ret;
     }
+
+    # -------------------------------------------------------------------------
+    # --- Debug output - Begin ------------------------------------------------
+    # -------------------------------------------------------------------------
+    my $dbg_output = Text::TabularDisplay->new(@$hdr_set);
+
+    $dbg_output->populate($row_set);
+
+    say($dbg_output->render());
+
+    say(@{$row_set} . " rows in set" . NEW_LINE);
+    # -------------------------------------------------------------------------
+    # --- Debug output - End --------------------------------------------------
+    # -------------------------------------------------------------------------
 
     return $ret;
 }

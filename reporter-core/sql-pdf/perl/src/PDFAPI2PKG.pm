@@ -25,6 +25,9 @@ use warnings;
 use utf8;
 use v5.10;
 
+use Try::Tiny;
+use DBI;
+
 use PDFAPI2PKG::ControllerHelper
     "EXIT_FAILURE",
     "EXIT_SUCCESS",
@@ -33,6 +36,43 @@ use PDFAPI2PKG::ControllerHelper
     "ERROR_NO_DB_CONNECT";
 
 use PDFAPI2PKG::ReporterController;
+
+##
+# Constant: The database name.
+#    FIXME: Move to cli args.
+#
+use constant DATABASE => "reporter_multilang";
+
+##
+# Constant: The database server name.
+#    FIXME: Move to cli args.
+#
+use constant HOSTNAME => "10.0.2.100";
+#use constant HOSTNAME => "localhost";
+
+##
+# Constant: The data source name (DSN) -- the logical database identifier.
+#    FIXME: Move to the startup() method.
+#
+use constant DSN => "DBI:mysql:database=" . DATABASE . ";host=" . HOSTNAME;
+
+##
+# Constant: The username to connect to the database.
+#    FIXME: Move to cli args.
+#
+use constant USERNAME => "reporter";
+
+##
+# Constant: The password to connect to the database.
+#    FIXME: Move to cli args.
+#
+use constant PASSWORD => "retroper12345678";
+
+## Constant: The "RaiseError" database connectivity attribute.
+use constant RAISE_ERROR_DBI_ATTR => 1;
+
+## Constant: The "AutoCommit" database connectivity attribute.
+use constant AUTO_COMMIT_DBI_ATTR => 0;
 
 ##
 # Starts up the app.
@@ -47,7 +87,24 @@ sub startup {
 
     my $ret = EXIT_SUCCESS;
 
-    my $dbh = [];
+    my $dbh;
+
+    my %attr = (
+        RaiseError => RAISE_ERROR_DBI_ATTR,
+        AutoCommit => AUTO_COMMIT_DBI_ATTR,
+    );
+
+    # Trying to connect to the database.
+    try {
+        $dbh = DBI->connect(DSN, USERNAME, PASSWORD, \%attr);
+    } catch {
+        $ret = EXIT_FAILURE;
+
+        say(__PACKAGE__ . COLON_SPACE_SEP . ERROR_PREFIX
+                        . COLON_SPACE_SEP . $_);
+
+        return $ret;
+    };
 
     # TODO: ...:-).
 
@@ -67,11 +124,25 @@ sub startup {
     if ($dbh) {
         # Generating the PDF report.
         $ret = $ctrl->pdf_report_generate($dbh);
+
+        # Disconnecting from the database.
+        $dbh->disconnect();
+    } else {
+        $ret = EXIT_FAILURE;
+
+        say(__PACKAGE__ . COLON_SPACE_SEP . ERROR_PREFIX
+                        . COLON_SPACE_SEP . ERROR_NO_DB_CONNECT);
+
+        return $ret;
     }
 
+    # -------------------------------------------------------------------------
+    # --- Debug output - Begin ------------------------------------------------
+    # -------------------------------------------------------------------------
     say("$self $args->[0] $ctrl");
-
-    # TODO: ...:-).
+    # -------------------------------------------------------------------------
+    # --- Debug output - End --------------------------------------------------
+    # -------------------------------------------------------------------------
 
     return $ret;
 }
