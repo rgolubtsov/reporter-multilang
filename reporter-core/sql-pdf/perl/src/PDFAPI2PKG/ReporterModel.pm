@@ -25,15 +25,13 @@ use warnings;
 use utf8;
 use v5.10;
 
-use PDFAPI2PKG::ControllerHelper
-    "COLON_SPACE_SEP";
-
 ##
-# Retrieves a list of all data items currently registered.
+# Retrieves a list of all data items stored in the database.
 #
-# @param   {Object} dbh   - TODO: Provide description.
+# @param {Object} dbh - The database handle object.
 #
-# @returns {Object, Object} TODO: Provide description.
+# @returns {Object, Object} References to two arrays containing
+#                           table headers and rows.
 #
 sub get_all_data_items {
     my  $self = shift();
@@ -58,14 +56,6 @@ sub get_all_data_items {
         . " order by"
             . " last_updated,"
             . "   items.name";
-
-    # -------------------------------------------------------------------------
-    # --- Debug output - Begin ------------------------------------------------
-    # -------------------------------------------------------------------------
-    say(__PACKAGE__ . COLON_SPACE_SEP . $sql_select);
-    # -------------------------------------------------------------------------
-    # --- Debug output - End --------------------------------------------------
-    # -------------------------------------------------------------------------
 
     # Preparing the SQL statement.
     my $sth = $dbh->prepare($sql_select);
