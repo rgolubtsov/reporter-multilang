@@ -187,7 +187,7 @@ select items.id,
           x0.name as arch,
           x1.name as repo,
      attr_x2      as version,
-       items.description,
+--       items.description,
      attr_x3 as last_updated,
      attr_x4 as flag_date
  from
@@ -201,5 +201,7 @@ select items.id,
  order by
      items.name,
            arch;
+
+select count(id) from data_items;
 
 -- vim:set nu:et:ts=4:sw=4:
