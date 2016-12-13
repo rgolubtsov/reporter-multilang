@@ -77,9 +77,9 @@ use constant AUTO_COMMIT_DBI_ATTR => 0;
 ##
 # Starts up the app.
 #
-# @param   {String[]} args - The array of command-line arguments.
+# @param {String[]} args - The array of command-line arguments.
 #
-# @returns {Number}          TODO: Provide description.
+# @returns {Number} The exit code indicating the app overall execution status.
 #
 sub startup {
     my  $self  = shift();
@@ -106,18 +106,6 @@ sub startup {
         return $ret;
     };
 
-    # TODO: ...:-).
-
-    $self = 2;
-
-         if ($args->[0] eq "mysql") {
-        $self = 0;
-    } elsif ($args->[0] eq "pgsql") {
-        $self = 1;
-    } else {
-        $args->[0] = "--";
-    }
-
     # Instantiating the controller component.
     my $ctrl = PDFAPI2PKG::ReporterController->new();
 
@@ -139,7 +127,17 @@ sub startup {
     # -------------------------------------------------------------------------
     # --- Debug output - Begin ------------------------------------------------
     # -------------------------------------------------------------------------
-    say("$self $args->[0] $ctrl");
+#    $self = 2;
+
+#         if ($args->[0] eq "mysql") {
+#        $self = 0;
+#    } elsif ($args->[0] eq "pgsql") {
+#        $self = 1;
+#    } else {
+#        $args->[0] = "--";
+#    }
+
+#    say("$self $args->[0] $ctrl");
     # -------------------------------------------------------------------------
     # --- Debug output - End --------------------------------------------------
     # -------------------------------------------------------------------------
