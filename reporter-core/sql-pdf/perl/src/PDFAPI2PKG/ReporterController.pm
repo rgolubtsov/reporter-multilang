@@ -73,17 +73,6 @@ use constant IN => ( 1   / 72);
 ## Constant: The one millimeter (in PDF measurement terms).
 use constant MM => (25.4 / 72);
 
-# Draws the PDF report page body (data).
-sub _page_body_draw {
-    my ($report, $hdr_set, $row_set) = @_;
-
-    my $ret = EXIT_SUCCESS;
-
-    # TODO: ...:-).
-
-    return $ret;
-}
-
 ##
 # Generates the PDF report.
 #
@@ -102,10 +91,10 @@ sub pdf_report_generate {
     my $model = PDFAPI2PKG::ReporterModel->new();
 
     # Retrieving a list of all data items stored in the database.
-    my ($hdr_set, $row_set) = $model->get_all_data_items($dbh);
+#    my ($hdr_set, $row_set) = $model->get_all_data_items($dbh);
 
     # Retrieving a list of data items for a given date period.
-#    my ($hdr_set, $row_set) = $model->get_data_items_by_date(FROM, TO, $dbh);
+    my ($hdr_set, $row_set) = $model->get_data_items_by_date(FROM, TO, $dbh);
 
     # In case of getting an empty result set, informing the user.
     if (!(@{$row_set})) {

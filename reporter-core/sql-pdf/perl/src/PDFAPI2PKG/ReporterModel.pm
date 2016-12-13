@@ -50,17 +50,75 @@ sub get_all_data_items {
             . "   attr_x0s x0,"
             . "   attr_x1s x1"
         . " where"
-            . " (items.attr_x0_id  = x0.id) and"
-            . " (items.attr_x1_id  = x1.id) and"
-            . " (      attr_x4 is not null)"
+            . " (attr_x0_id  = x0.id) and"
+            . " (attr_x1_id  = x1.id)" # and"
+#            . " (attr_x4 is not null)"
         . " order by"
-            . " last_updated,"
-            . "   items.name";
+            . " items.name,"
+            . "       arch";
 
     # Preparing the SQL statement.
     my $sth = $dbh->prepare($sql_select);
 
     $sth->execute();
+
+    # Retrieving the result set metadata -- table headers.
+    my $hdr_set = $sth->{NAME};
+
+    # The result set. Finally it will be a quasi-two-dimensional array.
+    my @row_set; # <== Declare it as an initially empty.
+
+    my $i = 0;
+
+    # Retrieving and processing the result set -- table rows.
+    while (my @row_ary = $sth->fetchrow_array()) {
+        $row_set[$i] = [@row_ary];
+
+        $i++;
+    }
+
+    return (\@$hdr_set, \@row_set);
+}
+
+##
+# Retrieves a list of data items for a given date period.
+#
+# @param {String} from - The start date to retrieve data set.
+# @param {String} to   - The end   date to retrieve data set.
+# @param {Object} dbh  - The database handle object.
+#
+# @returns {Object, Object} References to two arrays containing
+#                           table headers and rows.
+#
+sub get_data_items_by_date {
+    my  $self = shift();
+    my ($from, $to, $dbh) = @_;
+
+    my $sql_select = "select"
+            . "      x0.name as arch,"
+            . "      x1.name as repo,"
+            . "   items.name,"
+            . " attr_x2      as version,"
+#            . "   items.description,"
+            . " attr_x3      as last_updated,"
+            . " attr_x4      as flag_date"
+        . " from"
+            . " data_items items,"
+            . "   attr_x0s x0,"
+            . "   attr_x1s x1"
+        . " where"
+            . " (attr_x0_id = x0.id) and"
+            . " (attr_x1_id = x1.id) and"
+            . " (attr_x3   >=     ?) and"
+            . " (attr_x3   <=     ?)"
+        . " order by"
+            . " items.name,"
+            . "       arch";
+
+    # Preparing the SQL statement.
+    my $sth = $dbh->prepare($sql_select);
+
+    $sth->execute($from, $to);
 
     # Retrieving the result set metadata -- table headers.
     my $hdr_set = $sth->{NAME};
