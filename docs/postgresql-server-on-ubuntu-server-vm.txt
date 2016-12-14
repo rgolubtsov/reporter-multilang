@@ -1,0 +1,287 @@
+# === Installing PostgreSQL Server ============================================
+$ ssh -C <vmusername>@10.0.2.100
+Welcome to Ubuntu 14.04.4 LTS (GNU/Linux 4.2.0-27-generic x86_64)
+...
+$ sudo apt-get update
+$ sudo apt-get upgrade
+$ sudo apt-get autoremove --purge
+$ sudo apt-get remove --purge
+$ sudo apt-get autoclean
+$ sudo apt-get clean
+$ sudo dpkg --configure --pending
+$ sudo dpkg --audit
+...
+$ sudo apt-get install postgresql
+...
+
+# === Setting up PostgreSQL Server (Inside VM) ================================
+$ cat /etc/postgresql/9.5/main/postgresql.conf | grep 'localhost'
+#listen_addresses = 'localhost'		# what IP address(es) to listen on;
+					# defaults to 'localhost'; use '*' for all
+
+$ sudo perl -pi -e "s/^#listen_addresses\ =\ \'localhost\'/listen_addresses\ =\ \'\*\'/g" /etc/postgresql/9.5/main/postgresql.conf
+
+$ cat /etc/postgresql/9.5/main/postgresql.conf | grep 'listen_addresses'
+listen_addresses = '*'		# what IP address(es) to listen on;
+
+$ sudo cat /etc/postgresql/9.5/main/pg_hba.conf | grep '127.0.0.1'
+host    all             all             127.0.0.1/32            md5
+#host    replication     postgres        127.0.0.1/32            md5
+
+$ sudo perl -pi -e 's/all\ \ \ \ \ \ \ \ \ \ \ \ \ 127\.0\.0\.1\/32/all\ \ \ \ \ \ \ \ \ \ \ \ \ 0\.0\.0\.0\/0/g' /etc/postgresql/9.5/main/pg_hba.conf
+
+$ sudo cat /etc/postgresql/9.5/main/pg_hba.conf | grep '127.0.0.1'
+#host    replication     postgres        127.0.0.1/32            md5
+
+$ sudo cat /etc/postgresql/9.5/main/pg_hba.conf | grep '0.0.0.0/0'
+host    all             all             0.0.0.0/0            md5
+
+$ sudo service postgresql restart
+
+$ sudo service postgresql status
+● postgresql.service - PostgreSQL RDBMS
+   Loaded: loaded (/lib/systemd/system/postgresql.service; enabled; vendor preset: enabled)
+   Active: active (exited) since Thu 2016-12-15 05:25:15 AEDT; 48s ago
+  Process: 30863 ExecStart=/bin/true (code=exited, status=0/SUCCESS)
+ Main PID: 30863 (code=exited, status=0/SUCCESS)
+
+Dec 15 05:25:15 <vmhostname> systemd[1]: Starting PostgreSQL RDBMS...
+Dec 15 05:25:15 <vmhostname> systemd[1]: Started PostgreSQL RDBMS.
+
+$ sudo passwd postgres
+Enter new UNIX password:
+Retype new UNIX password:
+passwd: password updated successfully
+
+$ sudo -upostgres psql
+could not change directory to "/home/<vmusername>": Permission denied
+psql (9.5.5)
+Type "help" for help.
+
+postgres=#
+postgres=# alter user postgres password '<password>';
+ALTER ROLE
+
+postgres=# \du
+                                   List of roles
+ Role name |                         Attributes                         | Member of
+-----------+------------------------------------------------------------+-----------
+ postgres  | Superuser, Create role, Create DB, Replication, Bypass RLS | {}
+
+postgres=# create user reporter with password 'retroper12345678';
+CREATE ROLE
+
+postgres=# \du
+                                   List of roles
+ Role name |                         Attributes                         | Member of
+-----------+------------------------------------------------------------+-----------
+ postgres  | Superuser, Create role, Create DB, Replication, Bypass RLS | {}
+ reporter  |                                                            | {}
+
+postgres=# \l
+                                  List of databases
+   Name    |  Owner   | Encoding |   Collate   |    Ctype    |   Access privileges
+-----------+----------+----------+-------------+-------------+-----------------------
+ postgres  | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 |
+ template0 | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 | =c/postgres          +
+           |          |          |             |             | postgres=CTc/postgres
+ template1 | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 | =c/postgres          +
+           |          |          |             |             | postgres=CTc/postgres
+(3 rows)
+
+postgres=# create database reporter_multilang;
+CREATE DATABASE
+
+postgres=# \l
+                                      List of databases
+        Name        |  Owner   | Encoding |   Collate   |    Ctype    |   Access privileges
+--------------------+----------+----------+-------------+-------------+-----------------------
+ postgres           | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 |
+ reporter_multilang | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 |
+ template0          | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 | =c/postgres          +
+                    |          |          |             |             | postgres=CTc/postgres
+ template1          | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 | =c/postgres          +
+                    |          |          |             |             | postgres=CTc/postgres
+(4 rows)
+
+postgres=# grant all privileges on database reporter_multilang to reporter with grant option;
+GRANT
+
+postgres=# \l
+                                        List of databases
+        Name        |  Owner   | Encoding |   Collate   |    Ctype    |    Access privileges
+--------------------+----------+----------+-------------+-------------+--------------------------
+ postgres           | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 |
+ reporter_multilang | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 | =Tc/postgres            +
+                    |          |          |             |             | postgres=CTc/postgres   +
+                    |          |          |             |             | reporter=C*T*c*/postgres
+ template0          | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 | =c/postgres             +
+                    |          |          |             |             | postgres=CTc/postgres
+ template1          | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 | =c/postgres             +
+                    |          |          |             |             | postgres=CTc/postgres
+(4 rows)
+
+postgres=# \q
+
+# === Accessing PostgreSQL Server (From Host) =================================
+$ psql -h10.0.2.100 -Ureporter -W reporter_multilang
+psql (9.6.1, server 9.5.5)
+SSL connection (protocol: TLSv1.2, cipher: ECDHE-RSA-AES256-GCM-SHA384, bits: 256, compression: off)
+Type "help" for help.
+
+reporter_multilang=>
+reporter_multilang=> \d
+No relations found.
+
+# === Creating and populating database tables =================================
+reporter_multilang=> \i ~/reporter-multilang/data/sql/pg-01-create-and-populate-table-attr_x0s.sql
+No relations found.
+CREATE TABLE
+               List of relations
+ Schema |      Name       |   Type   |  Owner
+--------+-----------------+----------+----------
+ public | attr_x0s        | table    | reporter
+ public | attr_x0s_id_seq | sequence | reporter
+(2 rows)
+
+                                                        Table "public.attr_x0s"
+   Column    |          Type           |                       Modifiers                       | Storage  | Stats target | Description
+-------------+-------------------------+-------------------------------------------------------+----------+--------------+-------------
+ id          | integer                 | not null default nextval('attr_x0s_id_seq'::regclass) | plain    |              |
+ name        | character varying(64)   | not null                                              | extended |              |
+ description | character varying(1024) |                                                       | extended |              |
+Indexes:
+    "attr_x0s_pkey" PRIMARY KEY, btree (id)
+
+ id | name | description
+----+------+-------------
+(0 rows)
+
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+ id |  name  |  description
+----+--------+----------------
+  1 | any    | Any ==========
+  2 | i686   | I686 =========
+  3 | x86_64 | X86_64 =======
+(3 rows)
+
+reporter_multilang=> \i ~/reporter-multilang/data/sql/pg-02-create-and-populate-table-attr_x1s.sql
+               List of relations
+ Schema |      Name       |   Type   |  Owner
+--------+-----------------+----------+----------
+ public | attr_x0s        | table    | reporter
+ public | attr_x0s_id_seq | sequence | reporter
+(2 rows)
+
+CREATE TABLE
+               List of relations
+ Schema |      Name       |   Type   |  Owner
+--------+-----------------+----------+----------
+ public | attr_x0s        | table    | reporter
+ public | attr_x0s_id_seq | sequence | reporter
+ public | attr_x1s        | table    | reporter
+ public | attr_x1s_id_seq | sequence | reporter
+(4 rows)
+
+                                                        Table "public.attr_x1s"
+   Column    |          Type           |                       Modifiers                       | Storage  | Stats target | Description
+-------------+-------------------------+-------------------------------------------------------+----------+--------------+-------------
+ id          | integer                 | not null default nextval('attr_x1s_id_seq'::regclass) | plain    |              |
+ name        | character varying(64)   | not null                                              | extended |              |
+ description | character varying(1024) |                                                       | extended |              |
+Indexes:
+    "attr_x1s_pkey" PRIMARY KEY, btree (id)
+
+ id | name | description
+----+------+-------------
+(0 rows)
+
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+ id |   name    |    description
+----+-----------+-------------------
+  1 | core      | Core ============
+  2 | extra     | Extra ===========
+  3 | community | Community =======
+  4 | multilib  | Multilib ========
+(4 rows)
+
+reporter_multilang=> \i ~/reporter-multilang/data/sql/pg-03-create-and-populate-table-data_items.sql
+               List of relations
+ Schema |      Name       |   Type   |  Owner
+--------+-----------------+----------+----------
+ public | attr_x0s        | table    | reporter
+ public | attr_x0s_id_seq | sequence | reporter
+ public | attr_x1s        | table    | reporter
+ public | attr_x1s_id_seq | sequence | reporter
+(4 rows)
+
+CREATE TABLE
+                List of relations
+ Schema |       Name        |   Type   |  Owner
+--------+-------------------+----------+----------
+ public | attr_x0s          | table    | reporter
+ public | attr_x0s_id_seq   | sequence | reporter
+ public | attr_x1s          | table    | reporter
+ public | attr_x1s_id_seq   | sequence | reporter
+ public | data_items        | table    | reporter
+ public | data_items_id_seq | sequence | reporter
+(6 rows)
+
+                                                        Table "public.data_items"
+   Column    |          Type           |                        Modifiers                        | Storage  | Stats target | Description
+-------------+-------------------------+---------------------------------------------------------+----------+--------------+-------------
+ id          | integer                 | not null default nextval('data_items_id_seq'::regclass) | plain    |              |
+ name        | character varying(64)   | not null                                                | extended |              |
+ description | character varying(1024) | not null                                                | extended |              |
+ attr_x0_id  | bigint                  | not null                                                | plain    |              |
+ attr_x1_id  | bigint                  | not null                                                | plain    |              |
+ attr_x2     | character varying(32)   | not null                                                | extended |              |
+ attr_x3     | date                    | not null                                                | plain    |              |
+ attr_x4     | date                    |                                                         | plain    |              |
+Indexes:
+    "data_items_pkey" PRIMARY KEY, btree (id)
+Foreign-key constraints:
+    "data_items_attr_x0_id_fkey" FOREIGN KEY (attr_x0_id) REFERENCES attr_x0s(id) ON DELETE RESTRICT
+    "data_items_attr_x1_id_fkey" FOREIGN KEY (attr_x1_id) REFERENCES attr_x1s(id) ON DELETE RESTRICT
+
+ id | name | description | attr_x0_id | attr_x1_id | attr_x2 | attr_x3 | attr_x4
+----+------+-------------+------------+------------+---------+---------+---------
+(0 rows)
+
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+...
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+ id |        name        |  arch  | repo  | version  | last_updated | flag_date
+----+--------------------+--------+-------+----------+--------------+------------
+ 42 | linux              | i686   | core  | 4.8.13-1 | 2016-12-11   | 2016-12-11
+ 43 | linux              | x86_64 | core  | 4.8.13-1 | 2016-12-11   | 2016-12-11
+ 44 | linux-api-headers  | i686   | core  | 4.7-1    | 2016-08-05   | 2016-11-17
+ 45 | linux-api-headers  | x86_64 | core  | 4.7-1    | 2016-08-05   | 2016-11-17
+ 47 | linux-headers      | i686   | core  | 4.8.13-1 | 2016-12-11   | 2016-12-11
+ 48 | linux-headers      | x86_64 | core  | 4.8.13-1 | 2016-12-11   | 2016-12-11
+ 61 | python             | i686   | extra | 3.5.2-3  | 2016-11-14   | 2016-12-12
+ 62 | python             | x86_64 | extra | 3.5.2-3  | 2016-11-14   | 2016-12-12
+ 67 | xorg-server        | i686   | extra | 1.18.4-1 | 2016-07-20   | 2016-11-15
+ 68 | xorg-server        | x86_64 | extra | 1.18.4-1 | 2016-07-20   | 2016-11-15
+ 69 | xorg-server-common | i686   | extra | 1.18.4-1 | 2016-07-20   | 2016-11-15
+ 70 | xorg-server-common | x86_64 | extra | 1.18.4-1 | 2016-07-20   | 2016-11-15
+(12 rows)
+
+ count
+-------
+    72
+(1 row)
+
+reporter_multilang=> \q
+# =============================================================================
