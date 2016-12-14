@@ -1,0 +1,313 @@
+# === Installing MySQL Server =================================================
+$ ssh -C <vmusername>@10.0.2.100
+Welcome to Ubuntu 14.04.4 LTS (GNU/Linux 4.2.0-27-generic x86_64)
+...
+$ sudo apt-get update
+$ sudo apt-get upgrade
+$ sudo apt-get autoremove --purge
+$ sudo apt-get remove --purge
+$ sudo apt-get autoclean
+$ sudo apt-get clean
+$ sudo dpkg --configure --pending
+$ sudo dpkg --audit
+...
+$ sudo apt-get install mysql-server
+...
+
+# === Setting up MySQL Server (Inside VM) =====================================
+$ cat /etc/mysql/mysql.conf.d/mysqld.cnf | grep '127.0.0.1'
+bind-address		= 127.0.0.1
+
+$ sudo perl -pi -e 's/^bind-address/#bind-address/g' /etc/mysql/mysql.conf.d/mysqld.cnf
+
+$ cat /etc/mysql/mysql.conf.d/mysqld.cnf | grep '127.0.0.1'
+#bind-address		= 127.0.0.1
+
+$ sudo service mysql restart
+
+$ sudo service mysql status
+● mysql.service - MySQL Community Server
+   Loaded: loaded (/lib/systemd/system/mysql.service; enabled; vendor preset: enabled)
+   Active: active (running) since Wed 2016-12-14 22:27:36 AEDT; 24s ago
+  Process: 29367 ExecStartPost=/usr/share/mysql/mysql-systemd-start post (code=exited, status=0/SUCCESS)
+  Process: 29361 ExecStartPre=/usr/share/mysql/mysql-systemd-start pre (code=exited, status=0/SUCCESS)
+ Main PID: 29366 (mysqld)
+   CGroup: /system.slice/mysql.service
+           └─29366 /usr/sbin/mysqld
+
+Dec 14 22:27:35 <vmhostname> systemd[1]: Starting MySQL Community Server...
+Dec 14 22:27:36 <vmhostname> systemd[1]: Started MySQL Community Server.
+
+$ mysql -uroot -p
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 5
+Server version: 5.7.16-0ubuntu0.16.04.1 (Ubuntu)
+
+Copyright (c) 2000, 2016, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql>
+mysql> select user, host from mysql.user;
++------------------+-----------+
+| user             | host      |
++------------------+-----------+
+| debian-sys-maint | localhost |
+| mysql.sys        | localhost |
+| root             | localhost |
++------------------+-----------+
+3 rows in set (0.00 sec)
+
+mysql> create user 'reporter'@'localhost' identified by 'retroper12345678';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> select user, host from mysql.user;
++------------------+-----------+
+| user             | host      |
++------------------+-----------+
+| debian-sys-maint | localhost |
+| mysql.sys        | localhost |
+| reporter         | localhost |
+| root             | localhost |
++------------------+-----------+
+4 rows in set (0.00 sec)
+
+mysql> grant all privileges on *.* to 'reporter'@'localhost' with grant option;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> create user 'reporter'@'%' identified by 'retroper12345678';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> select user, host from mysql.user;
++------------------+-----------+
+| user             | host      |
++------------------+-----------+
+| reporter         | %         |
+| debian-sys-maint | localhost |
+| mysql.sys        | localhost |
+| reporter         | localhost |
+| root             | localhost |
++------------------+-----------+
+5 rows in set (0.00 sec)
+
+mysql> grant all privileges on *.* to 'reporter'@'%' with grant option;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> flush privileges;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> \q
+Bye
+
+# === Setting up MySQL Server (From Host) =====================================
+$ mysql -h10.0.2.100 -ureporter -p
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MySQL connection id is 12
+Server version: 5.7.16-0ubuntu0.16.04.1 (Ubuntu)
+
+Copyright (c) 2000, 2016, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MySQL [(none)]>
+MySQL [(none)]> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+4 rows in set (0.00 sec)
+
+MySQL [(none)]> create database reporter_multilang;
+Query OK, 1 row affected (0.01 sec)
+
+MySQL [(none)]> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| reporter_multilang |
+| sys                |
++--------------------+
+5 rows in set (0.00 sec)
+
+MySQL [(none)]> \q
+Bye
+
+$ mysql -h10.0.2.100 -ureporter -p reporter_multilang
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MySQL connection id is 13
+Server version: 5.7.16-0ubuntu0.16.04.1 (Ubuntu)
+
+Copyright (c) 2000, 2016, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MySQL [reporter_multilang]>
+MySQL [reporter_multilang]> show tables;
+Empty set (0.00 sec)
+
+# === Creating and populating database tables =================================
+MySQL [reporter_multilang]> \. ~/reporter-multilang/data/sql/01-create-and-populate-table-attr_x0s.sql
+Empty set (0.00 sec)
+
+Query OK, 0 rows affected (0.50 sec)
+
++------------------------------+
+| Tables_in_reporter_multilang |
++------------------------------+
+| attr_x0s                     |
++------------------------------+
+1 row in set (0.00 sec)
+
++-------------+---------------------+------+-----+---------+----------------+
+| Field       | Type                | Null | Key | Default | Extra          |
++-------------+---------------------+------+-----+---------+----------------+
+| id          | bigint(20) unsigned | NO   | PRI | NULL    | auto_increment |
+| name        | varchar(64)         | NO   |     | NULL    |                |
+| description | varchar(1024)       | YES  |     | NULL    |                |
++-------------+---------------------+------+-----+---------+----------------+
+3 rows in set (0.01 sec)
+
+Empty set (0.00 sec)
+
+Query OK, 1 row affected (0.05 sec)
+Query OK, 1 row affected (0.04 sec)
+Query OK, 1 row affected (0.09 sec)
+
++----+--------+----------------+
+| id | name   | description    |
++----+--------+----------------+
+|  1 | any    | Any ========== |
+|  2 | i686   | I686 ========= |
+|  3 | x86_64 | X86_64 ======= |
++----+--------+----------------+
+3 rows in set (0.00 sec)
+
+MySQL [reporter_multilang]> \. ~/reporter-multilang/data/sql/02-create-and-populate-table-attr_x1s.sql
++------------------------------+
+| Tables_in_reporter_multilang |
++------------------------------+
+| attr_x0s                     |
++------------------------------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.31 sec)
+
++------------------------------+
+| Tables_in_reporter_multilang |
++------------------------------+
+| attr_x0s                     |
+| attr_x1s                     |
++------------------------------+
+2 rows in set (0.00 sec)
+
++-------------+---------------------+------+-----+---------+----------------+
+| Field       | Type                | Null | Key | Default | Extra          |
++-------------+---------------------+------+-----+---------+----------------+
+| id          | bigint(20) unsigned | NO   | PRI | NULL    | auto_increment |
+| name        | varchar(64)         | NO   |     | NULL    |                |
+| description | varchar(1024)       | YES  |     | NULL    |                |
++-------------+---------------------+------+-----+---------+----------------+
+3 rows in set (0.00 sec)
+
+Empty set (0.00 sec)
+
+Query OK, 1 row affected (0.03 sec)
+Query OK, 1 row affected (0.03 sec)
+Query OK, 1 row affected (0.07 sec)
+Query OK, 1 row affected (0.07 sec)
+
++----+-----------+-------------------+
+| id | name      | description       |
++----+-----------+-------------------+
+|  1 | core      | Core ============ |
+|  2 | extra     | Extra =========== |
+|  3 | community | Community ======= |
+|  4 | multilib  | Multilib ======== |
++----+-----------+-------------------+
+4 rows in set (0.00 sec)
+
+MySQL [reporter_multilang]> \. ~/reporter-multilang/data/sql/03-create-and-populate-table-data_items.sql
++------------------------------+
+| Tables_in_reporter_multilang |
++------------------------------+
+| attr_x0s                     |
+| attr_x1s                     |
++------------------------------+
+2 rows in set (0.00 sec)
+
+Query OK, 0 rows affected (0.38 sec)
+
++------------------------------+
+| Tables_in_reporter_multilang |
++------------------------------+
+| attr_x0s                     |
+| attr_x1s                     |
+| data_items                   |
++------------------------------+
+3 rows in set (0.01 sec)
+
++-------------+---------------------+------+-----+---------+----------------+
+| Field       | Type                | Null | Key | Default | Extra          |
++-------------+---------------------+------+-----+---------+----------------+
+| id          | bigint(20) unsigned | NO   | PRI | NULL    | auto_increment |
+| name        | varchar(64)         | NO   |     | NULL    |                |
+| description | varchar(1024)       | NO   |     | NULL    |                |
+| attr_x0_id  | bigint(20) unsigned | NO   |     | NULL    |                |
+| attr_x1_id  | bigint(20) unsigned | NO   |     | NULL    |                |
+| attr_x2     | varchar(32)         | NO   |     | NULL    |                |
+| attr_x3     | date                | NO   |     | NULL    |                |
+| attr_x4     | date                | YES  |     | NULL    |                |
++-------------+---------------------+------+-----+---------+----------------+
+8 rows in set (0.00 sec)
+
+Empty set (0.00 sec)
+
+Query OK, 1 row affected (0.04 sec)
+Query OK, 1 row affected (0.04 sec)
+Query OK, 1 row affected (0.09 sec)
+Query OK, 1 row affected (0.09 sec)
+...
+Query OK, 1 row affected (0.05 sec)
+Query OK, 1 row affected (0.04 sec)
+Query OK, 1 row affected (0.04 sec)
+Query OK, 1 row affected (0.05 sec)
+
++----+--------------------+--------+-------+----------+--------------+------------+
+| id | name               | arch   | repo  | version  | last_updated | flag_date  |
++----+--------------------+--------+-------+----------+--------------+------------+
+| 42 | linux              | i686   | core  | 4.8.13-1 | 2016-12-11   | 2016-12-11 |
+| 43 | linux              | x86_64 | core  | 4.8.13-1 | 2016-12-11   | 2016-12-11 |
+| 44 | linux-api-headers  | i686   | core  | 4.7-1    | 2016-08-05   | 2016-11-17 |
+| 45 | linux-api-headers  | x86_64 | core  | 4.7-1    | 2016-08-05   | 2016-11-17 |
+| 47 | linux-headers      | i686   | core  | 4.8.13-1 | 2016-12-11   | 2016-12-11 |
+| 48 | linux-headers      | x86_64 | core  | 4.8.13-1 | 2016-12-11   | 2016-12-11 |
+| 61 | python             | i686   | extra | 3.5.2-3  | 2016-11-14   | 2016-12-12 |
+| 62 | python             | x86_64 | extra | 3.5.2-3  | 2016-11-14   | 2016-12-12 |
+| 67 | xorg-server        | i686   | extra | 1.18.4-1 | 2016-07-20   | 2016-11-15 |
+| 68 | xorg-server        | x86_64 | extra | 1.18.4-1 | 2016-07-20   | 2016-11-15 |
+| 69 | xorg-server-common | i686   | extra | 1.18.4-1 | 2016-07-20   | 2016-11-15 |
+| 70 | xorg-server-common | x86_64 | extra | 1.18.4-1 | 2016-07-20   | 2016-11-15 |
++----+--------------------+--------+-------+----------+--------------+------------+
+12 rows in set (0.00 sec)
+
++-----------+
+| count(id) |
++-----------+
+|        72 |
++-----------+
+1 row in set (0.00 sec)
+
+MySQL [reporter_multilang]> \q
+Bye
+# =============================================================================
