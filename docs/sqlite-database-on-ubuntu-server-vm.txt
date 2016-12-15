@@ -1,0 +1,148 @@
+# === Installing SQLite database engine =======================================
+$ ssh -C <vmusername>@10.0.2.100
+Welcome to Ubuntu 16.04.1 LTS (GNU/Linux 4.4.0-34-generic x86_64)
+...
+$ sudo apt-get update
+$ sudo apt-get upgrade
+$ sudo apt-get autoremove --purge
+$ sudo apt-get remove --purge
+$ sudo apt-get autoclean
+$ sudo apt-get clean
+$ sudo dpkg --configure --pending
+$ sudo dpkg --audit
+...
+$ sudo apt-get install sqlite3
+...
+
+# === Creating database =======================================================
+$ sqlite3
+SQLite version 3.11.0 2016-02-15 17:29:24
+Enter ".help" for usage hints.
+Connected to a transient in-memory database.
+Use ".open FILENAME" to reopen on a persistent database.
+sqlite>
+sqlite> .save /home/<vmusername>/reporter_multilang
+sqlite>
+sqlite> .quit
+
+$ ls -al ~/reporter_multilang
+-rw-r--r-- 1 <vmusername> <vmusergroup> 1024 Dec 16 10:45 /home/<vmusername>/reporter_multilang
+
+$ file ~/reporter_multilang
+/home/<vmusername>/reporter_multilang: SQLite 3.x database
+
+# === Transmitting SQL scripts to VM (From Host) ==============================
+$ scp -C data/sql/sl-* <vmusername>@10.0.2.100:/home/<vmusername>
+sl-00-drop-tables-data_items-attr_x1s-attr_x0s.sql   100% 1057   754.4KB/s   00:00
+sl-01-create-and-populate-table-attr_x0s.sql         100% 1522     1.2MB/s   00:00
+sl-02-create-and-populate-table-attr_x1s.sql         100% 1731     1.8MB/s   00:00
+sl-03-create-and-populate-table-data_items.sql       100%   17KB   6.5MB/s   00:00
+
+# === Creating and populating database tables (Inside VM) =====================
+$ sqlite3
+SQLite version 3.11.0 2016-02-15 17:29:24
+Enter ".help" for usage hints.
+Connected to a transient in-memory database.
+Use ".open FILENAME" to reopen on a persistent database.
+sqlite>
+sqlite> .open /home/<vmusername>/reporter_multilang
+sqlite>
+sqlite> .databases
+seq  name             file
+---  ---------------  ----------------------------------------------------------
+0    main             /home/<vmusername>/reporter_multilang
+sqlite>
+sqlite> .read /home/<vmusername>/sl-01-create-and-populate-table-attr_x0s.sql
+
+attr_x0s
+
+cid         name        type        notnull     dflt_value  pk
+----------  ----------  ----------  ----------  ----------  ----------
+0           id          integer     0                       1
+1           name        character   1                       0
+2           descriptio  character   0                       0
+
+id          name        description
+----------  ----------  --------------
+1           any         Any ==========
+2           i686        I686 =========
+3           x86_64      X86_64 =======
+
+sqlite>
+sqlite> .read /home/<vmusername>/sl-02-create-and-populate-table-attr_x1s.sql
+attr_x0s
+
+attr_x0s  attr_x1s
+
+cid         name        type        notnull     dflt_value  pk
+----------  ----------  ----------  ----------  ----------  ----------
+0           id          integer     0                       1
+1           name        character   1                       0
+2           descriptio  character   0                       0
+
+id          name        description
+----------  ----------  -----------------
+1           core        Core ============
+2           extra       Extra ===========
+3           community   Community =======
+4           multilib    Multilib ========
+
+sqlite>
+sqlite> .read /home/<vmusername>/sl-03-create-and-populate-table-data_items.sql
+attr_x0s  attr_x1s
+
+attr_x0s    attr_x1s    data_items
+
+cid         name        type        notnull     dflt_value  pk
+----------  ----------  ----------  ----------  ----------  ----------
+0           id          integer     0                       1
+1           name        character   1                       0
+2           descriptio  character   1                       0
+3           attr_x0_id  integer     1                       0
+4           attr_x1_id  integer     1                       0
+5           attr_x2     character   1                       0
+6           attr_x3     date        1                       0
+7           attr_x4     date        0                       0
+
+id          name        arch        repo        version     last_updated  flag_date
+----------  ----------  ----------  ----------  ----------  ------------  ----------
+42          linux       i686        core        4.8.13-1    2016-12-11    2016-12-11
+43          linux       x86_64      core        4.8.13-1    2016-12-11    2016-12-11
+44          linux-api-  i686        core        4.7-1       2016-08-05    2016-11-17
+45          linux-api-  x86_64      core        4.7-1       2016-08-05    2016-11-17
+47          linux-head  i686        core        4.8.13-1    2016-12-11    2016-12-11
+48          linux-head  x86_64      core        4.8.13-1    2016-12-11    2016-12-11
+61          python      i686        extra       3.5.2-3     2016-11-14    2016-12-12
+62          python      x86_64      extra       3.5.2-3     2016-11-14    2016-12-12
+67          xorg-serve  i686        extra       1.18.4-1    2016-07-20    2016-11-15
+68          xorg-serve  x86_64      extra       1.18.4-1    2016-07-20    2016-11-15
+69          xorg-serve  i686        extra       1.18.4-1    2016-07-20    2016-11-15
+70          xorg-serve  x86_64      extra       1.18.4-1    2016-07-20    2016-11-15
+
+count(id)
+----------
+72
+
+sqlite>
+sqlite> .quit
+
+$ ls -al ~/reporter_multilang
+-rw-r--r-- 1 <vmusername> <vmusergroup> 14336 Dec 16 10:50 /home/<vmusername>/reporter_multilang
+
+$ xz ~/reporter_multilang
+
+$ ls -al ~/reporter_multilang.xz
+-rw-r--r-- 1 <vmusername> <vmusergroup> 2872 Dec 16 10:50 /home/<vmusername>/reporter_multilang.xz
+
+# === Transmitting database from VM to Host ===================================
+$ scp -C <vmusername>@10.0.2.100:/home/<vmusername>/reporter_multilang.xz ./data
+reporter_multilang.xz                                100% 2872     1.7MB/s   00:00
+
+$ ls -al ./data/reporter_multilang.xz
+-rw-r--r-- 1 <username> <usergroup> 2872 Dec 16 03:10 ./data/reporter_multilang.xz
+
+$ unxz ./data/reporter_multilang.xz
+
+$ ls -al ./data/reporter_multilang
+-rw-r--r-- 1 <username> <usergroup> 14336 Dec 16 03:10 ./data/reporter_multilang
+# =============================================================================
