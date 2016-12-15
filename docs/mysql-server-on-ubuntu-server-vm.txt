@@ -1,6 +1,6 @@
 # === Installing MySQL Server =================================================
 $ ssh -C <vmusername>@10.0.2.100
-Welcome to Ubuntu 14.04.4 LTS (GNU/Linux 4.2.0-27-generic x86_64)
+Welcome to Ubuntu 16.04.1 LTS (GNU/Linux 4.4.0-34-generic x86_64)
 ...
 $ sudo apt-get update
 $ sudo apt-get upgrade
