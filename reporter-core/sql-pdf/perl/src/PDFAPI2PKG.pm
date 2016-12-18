@@ -32,10 +32,18 @@ use PDFAPI2PKG::ControllerHelper
     "EXIT_FAILURE",
     "EXIT_SUCCESS",
     "COLON_SPACE_SEP",
+    "CURRENT_DIR",
+    "EMPTY_STRING",
     "ERROR_PREFIX",
     "ERROR_NO_DB_CONNECT";
 
 use PDFAPI2PKG::ReporterController;
+
+##
+# Constant: The SQLite database location.
+#    FIXME: Move to cli args.
+#
+use constant SQLITE_DB_DIR => "lib/data/";
 
 ##
 # Constant: The database name.
@@ -51,10 +59,26 @@ use constant HOSTNAME => "10.0.2.100";
 #use constant HOSTNAME => "localhost";
 
 ##
-# Constant: The data source name (DSN) -- the logical database identifier.
+# Constant: The data source name (DSN) for MySQL database --
+#           the logical database identifier.
 #    FIXME: Move to the startup() method.
 #
-use constant DSN => "DBI:mysql:database=" . DATABASE . ";host=" . HOSTNAME;
+use constant MY_DSN => "dbi:mysql:database=" . DATABASE . ";host=" . HOSTNAME;
+
+##
+# Constant: The data source name (DSN) for PostgreSQL database --
+#           the logical database identifier.
+#    FIXME: Move to the startup() method.
+#
+use constant PG_DSN => "dbi:Pg:database=" . DATABASE . ";host=" . HOSTNAME;
+
+##
+# Constant: The data source name (DSN) for SQLite database --
+#           the logical database identifier.
+#    FIXME: Move to the startup() method.
+#
+use constant SL_DSN => "dbi:SQLite:database=" . CURRENT_DIR
+                                            . SQLITE_DB_DIR . DATABASE;
 
 ##
 # Constant: The username to connect to the database.
@@ -74,6 +98,11 @@ use constant RAISE_ERROR_DBI_ATTR => 1;
 ## Constant: The "AutoCommit" database connectivity attribute.
 use constant AUTO_COMMIT_DBI_ATTR => 0;
 
+# Database switches. They indicate which database to connect to.
+use constant _MY_CONNECT => "mysql";
+use constant _PG_CONNECT => "postgres";
+use constant _SL_CONNECT => "sqlite";
+
 ##
 # Starts up the app.
 #
@@ -87,6 +116,8 @@ sub startup {
 
     my $ret = EXIT_SUCCESS;
 
+    my $db_switch = $args->[0];
+
     my $dbh;
 
     my %attr = (
@@ -96,7 +127,13 @@ sub startup {
 
     # Trying to connect to the database.
     try {
-        $dbh = DBI->connect(DSN, USERNAME, PASSWORD, \%attr);
+             if ($db_switch eq _MY_CONNECT) {
+            $dbh = DBI->connect(MY_DSN, USERNAME, PASSWORD, \%attr);
+        } elsif ($db_switch eq _PG_CONNECT) {
+            $dbh = DBI->connect(PG_DSN, USERNAME, PASSWORD, \%attr);
+        } elsif ($db_switch eq _SL_CONNECT) {
+            $dbh = DBI->connect(SL_DSN, EMPTY_STRING, EMPTY_STRING);
+        }
     } catch {
         $ret = EXIT_FAILURE;
 
@@ -123,24 +160,6 @@ sub startup {
 
         return $ret;
     }
-
-    # -------------------------------------------------------------------------
-    # --- Debug output - Begin ------------------------------------------------
-    # -------------------------------------------------------------------------
-#    $self = 2;
-
-#         if ($args->[0] eq "mysql") {
-#        $self = 0;
-#    } elsif ($args->[0] eq "pgsql") {
-#        $self = 1;
-#    } else {
-#        $args->[0] = "--";
-#    }
-
-#    say("$self $args->[0] $ctrl");
-    # -------------------------------------------------------------------------
-    # --- Debug output - End --------------------------------------------------
-    # -------------------------------------------------------------------------
 
     return $ret;
 }

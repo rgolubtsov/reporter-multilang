@@ -25,9 +25,9 @@ BASE_PACKAGE = PDFAPI2PKG
 BASE_CLASS   = $(BASE_PACKAGE).pm
 CLASSES      = $(SRC_DIR)/$(BASE_CLASS) $(SRC_DIR)/$(BASE_PACKAGE)
 PRJ_PREFIX   = reporter-
-PRJ_SUFFIX   = sql-pdf
-SCRIPT1      = $(PRJ_PREFIX)my$(PRJ_SUFFIX)
-SCRIPT2      = $(PRJ_PREFIX)pg$(PRJ_SUFFIX)
+PRJ_SUFFIX   = -pdf
+SCRIPT1      = $(PRJ_PREFIX)mysql$(PRJ_SUFFIX)
+SCRIPT2      = $(PRJ_PREFIX)postgres$(PRJ_SUFFIX)
 
 # Specify flags and other vars here.
 PERL      = perl
@@ -71,11 +71,12 @@ use lib \"$(LIB_DIR)\";\n\
 \n\
 use $(BASE_PACKAGE);\n\
 \n\
-## Constant: The DBMS name.\n\
-use constant DBMS => \"mysql\";\n\
+# The database switch.\n\
+# It indicates that the chosen database is managed by MySQL.\n\
+use constant _MY_CONNECT => \"mysql\";\n\
 \n\
 # Starting up the app.\n\
-$(BASE_PACKAGE)->startup([DBMS]);\n\
+$(BASE_PACKAGE)->startup([_MY_CONNECT]);\n\
 \n\
 # vim:set nu:et:ts=4:sw=4:
 endef
@@ -99,11 +100,12 @@ use lib \"$(LIB_DIR)\";\n\
 \n\
 use $(BASE_PACKAGE);\n\
 \n\
-## Constant: The DBMS name.\n\
-use constant DBMS => \"pgsql\";\n\
+# The database switch.\n\
+# It indicates that the chosen database is managed by PostgreSQL.\n\
+use constant _PG_CONNECT => \"postgres\";\n\
 \n\
 # Starting up the app.\n\
-$(BASE_PACKAGE)->startup([DBMS]);\n\
+$(BASE_PACKAGE)->startup([_PG_CONNECT]);\n\
 \n\
 # vim:set nu:et:ts=4:sw=4:
 endef
