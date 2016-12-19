@@ -42,6 +42,7 @@ use constant MINUS           =>  "-";
 use constant ERROR_PREFIX        => "Error";
 use constant ERROR_NO_DB_CONNECT => "Could not connect to the database.";
 use constant ERROR_NO_DATA       => "No data found.";
+use constant ERROR_NO_REPORT_GEN => "Could not generate the report.";
 
 ## Props to export.
 our @EXPORT_OK = (
@@ -57,6 +58,7 @@ our @EXPORT_OK = (
     "ERROR_PREFIX",
     "ERROR_NO_DB_CONNECT",
     "ERROR_NO_DATA",
+    "ERROR_NO_REPORT_GEN",
 );
 
 1;
