@@ -56,6 +56,12 @@ use constant FROM => "2016-06-01";
 use constant TO   => "2016-12-01";
 
 ##
+# Constant: The PDF report output location.
+#    FIXME: Move to cli args.
+#
+use constant PDF_REPORT_DIR => "lib/data/";
+
+##
 # Constant: The PDF report filename.
 #    FIXME: Move to cli args.
 #
@@ -66,7 +72,6 @@ use constant PDF_REPORT_FILENAME => "packages.pdf";
 #    FIXME: Move to cli args.
 #
 use constant MAX_PAGES => 20;
-#use constant MAX_PAGES => 200;
 
 ## Constant: The PDF basic measurement unit -- PostScript point.
 use constant PT =>   1;
@@ -131,7 +136,8 @@ sub pdf_report_generate {
     # -------------------------------------------------------------------------
     # --- Generating the PDF report - Begin -----------------------------------
     # -------------------------------------------------------------------------
-    my $report = PDF::API2->new(-file => _CURRENT_DIR . PDF_REPORT_FILENAME);
+    my $report = PDF::API2->new(-file => _CURRENT_DIR . PDF_REPORT_DIR
+                                                      . PDF_REPORT_FILENAME);
 
     # --- Page body (data) x MAX_PAGES ----------------------------------------
     for (my $i = 0; $i < MAX_PAGES; $i++) {
