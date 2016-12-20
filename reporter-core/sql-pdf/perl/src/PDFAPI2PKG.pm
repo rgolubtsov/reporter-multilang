@@ -29,13 +29,13 @@ use Try::Tiny;
 use DBI;
 
 use PDFAPI2PKG::ControllerHelper
-    "EXIT_FAILURE",
-    "EXIT_SUCCESS",
-    "COLON_SPACE_SEP",
-    "CURRENT_DIR",
-    "EMPTY_STRING",
-    "ERROR_PREFIX",
-    "ERROR_NO_DB_CONNECT";
+    "_EXIT_FAILURE",
+    "_EXIT_SUCCESS",
+    "_COLON_SPACE_SEP",
+    "_CURRENT_DIR",
+    "_EMPTY_STRING",
+    "_ERROR_PREFIX",
+    "_ERROR_NO_DB_CONNECT";
 
 use PDFAPI2PKG::ReporterController;
 
@@ -77,8 +77,8 @@ use constant PG_DSN => "dbi:Pg:database=" . DATABASE . ";host=" . HOSTNAME;
 #           the logical database identifier.
 #    FIXME: Move to the startup() method.
 #
-use constant SL_DSN => "dbi:SQLite:database=" . CURRENT_DIR
-                                            . SQLITE_DB_DIR . DATABASE;
+use constant SL_DSN => "dbi:SQLite:database=" . _CURRENT_DIR
+                                             . SQLITE_DB_DIR . DATABASE;
 
 ##
 # Constant: The username to connect to the database.
@@ -114,7 +114,7 @@ sub startup {
     my  $self  = shift();
     my ($args) = @_;
 
-    my $ret = EXIT_SUCCESS;
+    my $ret = _EXIT_SUCCESS;
 
     my $db_switch = $args->[0];
 
@@ -132,13 +132,13 @@ sub startup {
         } elsif ($db_switch eq _PG_CONNECT) {
             $dbh = DBI->connect(PG_DSN, USERNAME, PASSWORD, \%attr);
         } elsif ($db_switch eq _SL_CONNECT) {
-            $dbh = DBI->connect(SL_DSN, EMPTY_STRING, EMPTY_STRING);
+            $dbh = DBI->connect(SL_DSN, _EMPTY_STRING, _EMPTY_STRING);
         }
     } catch {
-        $ret = EXIT_FAILURE;
+        $ret = _EXIT_FAILURE;
 
-        say(__PACKAGE__ . COLON_SPACE_SEP . ERROR_PREFIX
-                        . COLON_SPACE_SEP . $_);
+        say(__PACKAGE__ . _COLON_SPACE_SEP . _ERROR_PREFIX
+                        . _COLON_SPACE_SEP . $_);
 
         return $ret;
     };
@@ -153,10 +153,10 @@ sub startup {
         # Disconnecting from the database.
         $dbh->disconnect();
     } else {
-        $ret = EXIT_FAILURE;
+        $ret = _EXIT_FAILURE;
 
-        say(__PACKAGE__ . COLON_SPACE_SEP . ERROR_PREFIX
-                        . COLON_SPACE_SEP . ERROR_NO_DB_CONNECT);
+        say(__PACKAGE__ . _COLON_SPACE_SEP . _ERROR_PREFIX
+                        . _COLON_SPACE_SEP . _ERROR_NO_DB_CONNECT);
 
         return $ret;
     }

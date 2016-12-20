@@ -28,37 +28,37 @@ use v5.10;
 use Exporter "import";
 
 # Helper constants.
-use constant EXIT_FAILURE    =>    0; #    Failing exit status.
-use constant EXIT_SUCCESS    =>    1; # Successful exit status.
-use constant COLON_SPACE_SEP => ": ";
-use constant CURRENT_DIR     => "./";
-use constant EMPTY_STRING    =>   "";
-use constant NEW_LINE        => "\n";
-use constant PIPE            =>  "|";
-use constant PLUS            =>  "+";
-use constant MINUS           =>  "-";
+use constant _EXIT_FAILURE    =>    0; #    Failing exit status.
+use constant _EXIT_SUCCESS    =>    1; # Successful exit status.
+use constant _COLON_SPACE_SEP => ": ";
+use constant _CURRENT_DIR     => "./";
+use constant _EMPTY_STRING    =>   "";
+use constant _NEW_LINE        => "\n";
+use constant _PIPE            =>  "|";
+use constant _PLUS            =>  "+";
+use constant _MINUS           =>  "-";
 
 # Common error messages.
-use constant ERROR_PREFIX        => "Error";
-use constant ERROR_NO_DB_CONNECT => "Could not connect to the database.";
-use constant ERROR_NO_DATA       => "No data found.";
-use constant ERROR_NO_REPORT_GEN => "Could not generate the report.";
+use constant _ERROR_PREFIX        => "Error";
+use constant _ERROR_NO_DB_CONNECT => "Could not connect to the database.";
+use constant _ERROR_NO_DATA       => "No data found.";
+use constant _ERROR_NO_REPORT_GEN => "Could not generate the report.";
 
 ## Props to export.
 our @EXPORT_OK = (
-    "EXIT_FAILURE",
-    "EXIT_SUCCESS",
-    "COLON_SPACE_SEP",
-    "CURRENT_DIR",
-    "EMPTY_STRING",
-    "NEW_LINE",
-    "PIPE",
-    "PLUS",
-    "MINUS",
-    "ERROR_PREFIX",
-    "ERROR_NO_DB_CONNECT",
-    "ERROR_NO_DATA",
-    "ERROR_NO_REPORT_GEN",
+    "_EXIT_FAILURE",
+    "_EXIT_SUCCESS",
+    "_COLON_SPACE_SEP",
+    "_CURRENT_DIR",
+    "_EMPTY_STRING",
+    "_NEW_LINE",
+    "_PIPE",
+    "_PLUS",
+    "_MINUS",
+    "_ERROR_PREFIX",
+    "_ERROR_NO_DB_CONNECT",
+    "_ERROR_NO_DATA",
+    "_ERROR_NO_REPORT_GEN",
 );
 
 1;

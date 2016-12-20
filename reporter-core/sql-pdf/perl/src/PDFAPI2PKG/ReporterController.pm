@@ -30,15 +30,15 @@ use PDF::API2;
 use Try::Tiny;
 
 use PDFAPI2PKG::ControllerHelper
-    "EXIT_FAILURE",
-    "EXIT_SUCCESS",
-    "COLON_SPACE_SEP",
-    "CURRENT_DIR",
-    "EMPTY_STRING",
-    "NEW_LINE",
-    "ERROR_PREFIX",
-    "ERROR_NO_DATA",
-    "ERROR_NO_REPORT_GEN";
+    "_EXIT_FAILURE",
+    "_EXIT_SUCCESS",
+    "_COLON_SPACE_SEP",
+    "_CURRENT_DIR",
+    "_EMPTY_STRING",
+    "_NEW_LINE",
+    "_ERROR_PREFIX",
+    "_ERROR_NO_DATA",
+    "_ERROR_NO_REPORT_GEN";
 
 use PDFAPI2PKG::ReporterModel;
 
@@ -88,7 +88,7 @@ sub pdf_report_generate {
     my  $self = shift();
     my ($dbh) = @_;
 
-    my $ret = EXIT_SUCCESS;
+    my $ret = _EXIT_SUCCESS;
 
     # TODO: Bring out all string literals into constant declarations.
 
@@ -103,10 +103,10 @@ sub pdf_report_generate {
 
     # In case of getting an empty result set, informing the user.
     if (!(@{$row_set})) {
-        $ret = EXIT_FAILURE;
+        $ret = _EXIT_FAILURE;
 
-        say(__PACKAGE__ . COLON_SPACE_SEP . ERROR_PREFIX
-                        . COLON_SPACE_SEP . ERROR_NO_DATA);
+        say(__PACKAGE__ . _COLON_SPACE_SEP . _ERROR_PREFIX
+                        . _COLON_SPACE_SEP . _ERROR_NO_DATA);
 
         return $ret;
     }
@@ -120,7 +120,7 @@ sub pdf_report_generate {
 
     say($dbg_output->render());
 
-    say(@{$row_set} . " rows in set" . NEW_LINE);
+    say(@{$row_set} . " rows in set" . _NEW_LINE);
     # -------------------------------------------------------------------------
     # --- Debug output - End --------------------------------------------------
     # -------------------------------------------------------------------------
@@ -130,15 +130,15 @@ sub pdf_report_generate {
     # -------------------------------------------------------------------------
     # --- Generating the PDF report - Begin -----------------------------------
     # -------------------------------------------------------------------------
-    my $report = PDF::API2->new(-file => CURRENT_DIR . PDF_REPORT_FILENAME);
+    my $report = PDF::API2->new(-file => _CURRENT_DIR . PDF_REPORT_FILENAME);
 
     # --- Page body (data) x MAX_PAGES ----------------------------------------
     for (my $i = 0; $i < MAX_PAGES; $i++) {
         $ret = _page_body_draw($report, $hdr_set, $row_set);
 
         if (!$ret) {
-            say(__PACKAGE__ . COLON_SPACE_SEP . ERROR_PREFIX
-                            . COLON_SPACE_SEP . ERROR_NO_REPORT_GEN);
+            say(__PACKAGE__ . _COLON_SPACE_SEP . _ERROR_PREFIX
+                            . _COLON_SPACE_SEP . _ERROR_NO_REPORT_GEN);
 
             return $ret;
         }
@@ -148,10 +148,10 @@ sub pdf_report_generate {
     try {
         $report->save();
     } catch {
-        $ret = EXIT_FAILURE;
+        $ret = _EXIT_FAILURE;
 
-        say(__PACKAGE__ . COLON_SPACE_SEP . ERROR_PREFIX
-                        . COLON_SPACE_SEP . $_);
+        say(__PACKAGE__ . _COLON_SPACE_SEP . _ERROR_PREFIX
+                        . _COLON_SPACE_SEP . $_);
 
         return $ret;
     };
@@ -166,7 +166,7 @@ sub pdf_report_generate {
 sub _page_body_draw {
     my ($report, $hdr_set, $row_set) = @_;
 
-    my $ret = EXIT_SUCCESS;
+    my $ret = _EXIT_SUCCESS;
 
     # TODO: Bring out all string literals into constant declarations.
 
@@ -289,7 +289,7 @@ sub _page_body_draw {
             if (defined($row_set->[$i][$j])) {
                 $row_txt->text($row_set->[$i][$j]);
             } else {
-                $row_txt->text(EMPTY_STRING);
+                $row_txt->text(_EMPTY_STRING);
             }
         }
 
