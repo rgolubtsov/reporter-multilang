@@ -34,9 +34,6 @@ use constant _COLON_SPACE_SEP => ": ";
 use constant _CURRENT_DIR     => "./";
 use constant _EMPTY_STRING    =>   "";
 use constant _NEW_LINE        => "\n";
-use constant _PIPE            =>  "|";
-use constant _PLUS            =>  "+";
-use constant _MINUS           =>  "-";
 
 # Common error messages.
 use constant _ERROR_PREFIX        => "Error";
@@ -52,9 +49,7 @@ our @EXPORT_OK = (
     "_CURRENT_DIR",
     "_EMPTY_STRING",
     "_NEW_LINE",
-    "_PIPE",
-    "_PLUS",
-    "_MINUS",
+# -----------------------------------------------------------------------------
     "_ERROR_PREFIX",
     "_ERROR_NO_DB_CONNECT",
     "_ERROR_NO_DATA",

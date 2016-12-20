@@ -36,6 +36,7 @@ use PDFAPI2PKG::ControllerHelper
     "_CURRENT_DIR",
     "_EMPTY_STRING",
     "_NEW_LINE",
+# -----------------------------------------------------------------------------
     "_ERROR_PREFIX",
     "_ERROR_NO_DATA",
     "_ERROR_NO_REPORT_GEN";
