@@ -82,6 +82,30 @@ use constant IN => ( 1   / 72);
 ## Constant: The one millimeter (in PDF measurement terms).
 use constant MM => (25.4 / 72);
 
+# Various string literals.
+use constant _A4_PAPER_SIZE           => "A4";
+# -----------------------------------------------------------------------------
+use constant _HELVETICA_BOLD_FONT     => "Helvetica-Bold";
+use constant _HELVETICA_FONT          => "Helvetica";
+use constant _TIMES_BOLD_FONT         => "Times-Bold";
+# -----------------------------------------------------------------------------
+use constant _RAINY_NIGHT_COLOR       => "#224488";
+use constant _WHITE_COLOR             => "#ffffff";
+use constant _BLACK_COLOR             => "#000000";
+use constant _RAINY_DAY_COLOR         => "#dddddd";
+use constant _VERY_LIGHT_COBALT_COLOR => "#aaaaaa";
+use constant _YET_NOT_WHITE_COLOR     => "#eeeeee";
+# -----------------------------------------------------------------------------
+use constant _ARCH_HEADER             => "Arch";
+use constant _REPO_HEADER             => "Repo";
+use constant _NAME_HEADER             => "Name";
+use constant _VERSION_HEADER          => "Version";
+use constant _LAST_UPDATED_HEADER     => "Last Updated";
+use constant _FLAG_DATE_HEADER        => "Flag Date";
+# -----------------------------------------------------------------------------
+use constant _ROWS_IN_SET_FOOTER      => " rows in set";
+use constant _ROWS_SHOWN_FOOTER       => "  (40 rows shown)";
+
 ##
 # Generates the PDF report.
 #
@@ -95,8 +119,6 @@ sub pdf_report_generate {
     my ($dbh) = @_;
 
     my $ret = _EXIT_SUCCESS;
-
-    # TODO: Bring out all string literals into constant declarations.
 
     # Instantiating the model component.
     my $model = PDFAPI2PKG::ReporterModel->new();
@@ -126,7 +148,7 @@ sub pdf_report_generate {
 
     say($dbg_output->render());
 
-    say(@{$row_set} . " rows in set" . _NEW_LINE);
+    say(@{$row_set} . _ROWS_IN_SET_FOOTER . _NEW_LINE);
     # -------------------------------------------------------------------------
     # --- Debug output - End --------------------------------------------------
     # -------------------------------------------------------------------------
@@ -175,15 +197,13 @@ sub _page_body_draw {
 
     my $ret = _EXIT_SUCCESS;
 
-    # TODO: Bring out all string literals into constant declarations.
-
     my %table_headers;
 
     # --- Page boxes ----------------------------------------------------------
 
     my $page = $report->page();
 
-#   $page->mediabox("A4"); # <== 210 x 297 mm.
+#   $page->mediabox(_A4_PAPER_SIZE); # <== 210 x 297 mm.
     $page->mediabox((210 / MM), (297 / MM)                        );
 #   $page->bleedbox(  (5 / MM),   (5 / MM), (205 / MM), (292 / MM));
     $page->cropbox ( (10 / MM),  (10 / MM), (200 / MM), (287 / MM));
@@ -193,7 +213,7 @@ sub _page_body_draw {
 
     my $border = $page->gfx();
 
-    $border->strokecolor("#224488"); # <== Rainy night.
+    $border->strokecolor(_RAINY_NIGHT_COLOR);
 
     $border->linewidth(2);
 
@@ -205,7 +225,7 @@ sub _page_body_draw {
 
     my $hdr_bar = $page->gfx();
 
-    $hdr_bar->fillcolor("#224488"); # <== Rainy night.
+    $hdr_bar->fillcolor(_RAINY_NIGHT_COLOR);
 
     $hdr_bar->rect((17 / MM), (267 / MM), (176 / MM), (10 / MM));
 
@@ -215,18 +235,18 @@ sub _page_body_draw {
 
     my $hdr_txt = $page->text();
 
-    my $hdr_font = $report->corefont("Helvetica-Bold");
+    my $hdr_font = $report->corefont(_HELVETICA_BOLD_FONT);
 
     $hdr_txt->font($hdr_font, (16 / PT));
 
-    $hdr_txt->fillcolor("#ffffff"); # <== White.
+    $hdr_txt->fillcolor(_WHITE_COLOR);
 
-    $table_headers{$hdr_set->[0]} = "Arch";
-    $table_headers{$hdr_set->[1]} = "Repo";
-    $table_headers{$hdr_set->[2]} = "Name";
-    $table_headers{$hdr_set->[3]} = "Version";
-    $table_headers{$hdr_set->[4]} = "Last Updated";
-    $table_headers{$hdr_set->[5]} = "Flag Date";
+    $table_headers{$hdr_set->[0]} = _ARCH_HEADER;
+    $table_headers{$hdr_set->[1]} = _REPO_HEADER;
+    $table_headers{$hdr_set->[2]} = _NAME_HEADER;
+    $table_headers{$hdr_set->[3]} = _VERSION_HEADER;
+    $table_headers{$hdr_set->[4]} = _LAST_UPDATED_HEADER;
+    $table_headers{$hdr_set->[5]} = _FLAG_DATE_HEADER;
 
     my $x = 0;
 
@@ -257,11 +277,11 @@ sub _page_body_draw {
 
     my $row_txt = $page->text();
 
-    my $row_font = $report->corefont("Helvetica");
+    my $row_font = $report->corefont(_HELVETICA_FONT);
 
     $row_txt->font($row_font, (11 / PT));
 
-    $row_txt->fillcolor("#000000"); # <== Black.
+    $row_txt->fillcolor(_BLACK_COLOR);
 
     $row_txt->translate((20 / MM), (262 / MM));
 
@@ -271,7 +291,7 @@ sub _page_body_draw {
 #   for (my $i = 0; $i < @$row_set; $i++) {
     for (my $i = 0; $i <        40; $i++) {
         if ($i & 1) {
-            $row_bar->fillcolor("#dddddd"); # <== Rainy day.
+            $row_bar->fillcolor(_RAINY_DAY_COLOR);
             $row_bar->rect((17 / MM), ((260 - $y) / MM), (176 / MM), (6 / MM));
             $row_bar->fill();
         }
@@ -307,7 +327,7 @@ sub _page_body_draw {
 
     my $xdr_bar = $page->gfx();
 
-    $xdr_bar->fillcolor("#aaaaaa"); # <== Very light cobalt.
+    $xdr_bar->fillcolor(_VERY_LIGHT_COBALT_COLOR);
 
     $xdr_bar->rect((17 / MM), (20 / MM), (176 / MM), (6 / MM));
 
@@ -317,15 +337,15 @@ sub _page_body_draw {
 
     my $xdr_txt = $page->text();
 
-    my $xdr_font = $report->corefont("Times-Bold");
+    my $xdr_font = $report->corefont(_TIMES_BOLD_FONT);
 
     $xdr_txt->font($xdr_font, (12 / PT));
 
-    $xdr_txt->fillcolor("#eeeeee"); # <== Yet not white.
+    $xdr_txt->fillcolor(_YET_NOT_WHITE_COLOR);
 
     $xdr_txt->translate((20 / MM), (22 / MM));
 
-    $xdr_txt->text(@{$row_set} . " rows in set" . "  (40 rows shown)");
+    $xdr_txt->text(@{$row_set} . _ROWS_IN_SET_FOOTER . _ROWS_SHOWN_FOOTER);
 
     # -------------------------------------------------------------------------
 
