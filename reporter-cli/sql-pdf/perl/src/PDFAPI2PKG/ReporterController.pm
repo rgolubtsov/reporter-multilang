@@ -1,5 +1,5 @@
 #
-# reporter-core/sql-pdf/perl/src/PDFAPI2PKG/ReporterController.pm
+# reporter-cli/sql-pdf/perl/src/PDFAPI2PKG/ReporterController.pm
 # =============================================================================
 # Reporter Multilang. Version 0.1
 # =============================================================================
