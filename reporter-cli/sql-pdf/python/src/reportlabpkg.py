@@ -22,7 +22,8 @@ import mysql.connector
 import psycopg2
 import sqlite3
 
-from reportlabpkq.controller_helper import ControllerHelper
+from reportlabpkq.controller_helper   import ControllerHelper
+from reportlabpkq.reporter_controller import ReporterController
 
 class ReportLabPkg:
     """The main class of the application."""
@@ -107,13 +108,11 @@ class ReportLabPkg:
             return ret
 
         # Instantiating the controller class.
-#        ctrl = ReporterController()
+        ctrl = ReporterController()
 
         if (cnx):
-            print(__name__ + aux._COLON_SPACE_SEP + str(cnx))
-
             # Generating the PDF report.
-#            ret = ctrl.pdf_report_generate(cnx)
+            ret = ctrl.pdf_report_generate(cnx)
 
             # Disconnecting from the database.
             cnx.close()
