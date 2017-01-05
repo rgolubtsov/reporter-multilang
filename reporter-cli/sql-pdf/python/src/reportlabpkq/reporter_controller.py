@@ -19,6 +19,7 @@
 #
 
 from reportlabpkq.controller_helper import ControllerHelper
+from reportlabpkq.reporter_model    import ReporterModel
 
 class ReporterController:
     """The controller class of the application."""
@@ -65,11 +66,16 @@ class ReporterController:
     ## Constant: The RGB normalizing divisor.
     FF = 255
 
-    def pdf_report_generate(self, cnx):
+    def pdf_report_generate(self, cnx, mysql=False):
         """Generates the PDF report.
 
         Args:
             cnx: The database connection object.
+
+        Kwargs:
+            mysql: The indicator that shows whether the database connection
+                   object is MySQL connection.
+                   (Default is False)
 
         Returns:
             The exit code indicating the status of generating the PDF report.
@@ -80,13 +86,18 @@ class ReporterController:
 
         ret = aux._EXIT_SUCCESS
 
-        # TODO: Instantiate the model class and retrieve a list of data items
-        #       stored in the database.
+        # Instantiating the model class.
+        model = ReporterModel()
+
+        # Retrieving a list of all data items stored in the database.
+        (hdr_set, row_set) = model.get_all_data_items(cnx, mysql)
 
         # ---------------------------------------------------------------------
         # --- Debug output - Begin --------------------------------------------
         # ---------------------------------------------------------------------
-        print(__name__ + aux._COLON_SPACE_SEP + str(cnx))
+        print(__name__ + aux._COLON_SPACE_SEP + str(cnx)
+                       + aux._COLON_SPACE_SEP + str(hdr_set)
+                       + aux._COLON_SPACE_SEP + str(row_set))
         # ---------------------------------------------------------------------
         # --- Debug output - End ----------------------------------------------
         # ---------------------------------------------------------------------

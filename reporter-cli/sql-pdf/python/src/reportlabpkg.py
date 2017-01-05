@@ -81,7 +81,8 @@ class ReportLabPkg:
 
         db_switch = args[0]
 
-        cnx = None
+        cnx   = None
+        mycnx = False # <== Suppose the database is not MySQL.
 
         # Trying to connect to the database.
         try:
@@ -90,6 +91,8 @@ class ReportLabPkg:
                                                   host=self.HOSTNAME,
                                                   user=self.USERNAME,
                                               password=self.PASSWORD)
+
+                mycnx = True
             elif (db_switch == self._PG_CONNECT):
                 cnx =        psycopg2.connect(database=self.DATABASE,
                                                   host=self.HOSTNAME,
@@ -112,7 +115,7 @@ class ReportLabPkg:
 
         if (cnx):
             # Generating the PDF report.
-            ret = ctrl.pdf_report_generate(cnx)
+            ret = ctrl.pdf_report_generate(cnx, mysql=mycnx)
 
             # Disconnecting from the database.
             cnx.close()
