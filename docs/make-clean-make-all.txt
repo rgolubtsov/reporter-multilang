@@ -1,0 +1,17 @@
+# === Cleaning implementations in a cascade flow ==============================
+$ cd reporter-cli &&                       \
+  cd sql-pdf      &&                       \
+  cd perl         && make clean && cd - && \
+  cd python       && make clean && cd - && \
+  cd ..           &&                       \
+  cd ..
+
+# === Building implementations in a cascade flow ==============================
+$ cd reporter-cli &&                       \
+  cd sql-pdf      &&                       \
+  cd perl         && make all   && cd - && \
+  cd python       && make all   && cd - && \
+  cd ..           &&                       \
+  cd ..
+
+# =============================================================================
