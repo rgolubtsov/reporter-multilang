@@ -85,21 +85,21 @@ class ReporterModel:
         # Retrieving the result set itself -- table rows.
         # Note: If the cursor.fetchall() method is used, the following block
         #       between dash separators is not needed at all.
-        row_set = cursor.fetchall()
+#       row_set = cursor.fetchall()
 
         # ---------------------------------------------------------------------
         # The result set. Finally it will be a quasi-two-dimensional array.
-#       row_set = [] # <== Declare it as an initially empty.
+        row_set = [] # <== Declare it as an initially empty.
 
         # Fetching the first row.
-#       row_ary = cursor.fetchone()
+        row_ary = cursor.fetchone()
 
         # Retrieving and processing the result set -- table rows.
-#       while (row_ary):
-#           row_set.append(row_ary)
+        while (row_ary):
+            row_set.append(row_ary)
 
             # Fetching the next row.
-#           row_ary = cursor.fetchone()
+            row_ary = cursor.fetchone()
         # ---------------------------------------------------------------------
 
         cursor.close()
