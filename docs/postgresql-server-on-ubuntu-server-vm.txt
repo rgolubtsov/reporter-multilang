@@ -134,7 +134,7 @@ reporter_multilang=> \d
 No relations found.
 
 # === Creating and populating database tables =================================
-reporter_multilang=> \i ~/reporter-multilang/data/sql/pg-01-create-and-populate-table-attr_x0s.sql
+reporter_multilang=> \i ~/reporter-multilang/data/sql/postgresql/pg-01-create-and-populate-table-attr_x0s.sql
 No relations found.
 CREATE TABLE
                List of relations
@@ -167,7 +167,7 @@ INSERT 0 1
   3 | x86_64 | X86_64 =======
 (3 rows)
 
-reporter_multilang=> \i ~/reporter-multilang/data/sql/pg-02-create-and-populate-table-attr_x1s.sql
+reporter_multilang=> \i ~/reporter-multilang/data/sql/postgresql/pg-02-create-and-populate-table-attr_x1s.sql
                List of relations
  Schema |      Name       |   Type   |  Owner
 --------+-----------------+----------+----------
@@ -210,7 +210,7 @@ INSERT 0 1
   4 | multilib  | Multilib ========
 (4 rows)
 
-reporter_multilang=> \i ~/reporter-multilang/data/sql/pg-03-create-and-populate-table-data_items.sql
+reporter_multilang=> \i ~/reporter-multilang/data/sql/postgresql/pg-03-create-and-populate-table-data_items.sql
                List of relations
  Schema |      Name       |   Type   |  Owner
 --------+-----------------+----------+----------

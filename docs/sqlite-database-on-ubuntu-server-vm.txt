@@ -32,7 +32,7 @@ $ file ~/reporter_multilang
 /home/<vmusername>/reporter_multilang: SQLite 3.x database
 
 # === Transmitting SQL scripts to VM (From Host) ==============================
-$ scp -C data/sql/sl-* <vmusername>@10.0.2.100:/home/<vmusername>
+$ scp -C data/sql/sqlite/sl-* <vmusername>@10.0.2.100:/home/<vmusername>
 sl-00-drop-tables-data_items-attr_x1s-attr_x0s.sql   100% 1057   754.4KB/s   00:00
 sl-01-create-and-populate-table-attr_x0s.sql         100% 1522     1.2MB/s   00:00
 sl-02-create-and-populate-table-attr_x1s.sql         100% 1731     1.8MB/s   00:00

@@ -157,7 +157,7 @@ MySQL [reporter_multilang]> show tables;
 Empty set (0.00 sec)
 
 # === Creating and populating database tables =================================
-MySQL [reporter_multilang]> \. ~/reporter-multilang/data/sql/my-01-create-and-populate-table-attr_x0s.sql
+MySQL [reporter_multilang]> \. ~/reporter-multilang/data/sql/mysql/my-01-create-and-populate-table-attr_x0s.sql
 Empty set (0.00 sec)
 
 Query OK, 0 rows affected (0.50 sec)
@@ -193,7 +193,7 @@ Query OK, 1 row affected (0.09 sec)
 +----+--------+----------------+
 3 rows in set (0.00 sec)
 
-MySQL [reporter_multilang]> \. ~/reporter-multilang/data/sql/my-02-create-and-populate-table-attr_x1s.sql
+MySQL [reporter_multilang]> \. ~/reporter-multilang/data/sql/mysql/my-02-create-and-populate-table-attr_x1s.sql
 +------------------------------+
 | Tables_in_reporter_multilang |
 +------------------------------+
@@ -237,7 +237,7 @@ Query OK, 1 row affected (0.07 sec)
 +----+-----------+-------------------+
 4 rows in set (0.00 sec)
 
-MySQL [reporter_multilang]> \. ~/reporter-multilang/data/sql/my-03-create-and-populate-table-data_items.sql
+MySQL [reporter_multilang]> \. ~/reporter-multilang/data/sql/mysql/my-03-create-and-populate-table-data_items.sql
 +------------------------------+
 | Tables_in_reporter_multilang |
 +------------------------------+
