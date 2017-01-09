@@ -1,39 +1,27 @@
 # === Running SQL-PDF generating utility ======================================
 # --- ('reporter-mysql-pdf' executable or script) -----------------------------
-$       PERL5LIB=$PERL5LIB:reporter-cli/sql-pdf/perl/lib                  \
-                         ./reporter-cli/sql-pdf/perl/bin/reporter-mysql-pdf
-$ PYTHONPATH=$PYTHONPATH:reporter-cli/sql-pdf/python/lib                  \
-                       ./reporter-cli/sql-pdf/python/bin/reporter-mysql-pdf
+$   ./reporter-cli/sql-pdf/perl/bin/reporter-mysql-pdf
+$ ./reporter-cli/sql-pdf/python/bin/reporter-mysql-pdf
 
 # --- ('reporter-postgres-pdf' executable or script) --------------------------
-$       PERL5LIB=$PERL5LIB:reporter-cli/sql-pdf/perl/lib                     \
-                         ./reporter-cli/sql-pdf/perl/bin/reporter-postgres-pdf
-$ PYTHONPATH=$PYTHONPATH:reporter-cli/sql-pdf/python/lib                     \
-                       ./reporter-cli/sql-pdf/python/bin/reporter-postgres-pdf
+$   ./reporter-cli/sql-pdf/perl/bin/reporter-postgres-pdf
+$ ./reporter-cli/sql-pdf/python/bin/reporter-postgres-pdf
 
 # --- ('reporter-sqlite-pdf' executable or script) ----------------------------
-$       PERL5LIB=$PERL5LIB:reporter-cli/sql-pdf/perl/lib                   \
-                         ./reporter-cli/sql-pdf/perl/bin/reporter-sqlite-pdf
-$ PYTHONPATH=$PYTHONPATH:reporter-cli/sql-pdf/python/lib                   \
-                       ./reporter-cli/sql-pdf/python/bin/reporter-sqlite-pdf
+$   ./reporter-cli/sql-pdf/perl/bin/reporter-sqlite-pdf
+$ ./reporter-cli/sql-pdf/python/bin/reporter-sqlite-pdf
 
 # === Running SQL-CSV generating utility (Not implemented yet) ================
 # --- ('reporter-mysql-csv' executable or script) -----------------------------
-$ #      PERL5LIB=$PERL5LIB:reporter-cli/sql-csv/perl/lib                  \
-  #                       ./reporter-cli/sql-csv/perl/bin/reporter-mysql-csv
-$ #PYTHONPATH=$PYTHONPATH:reporter-cli/sql-csv/python/lib                  \
-  #                     ./reporter-cli/sql-csv/python/bin/reporter-mysql-csv
+$ #  ./reporter-cli/sql-csv/perl/bin/reporter-mysql-csv
+$ #./reporter-cli/sql-csv/python/bin/reporter-mysql-csv
 
 # --- ('reporter-postgres-csv' executable or script) --------------------------
-$ #      PERL5LIB=$PERL5LIB:reporter-cli/sql-csv/perl/lib                     \
-  #                       ./reporter-cli/sql-csv/perl/bin/reporter-postgres-csv
-$ #PYTHONPATH=$PYTHONPATH:reporter-cli/sql-csv/python/lib                     \
-  #                     ./reporter-cli/sql-csv/python/bin/reporter-postgres-csv
+$ #  ./reporter-cli/sql-csv/perl/bin/reporter-postgres-csv
+$ #./reporter-cli/sql-csv/python/bin/reporter-postgres-csv
 
 # --- ('reporter-sqlite-csv' executable or script) ----------------------------
-$ #      PERL5LIB=$PERL5LIB:reporter-cli/sql-csv/perl/lib                   \
-  #                       ./reporter-cli/sql-csv/perl/bin/reporter-sqlite-csv
-$ #PYTHONPATH=$PYTHONPATH:reporter-cli/sql-csv/python/lib                   \
-  #                     ./reporter-cli/sql-csv/python/bin/reporter-sqlite-csv
+$ #  ./reporter-cli/sql-csv/perl/bin/reporter-sqlite-csv
+$ #./reporter-cli/sql-csv/python/bin/reporter-sqlite-csv
 
 # =============================================================================

@@ -71,7 +71,27 @@ use warnings;\n\
 use utf8;\n\
 use v5.10;\n\
 \n\
-use lib \"$(LIB_DIR)\";\n\
+# Helper constants.\n\
+use constant _LIB   => \"$(LIB_DIR)\";\n\
+use constant _SLASH =>   \"/\";\n\
+use constant _UPDIR =>  \"..\";\n\
+\n\
+my \044libdir = _LIB;\n\
+\n\
+# Calculating the actual lib dir path.\n\
+BEGIN {\n\
+" "" "" "" "my @script_path = split(/\//, __FILE__);\n\
+" "" "" "" "my \044script_name = pop(@script_path);\n\
+" "" "" "" "my \044bindir_name = pop(@script_path);\n\
+\n\
+" "" "" "" "\044libdir = join(_SLASH, @script_path, _LIB);\n\
+\n\
+" "" "" "" "if (\044libdir eq _LIB) {\n\
+" "" "" "" "" "" "" "" "\044libdir = _UPDIR . _SLASH . _LIB;\n\
+" "" "" "" "}\n\
+}\n\
+\n\
+use lib \044libdir;\n\
 \n\
 use $(BASE_PACKAGE);\n\
 \n\
@@ -100,7 +120,27 @@ use warnings;\n\
 use utf8;\n\
 use v5.10;\n\
 \n\
-use lib \"$(LIB_DIR)\";\n\
+# Helper constants.\n\
+use constant _LIB   => \"$(LIB_DIR)\";\n\
+use constant _SLASH =>   \"/\";\n\
+use constant _UPDIR =>  \"..\";\n\
+\n\
+my \044libdir = _LIB;\n\
+\n\
+# Calculating the actual lib dir path.\n\
+BEGIN {\n\
+" "" "" "" "my @script_path = split(/\//, __FILE__);\n\
+" "" "" "" "my \044script_name = pop(@script_path);\n\
+" "" "" "" "my \044bindir_name = pop(@script_path);\n\
+\n\
+" "" "" "" "\044libdir = join(_SLASH, @script_path, _LIB);\n\
+\n\
+" "" "" "" "if (\044libdir eq _LIB) {\n\
+" "" "" "" "" "" "" "" "\044libdir = _UPDIR . _SLASH . _LIB;\n\
+" "" "" "" "}\n\
+}\n\
+\n\
+use lib \044libdir;\n\
 \n\
 use $(BASE_PACKAGE);\n\
 \n\
@@ -129,7 +169,27 @@ use warnings;\n\
 use utf8;\n\
 use v5.10;\n\
 \n\
-use lib \"$(LIB_DIR)\";\n\
+# Helper constants.\n\
+use constant _LIB   => \"$(LIB_DIR)\";\n\
+use constant _SLASH =>   \"/\";\n\
+use constant _UPDIR =>  \"..\";\n\
+\n\
+my \044libdir = _LIB;\n\
+\n\
+# Calculating the actual lib dir path.\n\
+BEGIN {\n\
+" "" "" "" "my @script_path = split(/\//, __FILE__);\n\
+" "" "" "" "my \044script_name = pop(@script_path);\n\
+" "" "" "" "my \044bindir_name = pop(@script_path);\n\
+\n\
+" "" "" "" "\044libdir = join(_SLASH, @script_path, _LIB);\n\
+\n\
+" "" "" "" "if (\044libdir eq _LIB) {\n\
+" "" "" "" "" "" "" "" "\044libdir = _UPDIR . _SLASH . _LIB;\n\
+" "" "" "" "}\n\
+}\n\
+\n\
+use lib \044libdir;\n\
 \n\
 use $(BASE_PACKAGE);\n\
 \n\
