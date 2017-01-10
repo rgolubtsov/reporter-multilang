@@ -43,6 +43,9 @@ use PDFAPI2PKG::ControllerHelper
 
 use PDFAPI2PKG::ReporterModel;
 
+# Helper constant.
+use constant _SLASH => "/";
+
 ##
 # Constant: The start date to retrieve data set.
 #    FIXME: Move to cli args.
@@ -59,7 +62,7 @@ use constant TO   => "2016-12-01";
 # Constant: The PDF report output location.
 #    FIXME: Move to cli args.
 #
-use constant PDF_REPORT_DIR => "lib/data/";
+use constant PDF_REPORT_DIR => "data";
 
 ##
 # Constant: The PDF report filename.
@@ -158,8 +161,7 @@ sub pdf_report_generate {
     # -------------------------------------------------------------------------
     # --- Generating the PDF report - Begin -----------------------------------
     # -------------------------------------------------------------------------
-    my $report = PDF::API2->new(-file => _CURRENT_DIR . PDF_REPORT_DIR
-                                                      . PDF_REPORT_FILENAME);
+    my $report = PDF::API2->new(-file => _get_pdf_report_path(__FILE__));
 
     # --- Page body (data) x MAX_PAGES ----------------------------------------
     for (my $i = 0; $i < MAX_PAGES; $i++) {
@@ -350,6 +352,23 @@ sub _page_body_draw {
     # -------------------------------------------------------------------------
 
     return $ret;
+}
+
+# Helper function.
+# Returns the generated PDF report output path,
+# relative to this module location.
+# TODO: Remove this function when the report output location
+#       will be passed through cli args.
+sub _get_pdf_report_path {
+    my ($module) = @_;
+
+    my @module_path     = split(/\//, $module);
+    my $module_name     = pop(@module_path);
+    my $package_name    = pop(@module_path);
+    my $pdf_report_path = join(_SLASH, @module_path,
+                                PDF_REPORT_DIR . _SLASH . PDF_REPORT_FILENAME);
+
+    return $pdf_report_path;
 }
 
 ## Default constructor.
