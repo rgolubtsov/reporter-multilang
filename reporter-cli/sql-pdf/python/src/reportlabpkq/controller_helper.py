@@ -26,6 +26,7 @@ class ControllerHelper:
     _EXIT_SUCCESS    =    0 # Successful exit status.
     _COLON_SPACE_SEP = ": "
     _CURRENT_DIR     = "./"
+    _SLASH           =  "/"
     _EMPTY_STRING    =   ""
     _NEW_LINE        = "\n"
 
