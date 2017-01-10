@@ -39,11 +39,14 @@ use PDFAPI2PKG::ControllerHelper
 
 use PDFAPI2PKG::ReporterController;
 
+# Helper constant.
+use constant _SLASH => "/";
+
 ##
 # Constant: The SQLite database location.
 #    FIXME: Move to cli args.
 #
-use constant SQLITE_DB_DIR => "lib/data/";
+use constant SQLITE_DB_DIR => "data";
 
 ##
 # Constant: The database name.
@@ -73,12 +76,11 @@ use constant MY_DSN => "dbi:mysql:database=" . DATABASE . ";host=" . HOSTNAME;
 use constant PG_DSN => "dbi:Pg:database=" . DATABASE . ";host=" . HOSTNAME;
 
 ##
-# Constant: The data source name (DSN) for SQLite database --
-#           the logical database identifier.
+# Constant: The data source name (DSN) prefix for SQLite database --
+#           the logical database identifier prefix.
 #    FIXME: Move to the startup() method.
 #
-use constant SL_DSN => "dbi:SQLite:database=" . _CURRENT_DIR
-                                             . SQLITE_DB_DIR . DATABASE;
+use constant SL_DSN_PREFIX => "dbi:SQLite:database=";
 
 ##
 # Constant: The username to connect to the database.
@@ -132,7 +134,8 @@ sub startup {
         } elsif ($db_switch eq _PG_CONNECT) {
             $dbh = DBI->connect(PG_DSN, USERNAME, PASSWORD, \%attr);
         } elsif ($db_switch eq _SL_CONNECT) {
-            $dbh = DBI->connect(SL_DSN, _EMPTY_STRING, _EMPTY_STRING);
+            $dbh = DBI->connect(SL_DSN_PREFIX . _get_sqlite_db_path(__FILE__),
+                                                _EMPTY_STRING, _EMPTY_STRING);
         }
     } catch {
         $ret = _EXIT_FAILURE;
@@ -162,6 +165,19 @@ sub startup {
     }
 
     return $ret;
+}
+
+# Helper function.
+# Returns the SQLite database path, relative to this module location.
+sub _get_sqlite_db_path {
+    my ($module) = @_;
+
+    my @module_path    = split(/\//, $module);
+    my $module_name    = pop(@module_path);
+    my $sqlite_db_path = join(_SLASH, @module_path,
+                                      SQLITE_DB_DIR . _SLASH . DATABASE);
+
+    return $sqlite_db_path;
 }
 
 1;

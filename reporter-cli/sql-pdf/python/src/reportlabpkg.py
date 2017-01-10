@@ -28,6 +28,9 @@ from reportlabpkq.reporter_controller import ReporterController
 class ReportLabPkg:
     """The main class of the application."""
 
+    # Helper constant.
+    _SLASH = "/"
+
     # Database switches. They indicate which database to connect to.
     _MY_CONNECT = "mysql"
     _PG_CONNECT = "postgres"
@@ -62,7 +65,7 @@ class ReportLabPkg:
     # Constant: The SQLite database location.
     #    FIXME: Move to cli args.
     #
-    SQLITE_DB_DIR = "lib/data/"
+    SQLITE_DB_DIR = "data"
 
     def startup(self, args):
         """Starts up the app.
@@ -99,9 +102,8 @@ class ReportLabPkg:
                                                   user=self.USERNAME,
                                               password=self.PASSWORD)
             elif (db_switch == self._SL_CONNECT):
-                cnx =         sqlite3.connect(database=aux._CURRENT_DIR
-                                                   + self.SQLITE_DB_DIR
-                                                   + self.DATABASE)
+                cnx =         sqlite3.connect(database=self._get_sqlite_db_path
+                                                                    (__file__))
         except mysql.connector.Error as e:
             ret = aux._EXIT_FAILURE
 
@@ -128,6 +130,17 @@ class ReportLabPkg:
             return ret
 
         return ret
+
+    # Helper method.
+    # Returns the SQLite database path, relative to this module location.
+    def _get_sqlite_db_path(self, module):
+        module_path    = module.split(self._SLASH)
+        module_name    = module_path.pop()
+        sqlite_db_path = (self._SLASH.join(module_path)
+                       +  self._SLASH + self.SQLITE_DB_DIR
+                       +  self._SLASH + self.DATABASE)
+
+        return sqlite_db_path
 
     def __init__(self):
         """Default constructor."""
