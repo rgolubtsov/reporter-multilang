@@ -32,6 +32,7 @@ use constant _EXIT_FAILURE    =>    0; #    Failing exit status.
 use constant _EXIT_SUCCESS    =>    1; # Successful exit status.
 use constant _COLON_SPACE_SEP => ": ";
 use constant _CURRENT_DIR     => "./";
+use constant _SLASH           =>  "/";
 use constant _EMPTY_STRING    =>   "";
 use constant _NEW_LINE        => "\n";
 
@@ -47,6 +48,7 @@ our @EXPORT_OK = (
     "_EXIT_SUCCESS",
     "_COLON_SPACE_SEP",
     "_CURRENT_DIR",
+    "_SLASH",
     "_EMPTY_STRING",
     "_NEW_LINE",
 # -----------------------------------------------------------------------------

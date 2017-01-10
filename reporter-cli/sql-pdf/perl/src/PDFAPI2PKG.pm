@@ -32,15 +32,13 @@ use PDFAPI2PKG::ControllerHelper
     "_EXIT_FAILURE",
     "_EXIT_SUCCESS",
     "_COLON_SPACE_SEP",
-    "_CURRENT_DIR",
+    "_SLASH",
     "_EMPTY_STRING",
+# -----------------------------------------------------------------------------
     "_ERROR_PREFIX",
     "_ERROR_NO_DB_CONNECT";
 
 use PDFAPI2PKG::ReporterController;
-
-# Helper constant.
-use constant _SLASH => "/";
 
 ##
 # Constant: The SQLite database location.

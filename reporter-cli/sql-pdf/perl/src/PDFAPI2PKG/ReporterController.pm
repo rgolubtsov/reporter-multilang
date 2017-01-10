@@ -33,7 +33,7 @@ use PDFAPI2PKG::ControllerHelper
     "_EXIT_FAILURE",
     "_EXIT_SUCCESS",
     "_COLON_SPACE_SEP",
-    "_CURRENT_DIR",
+    "_SLASH",
     "_EMPTY_STRING",
     "_NEW_LINE",
 # -----------------------------------------------------------------------------
@@ -42,9 +42,6 @@ use PDFAPI2PKG::ControllerHelper
     "_ERROR_NO_REPORT_GEN";
 
 use PDFAPI2PKG::ReporterModel;
-
-# Helper constant.
-use constant _SLASH => "/";
 
 ##
 # Constant: The start date to retrieve data set.
@@ -108,6 +105,7 @@ use constant _FLAG_DATE_HEADER        => "Flag Date";
 # -----------------------------------------------------------------------------
 use constant _ROWS_IN_SET_FOOTER      => " rows in set";
 use constant _ROWS_SHOWN_FOOTER       => "  (40 rows shown)";
+use constant _PDF_REPORT_SAVED_MSG    => "PDF report saved";
 
 ##
 # Generates the PDF report.
@@ -161,7 +159,9 @@ sub pdf_report_generate {
     # -------------------------------------------------------------------------
     # --- Generating the PDF report - Begin -----------------------------------
     # -------------------------------------------------------------------------
-    my $report = PDF::API2->new(-file => _get_pdf_report_path(__FILE__));
+    my $pdf_report_path = _get_pdf_report_path(__FILE__);
+
+    my $report = PDF::API2->new(-file => $pdf_report_path);
 
     # --- Page body (data) x MAX_PAGES ----------------------------------------
     for (my $i = 0; $i < MAX_PAGES; $i++) {
@@ -178,6 +178,8 @@ sub pdf_report_generate {
     # Trying to save the report.
     try {
         $report->save();
+
+        say(_PDF_REPORT_SAVED_MSG . _COLON_SPACE_SEP . $pdf_report_path);
     } catch {
         $ret = _EXIT_FAILURE;
 
