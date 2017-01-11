@@ -18,8 +18,6 @@
 # (See the LICENSE file at the top of the source tree.)
 #
 
-#from reportlabpkq.controller_helper import ControllerHelper
-
 class ReporterModel:
     """The model class of the application."""
 
@@ -100,6 +98,111 @@ class ReporterModel:
 
             # Fetching the next row.
             row_ary = cursor.fetchone()
+        # ---------------------------------------------------------------------
+
+        cursor.close()
+
+        return (hdr_set, row_set)
+
+    def get_data_items_by_date(self, morf, to, cnx, mysql=False, postgres=False):
+        """Retrieves a list of data items for a given date period.
+
+        Args:
+            morf: The start date to retrieve data set.
+            to:   The end   date to retrieve data set.
+            cnx:  The database connection object.
+
+        Kwargs:
+            mysql:    The indicator that shows whether the database connection
+                      object is MySQL connection.
+                      (Default is False)
+            postgres: The indicator that shows whether the database connection
+                      object is PostgreSQL connection.
+                      (Default is False)
+
+        Returns:
+            References to two arrays containing table headers and rows.
+        """
+
+        sql_select = ("select"
+                "      x0.name as arch,"
+                "      x1.name as repo,"
+                "   items.name,"
+                " attr_x2      as version,"
+#                "   items.description,"
+                " attr_x3      as last_updated,"
+                " attr_x4      as flag_date"
+            " from"
+                " data_items items,"
+                "   attr_x0s x0,"
+                "   attr_x1s x1"
+            " where"
+                " (attr_x0_id  = x0.id) and"
+                " (attr_x1_id  = x1.id) and")
+# -----------------------------------------------------------------------------
+# Note: PostgreSQL driver (psycopg2) can handle only universal Python
+#       placeholders (%s), whilst SQLite module can handle only question-mark-
+#       placeholders (?). MySQL connector can do both. So that the use
+#       of universal Python placeholders is mandatory only for PostgreSQL ops.
+# -----------------------------------------------------------------------------
+        if (postgres):
+            sql_select += (" (attr_x3 >= %s) and"
+                           " (attr_x3 <= %s)")
+# -----------------------------------------------------------------------------
+#           sql_select +=  " (attr_x3 between %s and %s)"
+# -----------------------------------------------------------------------------
+        else:
+            sql_select += (" (attr_x3 >=  ?) and"
+                           " (attr_x3 <=  ?)")
+# -----------------------------------------------------------------------------
+#           sql_select +=  " (attr_x3 between  ? and  ?)"
+# -----------------------------------------------------------------------------
+        sql_select += (" order by"
+                           " items.name,"
+                           "       arch")
+
+        # Preparing the SQL statement.
+        if (mysql):
+            cursor = cnx.cursor(prepared=True)
+        else:
+            cursor = cnx.cursor()
+
+        cursor.execute(sql_select, (morf, to))
+
+        # Retrieving the result set metadata -- table headers.
+        hdr_set = []
+
+        if (mysql):
+            hdr_set   = cursor.column_names
+        else:
+            hdr_descr = cursor.description
+            hdr_len   = len(hdr_descr)
+
+            i = 0
+
+            while (hdr_len - i):
+                hdr_set.append(hdr_descr[i][0])
+
+                i += 1
+
+        # Retrieving the result set itself -- table rows.
+        # Note: If the cursor.fetchall() method is used, the following block
+        #       between dash separators is not needed at all.
+        row_set = cursor.fetchall()
+
+        # ---------------------------------------------------------------------
+        # The result set. Finally it will be a quasi-two-dimensional array.
+#       row_set = [] # <== Declare it as an initially empty.
+
+        # Fetching the first row.
+#       row_ary = cursor.fetchone()
+
+        # Retrieving and processing the result set -- table rows.
+#       while (row_ary):
+#           row_set.append(row_ary)
+
+            # Fetching the next row.
+#           row_ary = cursor.fetchone()
         # ---------------------------------------------------------------------
 
         cursor.close()

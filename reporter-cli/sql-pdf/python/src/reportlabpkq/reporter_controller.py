@@ -75,16 +75,19 @@ class ReporterController:
     _ROWS_IN_SET_FOOTER   = " rows in set"
     _PDF_REPORT_SAVED_MSG = "PDF report saved"
 
-    def pdf_report_generate(self, cnx, mysql=False):
+    def pdf_report_generate(self, cnx, mysql=False, postgres=False):
         """Generates the PDF report.
 
         Args:
             cnx: The database connection object.
 
         Kwargs:
-            mysql: The indicator that shows whether the database connection
-                   object is MySQL connection.
-                   (Default is False)
+            mysql:    The indicator that shows whether the database connection
+                      object is MySQL connection.
+                      (Default is False)
+            postgres: The indicator that shows whether the database connection
+                      object is PostgreSQL connection.
+                      (Default is False)
 
         Returns:
             The exit code indicating the status of generating the PDF report.
@@ -99,7 +102,11 @@ class ReporterController:
         model = ReporterModel()
 
         # Retrieving a list of all data items stored in the database.
-        (hdr_set, row_set) = model.get_all_data_items(cnx, mysql)
+#       (hdr_set, row_set) = model.get_all_data_items(cnx, mysql)
+
+        # Retrieving a list of data items for a given date period.
+        (hdr_set, row_set) = model.get_data_items_by_date(self.FROM, self.TO,
+                                                          cnx, mysql, postgres)
 
         # In case of getting an empty result set, informing the user.
         if (not(row_set)):

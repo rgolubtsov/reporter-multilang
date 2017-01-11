@@ -83,6 +83,7 @@ class ReportLabPkg:
 
         cnx   = None
         mycnx = False # <== Suppose the database is not MySQL.
+        pgcnx = False # <== Suppose the database is not PostgreSQL.
 
         # Trying to connect to the database.
         try:
@@ -98,6 +99,8 @@ class ReportLabPkg:
                                                   host=self.HOSTNAME,
                                                   user=self.USERNAME,
                                               password=self.PASSWORD)
+
+                pgcnx = True
             elif (db_switch == self._SL_CONNECT):
                 cnx =         sqlite3.connect(database=self._get_sqlite_db_path
                                                                (__file__, aux))
@@ -114,7 +117,7 @@ class ReportLabPkg:
 
         if (cnx):
             # Generating the PDF report.
-            ret = ctrl.pdf_report_generate(cnx, mysql=mycnx)
+            ret = ctrl.pdf_report_generate(cnx, mysql=mycnx, postgres=pgcnx)
 
             # Disconnecting from the database.
             cnx.close()
