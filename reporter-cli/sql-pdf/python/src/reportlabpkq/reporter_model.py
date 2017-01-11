@@ -41,7 +41,7 @@ class ReporterModel:
                 "      x1.name as repo,"
                 "   items.name,"
                 " attr_x2      as version,"
-#                "   items.description,"
+#               "   items.description,"
                 " attr_x3      as last_updated,"
                 " attr_x4      as flag_date"
             " from"
@@ -51,7 +51,7 @@ class ReporterModel:
             " where"
                 " (attr_x0_id  = x0.id) and"
                 " (attr_x1_id  = x1.id)" # and"
-#                " (attr_x4 is not null)"
+#               " (attr_x4 is not null)"
             " order by"
                 " items.name,"
                 "       arch")
@@ -129,7 +129,7 @@ class ReporterModel:
                 "      x1.name as repo,"
                 "   items.name,"
                 " attr_x2      as version,"
-#                "   items.description,"
+#               "   items.description,"
                 " attr_x3      as last_updated,"
                 " attr_x4      as flag_date"
             " from"
@@ -146,16 +146,16 @@ class ReporterModel:
 #       of universal Python placeholders is mandatory only for PostgreSQL ops.
 # -----------------------------------------------------------------------------
         if (postgres):
-            sql_select += (" (attr_x3 >= %s) and"
-                           " (attr_x3 <= %s)")
+#           sql_select += (" (attr_x3 >= %s) and"
+#                          " (attr_x3 <= %s)")
 # -----------------------------------------------------------------------------
-#           sql_select +=  " (attr_x3 between %s and %s)"
+            sql_select +=  " (attr_x3 between %s and %s)"
 # -----------------------------------------------------------------------------
         else:
-            sql_select += (" (attr_x3 >=  ?) and"
-                           " (attr_x3 <=  ?)")
+#           sql_select += (" (attr_x3 >=  ?) and"
+#                          " (attr_x3 <=  ?)")
 # -----------------------------------------------------------------------------
-#           sql_select +=  " (attr_x3 between  ? and  ?)"
+            sql_select +=  " (attr_x3 between  ? and  ?)"
 # -----------------------------------------------------------------------------
         sql_select += (" order by"
                            " items.name,"
@@ -188,21 +188,21 @@ class ReporterModel:
         # Retrieving the result set itself -- table rows.
         # Note: If the cursor.fetchall() method is used, the following block
         #       between dash separators is not needed at all.
-        row_set = cursor.fetchall()
+#       row_set = cursor.fetchall()
 
         # ---------------------------------------------------------------------
         # The result set. Finally it will be a quasi-two-dimensional array.
-#       row_set = [] # <== Declare it as an initially empty.
+        row_set = [] # <== Declare it as an initially empty.
 
         # Fetching the first row.
-#       row_ary = cursor.fetchone()
+        row_ary = cursor.fetchone()
 
         # Retrieving and processing the result set -- table rows.
-#       while (row_ary):
-#           row_set.append(row_ary)
+        while (row_ary):
+            row_set.append(row_ary)
 
             # Fetching the next row.
-#           row_ary = cursor.fetchone()
+            row_ary = cursor.fetchone()
         # ---------------------------------------------------------------------
 
         cursor.close()
