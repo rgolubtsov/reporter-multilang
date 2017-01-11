@@ -18,6 +18,8 @@
 # (See the LICENSE file at the top of the source tree.)
 #
 
+from reportlabpkq.controller_helper import ControllerHelper
+
 class ReporterModel:
     """The model class of the application."""
 
@@ -35,6 +37,9 @@ class ReporterModel:
         Returns:
             References to two arrays containing table headers and rows.
         """
+
+        # Instantiating the controller helper class.
+        aux = ControllerHelper()
 
         sql_select = ("select"
                 "      x0.name as arch,"
@@ -94,6 +99,18 @@ class ReporterModel:
 
         # Retrieving and processing the result set -- table rows.
         while (row_ary):
+            # Transforming tuples into arrays.
+            row_ary = list(row_ary)
+
+            i = 0
+
+            # Removing 'None' from row_ary cells (if any).
+            while (i < len(row_ary)):
+                if (row_ary[i] is None):
+                    row_ary[i] = aux._EMPTY_STRING
+
+                i += 1
+
             row_set.append(row_ary)
 
             # Fetching the next row.
@@ -123,6 +140,9 @@ class ReporterModel:
         Returns:
             References to two arrays containing table headers and rows.
         """
+
+        # Instantiating the controller helper class.
+        aux = ControllerHelper()
 
         sql_select = ("select"
                 "      x0.name as arch,"
@@ -199,6 +219,18 @@ class ReporterModel:
 
         # Retrieving and processing the result set -- table rows.
         while (row_ary):
+            # Transforming tuples into arrays.
+            row_ary = list(row_ary)
+
+            i = 0
+
+            # Removing 'None' from row_ary cells (if any).
+            while (i < len(row_ary)):
+                if (row_ary[i] is None):
+                    row_ary[i] = aux._EMPTY_STRING
+
+                i += 1
+
             row_set.append(row_ary)
 
             # Fetching the next row.

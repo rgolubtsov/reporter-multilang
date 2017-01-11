@@ -138,9 +138,9 @@ class ReporterController:
                 i += 1
         # ---------------------------------------------------------------------
         else:
-            # Transforming tuples into arrays.
+            # Traversing through row_set rows with cells post-processing.
             while (i < len(row_set)):
-                row_ary = list(row_set[i])
+                row_ary = row_set[i]
 
                 j = 0
 
@@ -154,6 +154,9 @@ class ReporterController:
                 dbg_output.add_row(row_ary)
 
                 i += 1
+
+        # Left-aligning table columns.
+        dbg_output.align="l"
 
         print(dbg_output)
 
