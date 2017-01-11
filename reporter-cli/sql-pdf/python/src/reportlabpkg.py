@@ -35,32 +35,32 @@ class ReportLabPkg:
 
     ##
     # Constant: The database name.
-    #    FIXME: Move to cli args.
+    #     TODO: Move to cli args.
     #
     DATABASE = "reporter_multilang"
 
     ##
     # Constant: The database server name.
-    #    FIXME: Move to cli args.
+    #     TODO: Move to cli args.
     #
     HOSTNAME = "10.0.2.100"
     #HOSTNAME = "localhost"
 
     ##
     # Constant: The username to connect to the database.
-    #    FIXME: Move to cli args.
+    #     TODO: Move to cli args.
     #
     USERNAME = "reporter"
 
     ##
     # Constant: The password to connect to the database.
-    #    FIXME: Move to cli args.
+    #     TODO: Move to cli args.
     #
     PASSWORD = "retroper12345678"
 
     ##
     # Constant: The SQLite database location.
-    #    FIXME: Move to cli args.
+    #     TODO: Move to cli args.
     #
     SQLITE_DB_DIR = "data"
 

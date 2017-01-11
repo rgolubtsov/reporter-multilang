@@ -31,31 +31,31 @@ class ReporterController:
 
     ##
     # Constant: The start date to retrieve data set.
-    #    FIXME: Move to cli args.
+    #     TODO: Move to cli args.
     #
     FROM = "2016-06-01"
 
     ##
     # Constant: The end   date to retrieve data set.
-    #    FIXME: Move to cli args.
+    #     TODO: Move to cli args.
     #
     TO   = "2016-12-01"
 
     ##
     # Constant: The PDF report output location.
-    #    FIXME: Move to cli args.
+    #     TODO: Move to cli args.
     #
     PDF_REPORT_DIR = "data"
 
     ##
     # Constant: The PDF report filename.
-    #    FIXME: Move to cli args.
+    #     TODO: Move to cli args.
     #
     PDF_REPORT_FILENAME = "packages.pdf"
 
     ##
     # Constant: The number of pages generated in a PDF report.
-    #    FIXME: Move to cli args.
+    #     TODO: Move to cli args.
     #
     MAX_PAGES = 20
 

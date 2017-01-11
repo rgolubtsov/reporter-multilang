@@ -42,19 +42,19 @@ use PDFAPI2PKG::ReporterController;
 
 ##
 # Constant: The SQLite database location.
-#    FIXME: Move to cli args.
+#     TODO: Move to cli args.
 #
 use constant SQLITE_DB_DIR => "data";
 
 ##
 # Constant: The database name.
-#    FIXME: Move to cli args.
+#     TODO: Move to cli args.
 #
 use constant DATABASE => "reporter_multilang";
 
 ##
 # Constant: The database server name.
-#    FIXME: Move to cli args.
+#     TODO: Move to cli args.
 #
 use constant HOSTNAME => "10.0.2.100";
 #use constant HOSTNAME => "localhost";
@@ -62,33 +62,33 @@ use constant HOSTNAME => "10.0.2.100";
 ##
 # Constant: The data source name (DSN) for MySQL database --
 #           the logical database identifier.
-#    FIXME: Move to the startup() method.
+#     TODO: Move to the startup() method.
 #
 use constant MY_DSN => "dbi:mysql:database=" . DATABASE . ";host=" . HOSTNAME;
 
 ##
 # Constant: The data source name (DSN) for PostgreSQL database --
 #           the logical database identifier.
-#    FIXME: Move to the startup() method.
+#     TODO: Move to the startup() method.
 #
 use constant PG_DSN => "dbi:Pg:database=" . DATABASE . ";host=" . HOSTNAME;
 
 ##
 # Constant: The data source name (DSN) prefix for SQLite database --
 #           the logical database identifier prefix.
-#    FIXME: Move to the startup() method.
+#     TODO: Move to the startup() method.
 #
 use constant SL_DSN_PREFIX => "dbi:SQLite:database=";
 
 ##
 # Constant: The username to connect to the database.
-#    FIXME: Move to cli args.
+#     TODO: Move to cli args.
 #
 use constant USERNAME => "reporter";
 
 ##
 # Constant: The password to connect to the database.
-#    FIXME: Move to cli args.
+#     TODO: Move to cli args.
 #
 use constant PASSWORD => "retroper12345678";
 
