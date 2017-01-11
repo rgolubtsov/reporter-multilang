@@ -42,7 +42,7 @@ sub get_all_data_items {
             . "      x1.name as repo,"
             . "   items.name,"
             . " attr_x2      as version,"
-#            . "   items.description,"
+#           . "   items.description,"
             . " attr_x3      as last_updated,"
             . " attr_x4      as flag_date"
         . " from"
@@ -52,7 +52,7 @@ sub get_all_data_items {
         . " where"
             . " (attr_x0_id  = x0.id) and"
             . " (attr_x1_id  = x1.id)" # and"
-#            . " (attr_x4 is not null)"
+#           . " (attr_x4 is not null)"
         . " order by"
             . " items.name,"
             . "       arch";
@@ -99,7 +99,7 @@ sub get_data_items_by_date {
             . "      x1.name as repo,"
             . "   items.name,"
             . " attr_x2      as version,"
-#            . "   items.description,"
+#           . "   items.description,"
             . " attr_x3      as last_updated,"
             . " attr_x4      as flag_date"
         . " from"
@@ -110,8 +110,8 @@ sub get_data_items_by_date {
             . " (attr_x0_id = x0.id) and"
             . " (attr_x1_id = x1.id) and"
 # -----------------------------------------------------------------------------
-#            . " (attr_x3   >=     ?) and"
-#            . " (attr_x3   <=     ?)"
+#           . " (attr_x3   >=     ?) and"
+#           . " (attr_x3   <=     ?)"
 # -----------------------------------------------------------------------------
             . " (attr_x3 between ? and ?)"
 # -----------------------------------------------------------------------------
