@@ -20,8 +20,9 @@
 
 import time
 
-from prettytable      import PrettyTable
-from reportlab.pdfgen import canvas
+from prettytable             import PrettyTable
+from reportlab.pdfgen        import canvas
+from reportlab.lib.pagesizes import A4
 
 from reportlabpkq.controller_helper import ControllerHelper
 from reportlabpkq.reporter_model    import ReporterModel
@@ -72,7 +73,18 @@ class ReporterController:
     FF = 255
 
     # Various string literals.
+    _HELVETICA_BOLD_FONT  = "Helvetica-Bold"
+    _TIMES_BOLD_FONT      = "Times-Bold"
+    # -------------------------------------------------------------------------
+    _ARCH_HEADER          = "Arch"
+    _REPO_HEADER          = "Repo"
+    _NAME_HEADER          = "Name"
+    _VERSION_HEADER       = "Version"
+    _LAST_UPDATED_HEADER  = "Last Updated"
+    _FLAG_DATE_HEADER     = "Flag Date"
+    # -------------------------------------------------------------------------
     _ROWS_IN_SET_FOOTER   = " rows in set"
+    _ROWS_SHOWN_FOOTER    = "  (40 rows shown)"
     _PDF_REPORT_SAVED_MSG = "PDF report saved"
 
     def pdf_report_generate(self, cnx, mysql=False, postgres=False):
@@ -172,17 +184,145 @@ class ReporterController:
         # ---------------------------------------------------------------------
         pdf_report_path = self._get_pdf_report_path(__file__, aux)
 
-        report = canvas.Canvas(pdf_report_path)
+        report = canvas.Canvas(pdf_report_path,
+                               pagesize=A4,     # <== 210 x 297 mm.
+                             pdfVersion=(1, 4), # <== PDF version 1.4.
+        # --- Page boxes ------------------------------------------------------
+  cropBox=( (10 / self.MM),  (10 / self.MM), (200 / self.MM), (287 / self.MM)),
+#  artBox=( (15 / self.MM),  (15 / self.MM), (195 / self.MM), (282 / self.MM)),
+# trimBox=((210 / self.MM), (297 / self.MM)                                  ),
+#bleedBox=(  (5 / self.MM),   (5 / self.MM), (205 / self.MM), (292 / self.MM))
+                              )
 
-        # TODO: Implement generating the PDF report.
+        # --- Page body (data) ------------------------------------------------
+        ret = self._page_body_draw(report, hdr_set, row_set)
 
-        # Saving the report.
-        report.save()
+        if (ret == aux._EXIT_FAILURE):
+            print(__name__ + aux._COLON_SPACE_SEP + aux._ERROR_PREFIX
+                           + aux._COLON_SPACE_SEP + aux._ERROR_NO_REPORT_GEN)
+
+            return ret
+
+        report.showPage()
+
+        # Trying to save the report.
+        try:
+            report.save()
+        except Exception as e:
+            ret = aux._EXIT_FAILURE
+
+            print(__name__ + aux._COLON_SPACE_SEP + aux._ERROR_PREFIX
+                           + aux._COLON_SPACE_SEP + str(e))
+
+            return ret
 
         print(self._PDF_REPORT_SAVED_MSG + aux._COLON_SPACE_SEP
                                          + pdf_report_path)
         # ---------------------------------------------------------------------
         # --- Generating the PDF report - End ---------------------------------
+        # ---------------------------------------------------------------------
+
+        return ret
+
+    # Draws the PDF report page body (data).
+    def _page_body_draw(self, report, hdr_set, row_set):
+        # Instantiating the controller helper class.
+        aux = ControllerHelper()
+
+        ret = aux._EXIT_SUCCESS
+
+        table_headers = {}
+
+        # --- Border ----------------------------------------------------------
+
+        report.setStrokeColorRGB(( 34 / self.FF),      # <== _RAINY_NIGHT_COLOR
+                                 ( 68 / self.FF),      #              (#224488)
+                                 (136 / self.FF))
+
+        report.setLineWidth(2)
+
+        report.rect(( 16 / self.MM),
+                    ( 19 / self.MM),
+                    (178 / self.MM),
+                    (259 / self.MM))
+
+        # --- Headers bar -----------------------------------------------------
+
+        report.setFillColorRGB(( 34 / self.FF),        # <== _RAINY_NIGHT_COLOR
+                               ( 68 / self.FF),        #              (#224488)
+                               (136 / self.FF))
+
+        report.rect(( 17 / self.MM),
+                    (267 / self.MM),
+                    (176 / self.MM),
+                    ( 10 / self.MM), stroke=0, fill=1)
+
+        # --- Headers txt -----------------------------------------------------
+
+        report.setFont(self._HELVETICA_BOLD_FONT, (16 / self.PT))
+
+        report.setFillColorRGB((255 / self.FF),              # <== _WHITE_COLOR
+                               (255 / self.FF),              #        (#ffffff)
+                               (255 / self.FF))
+
+        table_headers[hdr_set[0]] = self._ARCH_HEADER
+        table_headers[hdr_set[1]] = self._REPO_HEADER
+        table_headers[hdr_set[2]] = self._NAME_HEADER
+        table_headers[hdr_set[3]] = self._VERSION_HEADER
+        table_headers[hdr_set[4]] = self._LAST_UPDATED_HEADER
+        table_headers[hdr_set[5]] = self._FLAG_DATE_HEADER
+
+        x = 0
+
+        i = 0
+
+        # Printing table headers.
+        while (i < len(hdr_set)):
+            if   (i == 1):
+                x =  17
+            elif (i == 2):
+                x =  40
+            elif (i == 3):
+                x =  78
+            elif (i == 4):
+                x = 107
+            elif (i == 5):
+                x = 146
+            else: # <== Includes (i == 0).
+                x =   0
+
+            report.drawString(((20 + x) / self.MM),
+                              (270      / self.MM), table_headers[hdr_set[i]])
+
+            i += 1
+
+        # --- Table rows ------------------------------------------------------
+
+        # TODO: Implement printing table rows.
+
+        # --- Footer bar ------------------------------------------------------
+
+        report.setFillColorRGB((170 / self.FF),  # <== _VERY_LIGHT_COBALT_COLOR
+                               (170 / self.FF),  #                    (#aaaaaa)
+                               (170 / self.FF))
+
+        report.rect(( 17 / self.MM),
+                    ( 20 / self.MM),
+                    (176 / self.MM),
+                    (  6 / self.MM), stroke=0, fill=1)
+
+        # --- Footer txt ------------------------------------------------------
+
+        report.setFont(self._TIMES_BOLD_FONT, (12 / self.PT))
+
+        report.setFillColorRGB((238 / self.FF),      # <== _YET_NOT_WHITE_COLOR
+                               (238 / self.FF),      #                (#eeeeee)
+                               (238 / self.FF))
+
+        report.drawString((20 / self.MM),
+                          (22 / self.MM), str(len(row_set))
+                          + self._ROWS_IN_SET_FOOTER + self._ROWS_SHOWN_FOOTER)
+
         # ---------------------------------------------------------------------
 
         return ret
