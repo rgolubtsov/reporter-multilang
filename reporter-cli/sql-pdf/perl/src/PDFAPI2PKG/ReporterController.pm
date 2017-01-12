@@ -167,7 +167,7 @@ sub pdf_report_generate {
     for (my $i = 0; $i < MAX_PAGES; $i++) {
         $ret = _page_body_draw($report, $hdr_set, $row_set);
 
-        if (!$ret) {
+        if ($ret == _EXIT_FAILURE) {
             say(__PACKAGE__ . _COLON_SPACE_SEP . _ERROR_PREFIX
                             . _COLON_SPACE_SEP . _ERROR_NO_REPORT_GEN);
 
@@ -178,8 +178,6 @@ sub pdf_report_generate {
     # Trying to save the report.
     try {
         $report->save();
-
-        say(_PDF_REPORT_SAVED_MSG . _COLON_SPACE_SEP . $pdf_report_path);
     } catch {
         $ret = _EXIT_FAILURE;
 
@@ -188,6 +186,8 @@ sub pdf_report_generate {
 
         return $ret;
     };
+
+    say(_PDF_REPORT_SAVED_MSG . _COLON_SPACE_SEP . $pdf_report_path);
     # -------------------------------------------------------------------------
     # --- Generating the PDF report - End -------------------------------------
     # -------------------------------------------------------------------------
