@@ -74,6 +74,7 @@ class ReporterController:
 
     # Various string literals.
     _HELVETICA_BOLD_FONT  = "Helvetica-Bold"
+    _HELVETICA_FONT       = "Helvetica"
     _TIMES_BOLD_FONT      = "Times-Bold"
     # -------------------------------------------------------------------------
     _ARCH_HEADER          = "Arch"
@@ -298,7 +299,58 @@ class ReporterController:
 
         # --- Table rows ------------------------------------------------------
 
-        # TODO: Implement printing table rows.
+        report.setFont(self._HELVETICA_FONT, (11 / self.PT))
+
+        y = 0
+
+        i = 0
+
+        # Printing table rows.
+#       while (i < len(row_set)):
+        while (i <           40):
+            if (i & 1):
+                report.setFillColorRGB((221 / self.FF),  # <== _RAINY_DAY_COLOR
+                                       (221 / self.FF),  #            (#dddddd)
+                                       (221 / self.FF))
+
+                report.rect((  17      / self.MM),
+                            ((260 - y) / self.MM),
+                            ( 176      / self.MM),
+                            (   6      / self.MM), stroke=0, fill=1)
+
+            report.setFillColorRGB((0 / self.FF),            # <== _BLACK_COLOR
+                                   (0 / self.FF),            #        (#000000)
+                                   (0 / self.FF))
+
+            j = 0
+
+            while (j < len(hdr_set)):
+                if   (j == 1):
+                    x =  17
+                elif (j == 2):
+                    x =  40
+                elif (j == 3):
+                    x =  78
+                elif (j == 4):
+                    x = 123
+                elif (j == 5):
+                    x = 148
+                else: # <== Includes (j == 0).
+                    x =   0
+
+                if (row_set[i][j] is not None):
+                    row_set_cell = str(row_set[i][j])
+                else:
+                    row_set_cell = aux._EMPTY_STRING
+
+                report.drawString(((20 + x) / self.MM),
+                                 ((262 - y) / self.MM), row_set_cell)
+
+                j += 1
+
+            i += 1
+
+            y += 6
 
         # --- Footer bar ------------------------------------------------------
 
