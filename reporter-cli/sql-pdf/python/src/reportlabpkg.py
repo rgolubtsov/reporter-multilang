@@ -104,7 +104,7 @@ class ReportLabPkg:
             elif (db_switch == self._SL_CONNECT):
                 cnx =         sqlite3.connect(database=self._get_sqlite_db_path
                                                                (__file__, aux))
-        except mysql.connector.Error as e:
+        except Exception as e:
             ret = aux._EXIT_FAILURE
 
             print(__name__ + aux._COLON_SPACE_SEP + aux._ERROR_PREFIX
