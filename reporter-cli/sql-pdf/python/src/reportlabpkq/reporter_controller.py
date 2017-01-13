@@ -195,16 +195,21 @@ class ReporterController:
 #bleedBox=(  (5 / self.MM),   (5 / self.MM), (205 / self.MM), (292 / self.MM))
                               )
 
-        # --- Page body (data) ------------------------------------------------
-        ret = self._page_body_draw(report, hdr_set, row_set)
+        # --- Page body (data) x MAX_PAGES ------------------------------------
+        i = 0
 
-        if (ret == aux._EXIT_FAILURE):
-            print(__name__ + aux._COLON_SPACE_SEP + aux._ERROR_PREFIX
-                           + aux._COLON_SPACE_SEP + aux._ERROR_NO_REPORT_GEN)
+        while (i < self.MAX_PAGES):
+            ret = self._page_body_draw(report, hdr_set, row_set)
 
-            return ret
+            if (ret == aux._EXIT_FAILURE):
+                print(__name__ + aux._COLON_SPACE_SEP+aux._ERROR_PREFIX
+                               + aux._COLON_SPACE_SEP+aux._ERROR_NO_REPORT_GEN)
 
-        report.showPage()
+                return ret
+
+            report.showPage()
+
+            i += 1
 
         # Trying to save the report.
         try:
