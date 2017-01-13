@@ -104,7 +104,7 @@ class ReporterModel:
 
             i = 0
 
-            # Removing 'None' from row_ary cells (if any).
+            # Erasing 'None' from row_ary cells (if any).
             while (i < len(row_ary)):
                 if (row_ary[i] is None):
                     row_ary[i] = aux._EMPTY_STRING
@@ -224,7 +224,7 @@ class ReporterModel:
 
             i = 0
 
-            # Removing 'None' from row_ary cells (if any).
+            # Erasing 'None' from row_ary cells (if any).
             while (i < len(row_ary)):
                 if (row_ary[i] is None):
                     row_ary[i] = aux._EMPTY_STRING
