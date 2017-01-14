@@ -73,6 +73,9 @@ use constant PDF_REPORT_FILENAME => "packages.pdf";
 #
 use constant MAX_PAGES => 20;
 
+## Constant: The maximum number of data rows displayed in a page.
+use constant MAX_ROWS_IN_A_PAGE => 40;
+
 ## Constant: The PDF basic measurement unit -- PostScript point.
 use constant PT =>   1;
 
@@ -104,7 +107,8 @@ use constant _LAST_UPDATED_HEADER     => "Last Updated";
 use constant _FLAG_DATE_HEADER        => "Flag Date";
 # -----------------------------------------------------------------------------
 use constant _ROWS_IN_SET_FOOTER      => " rows in set";
-use constant _ROWS_SHOWN_FOOTER       => "  (40 rows shown)";
+use constant _ROWS_SHOWN_FOOTER       => "  (" . MAX_ROWS_IN_A_PAGE
+                                               . " rows shown)";
 use constant _PDF_REPORT_SAVED_MSG    => "PDF report saved";
 
 ##
@@ -292,8 +296,8 @@ sub _page_body_draw {
     my $y = 0;
 
     # Printing table rows.
-#   for (my $i = 0; $i < @$row_set; $i++) {
-    for (my $i = 0; $i <        40; $i++) {
+#   for (my $i = 0; $i <          @$row_set; $i++) {
+    for (my $i = 0; $i < MAX_ROWS_IN_A_PAGE; $i++) {
         if ($i & 1) {
             $row_bar->fillcolor(_RAINY_DAY_COLOR);
             $row_bar->rect((17 / MM), ((260 - $y) / MM), (176 / MM), (6 / MM));

@@ -60,6 +60,9 @@ class ReporterController:
     #
     MAX_PAGES = 20
 
+    ## Constant: The maximum number of data rows displayed in a page.
+    MAX_ROWS_IN_A_PAGE = 40
+
     ## Constant: The PDF basic measurement unit -- PostScript point.
     PT =   1
 
@@ -85,7 +88,7 @@ class ReporterController:
     _FLAG_DATE_HEADER     = "Flag Date"
     # -------------------------------------------------------------------------
     _ROWS_IN_SET_FOOTER   = " rows in set"
-    _ROWS_SHOWN_FOOTER    = "  (40 rows shown)"
+    _ROWS_SHOWN_FOOTER    = "  (" + str(MAX_ROWS_IN_A_PAGE) + " rows shown)"
     _PDF_REPORT_SAVED_MSG = "PDF report saved"
 
     def pdf_report_generate(self, cnx, mysql=False, postgres=False):
@@ -311,8 +314,8 @@ class ReporterController:
         i = 0
 
         # Printing table rows.
-#       while (i < len(row_set)):
-        while (i <           40):
+#       while (i <            len(row_set)):
+        while (i < self.MAX_ROWS_IN_A_PAGE):
             if (i & 1):
                 report.setFillColorRGB((221 / self.FF),  # <== _RAINY_DAY_COLOR
                                        (221 / self.FF),  #            (#dddddd)
