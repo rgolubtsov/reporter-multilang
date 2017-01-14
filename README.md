@@ -6,7 +6,8 @@
 **TODO:** Gentlemen, start your axes! &ndash; I.e. wait a little while there would not be **at least three** complete implementations. For the moment there are the following ones:
 * SQL-PDF :small_blue_diamond: Perl 5 (5.10+) implementation (complete)
 * SQL-PDF :small_blue_diamond: Python 3 implementation (complete)
-* SQL-PDF :small_blue_diamond: Vala, Go, and Java implementations (planned)
+* SQL-PDF :small_blue_diamond: Vala implementation (in progress)
+* SQL-PDF :small_blue_diamond: Go and Java implementations (planned)
 
 ---
 
