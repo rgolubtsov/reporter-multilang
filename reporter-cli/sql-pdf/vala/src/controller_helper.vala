@@ -30,10 +30,12 @@ class ControllerHelper {
     public const string _NEW_LINE        = "\n";
 
     // Common error messages.
-    const string _ERROR_PREFIX        = "Error";
-    const string _ERROR_NO_DB_CONNECT = "Could not connect to the database.";
-    const string _ERROR_NO_DATA       = "No data found.";
-    const string _ERROR_NO_REPORT_GEN = "Could not generate the report.";
+    public const string _ERROR_PREFIX        = "Error";
+    public const string _ERROR_NO_DB_CONNECT =
+                         "Could not connect to the database. ";
+    public const string _ERROR_NO_DATA       = "No data found.";
+    public const string _ERROR_NO_REPORT_GEN =
+                         "Could not generate the report.";
 
     /** Default constructor. */
     public ControllerHelper() {}

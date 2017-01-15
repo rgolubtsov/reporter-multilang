@@ -18,6 +18,8 @@
  * (See the LICENSE file at the top of the source tree.)
  */
 
+using Mysql;
+
 namespace CliSqlPdf {
 
 /** The main class of the application. */
@@ -68,21 +70,64 @@ class ReporterPrimary {
     public int startup(string[] args) {
         int ret = Posix.EXIT_SUCCESS;
 
+        string __name__ = typeof(ReporterPrimary).name();
+
         var aux = new ControllerHelper();
 
         var db_switch = args[0];
 
+        Database mycnx;
+
+        var __cnx = aux._EMPTY_STRING + aux._SLASH;
+
+        // Trying to connect to the database.
+        try {
+                   if (db_switch == _MY_CONNECT) {
+                mycnx = new Database();
+
+                var cnx = mycnx.real_connect(HOSTNAME,
+                                             USERNAME,
+                                             PASSWORD,
+                                             DATABASE);
+
+                if (cnx) {
+        __cnx = "Host info" + aux._COLON_SPACE_SEP + mycnx.get_host_info()
+         + " | Server info" + aux._COLON_SPACE_SEP + mycnx.get_server_info()
+      + " | Server version" + aux._COLON_SPACE_SEP + mycnx.get_server_version()
+                                                          .to_string();
+                } else {
+                    ret = Posix.EXIT_FAILURE;
+
+                    stdout.printf("%s%s%s%s%s%s%s", __name__,
+                              aux._COLON_SPACE_SEP, aux._ERROR_PREFIX,
+                              aux._COLON_SPACE_SEP, aux._ERROR_NO_DB_CONNECT,
+                                     mycnx.error(), aux._NEW_LINE);
+
+                    return ret;
+                }
+            } else if (db_switch == _PG_CONNECT) {
+                // TODO: Implement connecting to PostgreSQL database.
+            } else if (db_switch == _SL_CONNECT) {
+                // TODO: Implement connecting to SQLite database.
+            }
+        } catch (Error e) {
+            ret = Posix.EXIT_FAILURE;
+
+            stdout.printf("%s%s%s%s%s%s", __name__, aux._COLON_SPACE_SEP,
+                                 aux._ERROR_PREFIX, aux._COLON_SPACE_SEP,
+                                         e.message, aux._NEW_LINE);
+
+            return ret;
+        }
+
         // --------------------------------------------------------------------
         // --- Debug output - Begin -------------------------------------------
         // --------------------------------------------------------------------
-        stdout.printf("%s%s%s%s",
-                      typeof(ReporterPrimary).name(), aux._COLON_SPACE_SEP,
-                                           db_switch, aux._NEW_LINE);
+        stdout.printf("%s%s%s%s", __name__, aux._COLON_SPACE_SEP, __cnx,
+                                            aux._NEW_LINE);
         // --------------------------------------------------------------------
         // --- Debug output - End ---------------------------------------------
         // --------------------------------------------------------------------
-
-        // TODO: Implement connecting to the database.
 
         return ret;
     }
