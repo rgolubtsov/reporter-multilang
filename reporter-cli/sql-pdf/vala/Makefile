@@ -24,13 +24,15 @@ BIN_DIR      = bin
 LIB_DIR      = lib
 SRC_DIR      = src
 DAT_DIR      = $(LIB_DIR)/data
-SQLITE_DBASE = ../../../data/reporter_multilang
+SQLITE_DBASE = reporter_multilang.xz
 ALL_TARGET   = all
 
 # Specify flags and other vars here.
 MKDIR      = mkdir
 CP         = cp
 CPFLAGS    = -vR
+UNXZ       = unxz
+UNXZFLAGS  = -v
 
 # Using here this user-defined var because "The options ‘-C’, ‘-f’, ‘-o’,
 # and ‘-W’ are not put into MAKEFLAGS; these options are not passed down."
@@ -50,7 +52,8 @@ $(BIN_DIR) $(LIB_DIR):
 		if [ -d "$(LIB_DIR)" ]; then \
 			$(MKDIR) $(DAT_DIR); \
 		fi; \
-		$(CP) $(CPFLAGS) $(SQLITE_DBASE) $(DAT_DIR); \
+		$(CP) $(CPFLAGS) ../../../data/$(SQLITE_DBASE) $(DAT_DIR); \
+		$(UNXZ) $(UNXZFLAGS) $(DAT_DIR)/$(SQLITE_DBASE); \
 		$(MAKE) $(MAKE_FLAGS)$(SRC_DIR) $(ALL_TARGET); \
 	fi
 

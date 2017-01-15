@@ -32,7 +32,7 @@ PRJ_SUFFIX   = -pdf
 SCRIPT1      = $(PRJ_PREFIX)mysql$(PRJ_SUFFIX)
 SCRIPT2      = $(PRJ_PREFIX)postgres$(PRJ_SUFFIX)
 SCRIPT3      = $(PRJ_PREFIX)sqlite$(PRJ_SUFFIX)
-SQLITE_DBASE = ../../../data/reporter_multilang
+SQLITE_DBASE = reporter_multilang.xz
 
 # Specify flags and other vars here.
 PYTHON      = python3
@@ -54,6 +54,8 @@ CHMODFLAGS   = -v
 CHMODMODE    = 755
 CP           = cp
 CPFLAGS      = -vR
+UNXZ         = unxz
+UNXZFLAGS    = -v
 RMFLAGS      = -vR
 
 # Startup scripts for MySQL, PostgreSQL, and SQLite implementations
@@ -232,7 +234,8 @@ $(BIN_DIR) $(LIB_DIR):
 			$(ECHO) "===> Copying base package's \"$(PYCACHE_DIR)\" directory into \"$(LIB_DIR)\" directory:"; \
 			$(CP) $(CPFLAGS) $(SRC_DIR)/$(PYCACHE_DIR) $(LIB_DIR); \
 		fi; \
-		$(CP) $(CPFLAGS) $(SQLITE_DBASE) $(DAT_DIR); \
+		$(CP) $(CPFLAGS) ../../../data/$(SQLITE_DBASE) $(DAT_DIR); \
+		$(UNXZ) $(UNXZFLAGS) $(DAT_DIR)/$(SQLITE_DBASE); \
 	fi
 
 .PHONY: all clean
