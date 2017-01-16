@@ -125,21 +125,21 @@ class ReporterPrimary {
  #elif (POSTGRES)
             if (db_switch == _PG_CONNECT) {
                 // Connecting to PostgreSQL database.
-                dbcnx = set_db_login(HOSTNAME, aux._EMPTY_STRING, // port
-                                               aux._EMPTY_STRING, // options
-                                               aux._EMPTY_STRING, // gtty
-                                     DATABASE,
-                                     USERNAME,
-                                     PASSWORD);
+//              dbcnx = set_db_login(HOSTNAME, aux._EMPTY_STRING, // port
+//                                             aux._EMPTY_STRING, // options
+//                                             aux._EMPTY_STRING, // gtty
+//                                   DATABASE,
+//                                   USERNAME,
+//                                   PASSWORD);
 
-                // Connecting to PostgreSQL database (preferred method).
                 var pg_dsn = PG_DSN_PREFIX + aux._COLON + aux._SLASH
                                            + aux._SLASH + USERNAME
                                            + aux._COLON + PASSWORD
                                            + aux._AT    + HOSTNAME
                                            + aux._SLASH + DATABASE;
 
-//                dbcnx = connect_db(pg_dsn);
+                // Connecting to PostgreSQL database (preferred method).
+                dbcnx = connect_db(pg_dsn);
 
                 if (dbcnx != null) {
                     if (dbcnx.get_status() == ConnectionStatus.OK) {
