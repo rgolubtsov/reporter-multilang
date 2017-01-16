@@ -18,7 +18,13 @@
  * (See the LICENSE file at the top of the source tree.)
  */
 
-using Mysql;
+   #if (MYSQL)
+    using Mysql;
+ #elif (POSTGRES)
+    using Postgres;
+ #elif (SQLITE)
+    using Sqlite;
+#endif
 
 namespace CliSqlPdf {
 
@@ -28,12 +34,6 @@ class ReporterPrimary {
     public const string _MY_CONNECT = "mysql";
     public const string _PG_CONNECT = "postgres";
     public const string _SL_CONNECT = "sqlite";
-
-    /**
-     * Constant: The database name.
-     *     TODO: Move to cli args.
-     */
-    const string DATABASE = "reporter_multilang";
 
     /**
      * Constant: The database server name.
@@ -53,6 +53,19 @@ class ReporterPrimary {
      *     TODO: Move to cli args.
      */
     const string PASSWORD = "retroper12345678";
+
+    /**
+     * Constant: The database name.
+     *     TODO: Move to cli args.
+     */
+    const string DATABASE = "reporter_multilang";
+
+    /**
+     * Constant: The data source name (DSN) prefix for PostgreSQL database --
+     *           the logical database identifier prefix.
+     *     TODO: Move to the startup() method.
+     */
+    const string PG_DSN_PREFIX = _PG_CONNECT;
 
     /**
      * Constant: The SQLite database location.
@@ -76,46 +89,91 @@ class ReporterPrimary {
 
         var db_switch = args[0];
 
-        Database mycnx;
+        Database dbcnx;
 
         var __cnx = aux._EMPTY_STRING + aux._SLASH;
 
         // Trying to connect to the database.
         try {
-                   if (db_switch == _MY_CONNECT) {
-                mycnx = new Database();
+   #if (MYSQL)
+            if (db_switch == _MY_CONNECT) {
+                dbcnx = new Database();
 
-                var cnx = mycnx.real_connect(HOSTNAME,
+                // Connecting to MySQL database.
+                var cnx = dbcnx.real_connect(HOSTNAME,
                                              USERNAME,
                                              PASSWORD,
                                              DATABASE);
 
                 if (cnx) {
-        __cnx = "Host info" + aux._COLON_SPACE_SEP + mycnx.get_host_info()
-         + " | Server info" + aux._COLON_SPACE_SEP + mycnx.get_server_info()
-      + " | Server version" + aux._COLON_SPACE_SEP + mycnx.get_server_version()
-                                                          .to_string();
+                    __cnx
+= aux._NEW_LINE + "     Host info" + aux._COLON_SPACE_SEP + dbcnx.get_host_info()
++ aux._NEW_LINE + "   Server info" + aux._COLON_SPACE_SEP + dbcnx.get_server_info()
++ aux._NEW_LINE + "Server version" + aux._COLON_SPACE_SEP + dbcnx.get_server_version()
+                                                                 .to_string();
                 } else {
                     ret = Posix.EXIT_FAILURE;
 
-                    stdout.printf("%s%s%s%s%s%s%s", __name__,
-                              aux._COLON_SPACE_SEP, aux._ERROR_PREFIX,
-                              aux._COLON_SPACE_SEP, aux._ERROR_NO_DB_CONNECT,
-                                     mycnx.error(), aux._NEW_LINE);
+                    stdout.printf(aux._S_FMT, __name__
+                              + aux._COLON_SPACE_SEP + aux._ERROR_PREFIX
+                              + aux._COLON_SPACE_SEP + aux._ERROR_NO_DB_CONNECT
+                              + dbcnx.error()        + aux._NEW_LINE);
 
                     return ret;
                 }
-            } else if (db_switch == _PG_CONNECT) {
-                // TODO: Implement connecting to PostgreSQL database.
-            } else if (db_switch == _SL_CONNECT) {
+            }
+ #elif (POSTGRES)
+            if (db_switch == _PG_CONNECT) {
+                // Connecting to PostgreSQL database.
+                dbcnx = set_db_login(HOSTNAME, aux._EMPTY_STRING, // port
+                                               aux._EMPTY_STRING, // options
+                                               aux._EMPTY_STRING, // gtty
+                                     DATABASE,
+                                     USERNAME,
+                                     PASSWORD);
+
+                // Connecting to PostgreSQL database (preferred method).
+                var pg_dsn = PG_DSN_PREFIX + aux._COLON + aux._SLASH
+                                           + aux._SLASH + USERNAME
+                                           + aux._COLON + PASSWORD
+                                           + aux._AT    + HOSTNAME
+                                           + aux._SLASH + DATABASE;
+
+//                dbcnx = connect_db(pg_dsn);
+
+                if (dbcnx != null) {
+                    if (dbcnx.get_status() == ConnectionStatus.OK) {
+
+                        __cnx
+= aux._NEW_LINE + "     Host info" + aux._COLON_SPACE_SEP + dbcnx.get_host()
+                                   + aux._COLON           + dbcnx.get_port()
++ aux._NEW_LINE + "   Server info" + aux._COLON_SPACE_SEP + dbcnx.get_protocol_Version()
+                                                                 .to_string()
++ aux._NEW_LINE + "Server version" + aux._COLON_SPACE_SEP + dbcnx.get_server_version()
+                                                                 .to_string();
+                    } else {
+                        ret = Posix.EXIT_FAILURE;
+
+                        stdout.printf(aux._S_FMT, __name__
+                              + aux._COLON_SPACE_SEP + aux._ERROR_PREFIX
+                              + aux._COLON_SPACE_SEP + aux._ERROR_NO_DB_CONNECT
+                              + dbcnx.get_error_message() + aux._NEW_LINE);
+
+                        return ret;
+                    }
+                }
+            }
+ #elif (SQLITE)
+            if (db_switch == _SL_CONNECT) {
                 // TODO: Implement connecting to SQLite database.
             }
+#endif
         } catch (Error e) {
             ret = Posix.EXIT_FAILURE;
 
-            stdout.printf("%s%s%s%s%s%s", __name__, aux._COLON_SPACE_SEP,
-                                 aux._ERROR_PREFIX, aux._COLON_SPACE_SEP,
-                                         e.message, aux._NEW_LINE);
+            stdout.printf(aux._S_FMT, __name__
+                        + aux._COLON_SPACE_SEP + aux._ERROR_PREFIX
+                        + aux._COLON_SPACE_SEP + e.message + aux._NEW_LINE);
 
             return ret;
         }
@@ -123,8 +181,8 @@ class ReporterPrimary {
         // --------------------------------------------------------------------
         // --- Debug output - Begin -------------------------------------------
         // --------------------------------------------------------------------
-        stdout.printf("%s%s%s%s", __name__, aux._COLON_SPACE_SEP, __cnx,
-                                            aux._NEW_LINE);
+        stdout.printf(aux._S_FMT, __name__
+                    + aux._COLON_SPACE_SEP + __cnx + aux._NEW_LINE);
         // --------------------------------------------------------------------
         // --- Debug output - End ---------------------------------------------
         // --------------------------------------------------------------------
@@ -145,13 +203,13 @@ public static int main(string[] args) {
     // Instantiating the main class.
     var reporter = new CliSqlPdf.ReporterPrimary();
 
-       #if (MYSQL)
-        argz[0] = reporter._MY_CONNECT;
-     #elif (POSTGRES)
-        argz[0] = reporter._PG_CONNECT;
-     #elif (SQLITE)
-        argz[0] = reporter._SL_CONNECT;
-    #endif
+   #if (MYSQL)
+    argz[0] = reporter._MY_CONNECT;
+ #elif (POSTGRES)
+    argz[0] = reporter._PG_CONNECT;
+ #elif (SQLITE)
+    argz[0] = reporter._SL_CONNECT;
+#endif
 
     // Starting up the app.
     int ret = reporter.startup(argz);

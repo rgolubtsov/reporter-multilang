@@ -20,40 +20,51 @@
 # (See the LICENSE file at the top of the source tree.)
 #
 
-PRJ_PREFIX = reporter-
-PRJ_SUFFIX = -pdf
-EXEC1      = $(PRJ_PREFIX)mysql$(PRJ_SUFFIX)
-EXEC2      = $(PRJ_PREFIX)postgres$(PRJ_SUFFIX)
-EXEC3      = $(PRJ_PREFIX)sqlite$(PRJ_SUFFIX)
-SRCES      = $(PRIMA) \
-             $(CNTRL) \
-             $(MODEL) \
-             $(AUXER)
-PRIMA      = reporter_primary.vala
-CNTRL      = reporter_controller.vala
-MODEL      = reporter_model.vala
-AUXER      = controller_helper.vala
-BIN_DIR    = ../bin
+PRJ_PREFIX      = reporter-
+PRJ_SUFFIX      = -pdf
+EXEC1           = $(PRJ_PREFIX)mysql$(PRJ_SUFFIX)
+EXEC2           = $(PRJ_PREFIX)postgres$(PRJ_SUFFIX)
+EXEC3           = $(PRJ_PREFIX)sqlite$(PRJ_SUFFIX)
+SRCES           = $(PRIMA) \
+                  $(CNTRL) \
+                  $(MODEL) \
+                  $(AUXER)
+PRIMA           = reporter_primary.vala
+CNTRL           = reporter_controller.vala
+MODEL           = reporter_model.vala
+AUXER           = controller_helper.vala
+HDRS_DIR_PREFIX = /usr/include/
+PG_CLIENT_H_DIR = postgresql/
+PG_CLIENT_HEADR = libpq-fe.h
+BIN_DIR         = ../bin
 
 # Specify flags and other vars here.
 VC      = valac
-VCFLAGS = --target-glib=2.40 --pkg=posix --pkg=mysql -X -lmysqlclient
+VCFLAGS = --target-glib=2.40 --pkg=posix
 
+SUDO    = sudo
+LN      = ln
+LNFLAGS = -sfv
 MV      = mv
 MVFLAGS = -v
 
 # Making the 1st target (mysql-pdf).
-$(EXEC1): VCFLAGS += -D MYSQL -o
+$(EXEC1): VCFLAGS += --pkg=mysql -X -lmysqlclient -D MYSQL -o
 $(EXEC1): $(SRCES)
 	$(VC) $(VCFLAGS) $(EXEC1) $(SRCES)
 
 # Making the 2nd target (postgres-pdf).
-$(EXEC2): VCFLAGS += -D POSTGRES -o
+$(EXEC2): VCFLAGS += --pkg=libpq -D POSTGRES -o
+# $(EXEC2): VCFLAGS += --pkg=libpq -X `pkg-config --libs libpq` -D POSTGRES -o
 $(EXEC2): $(SRCES)
+	if [ ! -e "$(HDRS_DIR_PREFIX)$(PG_CLIENT_H_DIR)$(PG_CLIENT_HEADR)" ]; then \
+		$(SUDO) $(LN) $(LNFLAGS) $(HDRS_DIR_PREFIX)$(PG_CLIENT_HEADR) \
+			$(HDRS_DIR_PREFIX)$(PG_CLIENT_H_DIR)$(PG_CLIENT_HEADR); \
+	fi
 	$(VC) $(VCFLAGS) $(EXEC2) $(SRCES)
 
 # Making the 3rd target (sqlite-pdf).
-$(EXEC3): VCFLAGS += -D SQLITE -o
+$(EXEC3): VCFLAGS += --pkg=sqlite3 -D SQLITE -o
 $(EXEC3): $(SRCES)
 	$(VC) $(VCFLAGS) $(EXEC3) $(SRCES)
 

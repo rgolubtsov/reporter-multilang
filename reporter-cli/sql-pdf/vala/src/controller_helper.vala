@@ -23,11 +23,14 @@ namespace CliSqlPdf {
 /** The helper for the controller class and related ones. */
 class ControllerHelper {
     // Helper constants.
-    public const string _COLON_SPACE_SEP = ": ";
-    public const string _CURRENT_DIR     = "./";
-    public const string _SLASH           =  "/";
     public const string _EMPTY_STRING    =   "";
     public const string _NEW_LINE        = "\n";
+    public const string _S_FMT           = "%s";
+    public const string _COLON_SPACE_SEP = ": ";
+    public const string _COLON           =  ":";
+    public const string _SLASH           =  "/";
+    public const string _AT              =  "@";
+    public const string _CURRENT_DIR     = "./";
 
     // Common error messages.
     public const string _ERROR_PREFIX        = "Error";
