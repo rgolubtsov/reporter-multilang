@@ -65,6 +65,7 @@ $(EXEC2): $(SRCES)
 
 # Making the 3rd target (sqlite-pdf).
 $(EXEC3): VCFLAGS += --pkg=sqlite3 -D SQLITE -o
+# $(EXEC3): VCFLAGS += --pkg=sqlite3 -X `pkg-config --libs sqlite3` -D SQLITE -o
 $(EXEC3): $(SRCES)
 	$(VC) $(VCFLAGS) $(EXEC3) $(SRCES)
 

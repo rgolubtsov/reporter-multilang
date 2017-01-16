@@ -71,7 +71,7 @@ class ReporterPrimary {
      * Constant: The SQLite database location.
      *     TODO: Move to cli args.
      */
-    const string SQLITE_DB_DIR = "data";
+    const string SQLITE_DB_DIR = "lib/data";
 
     /**
      * Starts up the app.
@@ -88,10 +88,11 @@ class ReporterPrimary {
         var aux = new ControllerHelper();
 
         var db_switch = args[0];
+        var __file__  = args[1];
 
         Database dbcnx;
 
-        var __cnx = aux._EMPTY_STRING + aux._SLASH;
+        var __cnx = aux._EMPTY_STRING;
 
         // Trying to connect to the database.
         try {
@@ -165,7 +166,27 @@ class ReporterPrimary {
             }
  #elif (SQLITE)
             if (db_switch == _SL_CONNECT) {
-                // TODO: Implement connecting to SQLite database.
+                var sqlite_db_path = _get_sqlite_db_path(__file__, aux);
+
+                // Connecting to SQLite database.
+                var cnx = Database.open(sqlite_db_path, out(dbcnx));
+
+                if (cnx == OK) {
+                    __cnx
+= aux._NEW_LINE + " Database path" + aux._COLON_SPACE_SEP + sqlite_db_path
++ aux._NEW_LINE + "Engine ver str" + aux._COLON_SPACE_SEP + libversion()
++ aux._NEW_LINE + "Engine version" + aux._COLON_SPACE_SEP + libversion_number()
+                                                           .to_string();
+                } else {
+                    ret = Posix.EXIT_FAILURE;
+
+                    stdout.printf(aux._S_FMT, __name__
+                              + aux._COLON_SPACE_SEP + aux._ERROR_PREFIX
+                              + aux._COLON_SPACE_SEP + aux._ERROR_NO_DB_CONNECT
+                              + dbcnx.errmsg()       + aux._NEW_LINE);
+
+                    return ret;
+                }
             }
 #endif
         } catch (Error e) {
@@ -190,6 +211,30 @@ class ReporterPrimary {
         return ret;
     }
 
+    /*
+     * Helper method.
+     * Returns the SQLite database path, relative to the executable's location.
+     */
+    string _get_sqlite_db_path(string exec, ControllerHelper aux) {
+        var exec_path = exec.split(aux._SLASH);
+
+//      for (uint i = 0; i < exec_path.length; i++) {
+//          stdout.printf(aux._S_FMT, exec_path[i] + aux._NEW_LINE);
+//      }
+
+        exec_path.resize(exec_path.length - 1);
+        exec_path       [exec_path.length - 1] = SQLITE_DB_DIR;
+
+//      for (uint i = 0; i < exec_path.length; i++) {
+//          stdout.printf(aux._S_FMT, exec_path[i] + aux._NEW_LINE);
+//      }
+
+        var sqlite_db_path = string.joinv(aux._SLASH, exec_path)
+                                        + aux._SLASH + DATABASE;
+
+        return sqlite_db_path;
+    }
+
     /** Default constructor. */
     public ReporterPrimary() {}
 }
@@ -210,6 +255,8 @@ public static int main(string[] args) {
  #elif (SQLITE)
     argz[0] = reporter._SL_CONNECT;
 #endif
+
+    argz[1] = args[0];
 
     // Starting up the app.
     int ret = reporter.startup(argz);
