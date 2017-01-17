@@ -18,12 +18,67 @@
  * (See the LICENSE file at the top of the source tree.)
  */
 
+   #if (MYSQL)
+    using Mysql;
+ #elif (POSTGRES)
+    using Postgres;
+ #elif (SQLITE)
+    using Sqlite;
+#endif
+
 namespace CliSqlPdf {
 
 /** The model class of the application. */
 class ReporterModel {
+    /**
+     * Retrieves a list of all data items stored in the database.
+     *
+     * @param dbcnx   The database handle object.
+     * @param hdr_set The result set metadata (table headers).
+     *                (Output param.)
+     *
+     * @return The result set (table rows).
+     */
+    public string[] get_all_data_items(Database dbcnx, out string[] hdr_set) {
+        string[] row_set = {};
+                 hdr_set = {};
 
-    // TODO: Implement class methods :-).
+        // TODO: Implement preparing the SQL statement.
+        // TODO: Implement retrieving the result set metadata
+        //              -- table headers.
+        // TODO: Implement retrieving and processing the result set
+        //              -- table rows.
+
+        return row_set;
+    }
+
+    /**
+     * Retrieves a list of data items for a given date period.
+     *
+     * @param from    The start date to retrieve data set.
+     * @param to      The end   date to retrieve data set.
+     * @param dbcnx   The database handle object.
+     * @param hdr_set The result set metadata (table headers).
+     *                (Output param.)
+     *
+     * @return The result set (table rows).
+     */
+    public string[] get_data_items_by_date(    string   from,
+                                               string   to,
+                                               Database dbcnx,
+                                           out string[] hdr_set) {
+
+        string[] row_set = {};
+                 hdr_set = {};
+
+        // TODO: Implement preparing the SQL statement.
+        // TODO: Implement retrieving the result set metadata
+        //              -- table headers.
+        // TODO: Implement retrieving and processing the result set
+        //              -- table rows.
+
+        return row_set;
+    }
 
     /** Default constructor. */
     public ReporterModel() {}

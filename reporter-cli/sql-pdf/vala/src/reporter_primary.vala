@@ -40,7 +40,7 @@ class ReporterPrimary {
      *     TODO: Move to cli args.
      */
     const string HOSTNAME = "10.0.2.100";
-    //const string HOSTNAME = "localhost";
+//  const string HOSTNAME = "localhost";
 
     /**
      * Constant: The username to connect to the database.
@@ -85,6 +85,7 @@ class ReporterPrimary {
 
         string __name__ = typeof(ReporterPrimary).name();
 
+        // Instantiating the controller helper class.
         var aux = new ControllerHelper();
 
         var db_switch = args[0];
@@ -93,6 +94,9 @@ class ReporterPrimary {
         Database dbcnx;
 
         var __cnx = aux._EMPTY_STRING;
+
+        // Instantiating the controller class.
+        var ctrl = new ReporterController();
 
         // Trying to connect to the database.
         try {
@@ -112,6 +116,9 @@ class ReporterPrimary {
 + aux._NEW_LINE + "   Server info" + aux._COLON_SPACE_SEP + dbcnx.get_server_info()
 + aux._NEW_LINE + "Server version" + aux._COLON_SPACE_SEP + dbcnx.get_server_version()
                                                                  .to_string();
+
+                    // Generating the PDF report.
+                    ret = ctrl.pdf_report_generate(dbcnx);
                 } else {
                     ret = Posix.EXIT_FAILURE;
 
@@ -152,6 +159,9 @@ class ReporterPrimary {
                                                                  .to_string()
 + aux._NEW_LINE + "Server version" + aux._COLON_SPACE_SEP + dbcnx.get_server_version()
                                                                  .to_string();
+
+                        // Generating the PDF report.
+                        ret = ctrl.pdf_report_generate(dbcnx);
                     } else {
                         ret = Posix.EXIT_FAILURE;
 
@@ -177,6 +187,9 @@ class ReporterPrimary {
 + aux._NEW_LINE + "Engine ver str" + aux._COLON_SPACE_SEP + libversion()
 + aux._NEW_LINE + "Engine version" + aux._COLON_SPACE_SEP + libversion_number()
                                                            .to_string();
+
+                    // Generating the PDF report.
+                    ret = ctrl.pdf_report_generate(dbcnx);
                 } else {
                     ret = Posix.EXIT_FAILURE;
 
@@ -189,6 +202,14 @@ class ReporterPrimary {
                 }
             }
 #endif
+            // ----------------------------------------------------------------
+            // --- Debug output - Begin ---------------------------------------
+            // ----------------------------------------------------------------
+            stdout.printf(aux._S_FMT, __name__
+                        + aux._COLON_SPACE_SEP + __cnx + aux._NEW_LINE);
+            // ----------------------------------------------------------------
+            // --- Debug output - End -----------------------------------------
+            // ----------------------------------------------------------------
         } catch (Error e) {
             ret = Posix.EXIT_FAILURE;
 
@@ -198,15 +219,6 @@ class ReporterPrimary {
 
             return ret;
         }
-
-        // --------------------------------------------------------------------
-        // --- Debug output - Begin -------------------------------------------
-        // --------------------------------------------------------------------
-        stdout.printf(aux._S_FMT, __name__
-                    + aux._COLON_SPACE_SEP + __cnx + aux._NEW_LINE);
-        // --------------------------------------------------------------------
-        // --- Debug output - End ---------------------------------------------
-        // --------------------------------------------------------------------
 
         return ret;
     }
