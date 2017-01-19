@@ -75,15 +75,18 @@ class ReporterModel {
             row_set = {{},{}}; hdr_set = {}; return row_set;
         }
 
-        // Retrieving the whole result set, including table headers and rows.
-        Result row_ooo = dbcnx.store_result();
+        /*
+         * Retrieving the result set object,
+         * containing both table headers and rows.
+         */
+        Result res_set = dbcnx.store_result();
 
-        if (row_ooo == null) {
+        if (res_set == null) {
             row_set = {{},{}}; hdr_set = {}; return row_set;
         }
 
-        var num_rows = row_ooo.num_rows();
-        var num_hdrs = row_ooo.num_fields();
+        var num_rows = res_set.num_rows();
+        var num_hdrs = res_set.num_fields();
 
         if (num_rows == 0) {
             row_set = {{},{}}; hdr_set = {}; return row_set;
@@ -94,12 +97,8 @@ class ReporterModel {
 
         // Retrieving and processing the result set metadata -- table headers.
         for (uint i = 0; i < num_hdrs; i++) {
-            hdr_set[i] = row_ooo.fetch_field().name;
-
-            stdout.printf(aux._S_FMT, hdr_set[i] + "\t");
+            hdr_set[i] = res_set.fetch_field().name;
         }
-
-        stdout.printf(aux._S_FMT, aux._NEW_LINE);
 
         /*
          * Note: Since the error "The name `resize' does not exist
@@ -110,7 +109,7 @@ class ReporterModel {
 
         // Retrieving and processing the result set -- table rows.
         for (uint i = 0; i < num_rows; i++) {
-            var row_ary = row_ooo.fetch_row();
+            var row_ary = res_set.fetch_row();
 
             for (uint j = 0; j < num_hdrs; j++) {
                 row_set[i,j] = row_ary[j];
@@ -118,14 +117,8 @@ class ReporterModel {
                 if (row_set[i,j] == null) {
                     row_set[i,j] = aux._EMPTY_STRING;
                 }
-
-                stdout.printf(aux._S_FMT, row_set[i,j] + "\t");
             }
-
-            stdout.printf(aux._S_FMT, aux._NEW_LINE);
         }
-
-        stdout.printf(aux._S_FMT, num_rows.to_string() + aux._NEW_LINE);
 
         return row_set;
     }

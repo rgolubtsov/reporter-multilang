@@ -100,9 +100,12 @@ class ReporterController {
 //      string[,] row_set = model.get_data_items_by_date(FROM, TO,
 //                                                   dbcnx, out(hdr_set));
 
+        var num_rows = row_set.length[0];
+        var num_hdrs = row_set.length[1];
+
         // In case of getting an empty result set, informing the user.
-        if (row_set.length[0] == 0) {
-//      if (row_set.length[0]  > 0) {
+        if (num_rows == 0) {
+//      if (num_rows  > 0) {
             ret = Posix.EXIT_FAILURE;
 
             stdout.printf(aux._S_FMT, __name__
@@ -116,7 +119,23 @@ class ReporterController {
         // --------------------------------------------------------------------
         // -- Debug output - Begin --------------------------------------------
         // --------------------------------------------------------------------
-        // TODO: Implement printing debug info.
+        // Printing table headers.
+        for (uint i = 0; i < num_hdrs; i++) {
+            stdout.printf(aux._S_FMT, hdr_set[i] + "\t");
+        }
+
+        stdout.printf(aux._S_FMT, aux._NEW_LINE);
+
+        // Printing table rows.
+        for (uint i = 0; i < num_rows; i++) {
+            for (uint j = 0; j < num_hdrs; j++) {
+                stdout.printf(aux._S_FMT, row_set[i,j] + "\t");
+            }
+
+            stdout.printf(aux._S_FMT, aux._NEW_LINE);
+        }
+
+        stdout.printf(aux._S_FMT, num_rows.to_string() + aux._NEW_LINE);
         // --------------------------------------------------------------------
         // -- Debug output - End ----------------------------------------------
         // --------------------------------------------------------------------
