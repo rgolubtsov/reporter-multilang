@@ -104,8 +104,7 @@ class ReporterController {
         var num_hdrs = row_set.length[1];
 
         // In case of getting an empty result set, informing the user.
-        if (num_rows == 0) {
-//      if (num_rows  > 0) {
+        if (num_hdrs == 0) {
             ret = Posix.EXIT_FAILURE;
 
             stdout.printf(aux._S_FMT, __name__
