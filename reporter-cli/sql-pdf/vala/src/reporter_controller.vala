@@ -94,11 +94,11 @@ class ReporterController {
         string[] hdr_set = {};
 
         // Retrieving a list of all data items stored in the database.
-        string[,] row_set = model.get_all_data_items(dbcnx, out(hdr_set));
+//      string[,] row_set = model.get_all_data_items(dbcnx, out(hdr_set));
 
         // Retrieving a list of data items for a given date period.
-//      string[,] row_set = model.get_data_items_by_date(FROM, TO,
-//                                                   dbcnx, out(hdr_set));
+        string[,] row_set = model.get_data_items_by_date(FROM, TO,
+                                                     dbcnx, out(hdr_set));
 
         var num_rows = row_set.length[0];
         var num_hdrs = row_set.length[1];

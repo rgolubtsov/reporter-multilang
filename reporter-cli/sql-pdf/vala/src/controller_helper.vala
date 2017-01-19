@@ -30,6 +30,7 @@ class ControllerHelper {
     public const string _COLON           =  ":";
     public const string _SLASH           =  "/";
     public const string _AT              =  "@";
+    public const string _QM              =  "?";
     public const string _CURRENT_DIR     = "./";
 
     // Common error messages.
