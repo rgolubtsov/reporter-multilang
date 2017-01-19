@@ -39,14 +39,14 @@ class ReporterModel {
      *
      * @return The result set (table rows).
      */
-    public string[] get_all_data_items(Database dbcnx, out string[] hdr_set) {
+    public string[,] get_all_data_items(Database dbcnx, out string[] hdr_set) {
+        string[,] row_set = {{},{}};
+                  hdr_set = {     };
+
         string __name__ = typeof(ReporterModel).name();
 
         // Instantiating the controller helper class.
         var aux = new ControllerHelper();
-
-        string[] row_set = {};
-                 hdr_set = {};
 
         var sql_select = "select"
             + "      x0.name as arch,"
@@ -72,23 +72,24 @@ class ReporterModel {
         var ret = dbcnx.real_query(sql_select, sql_select.length);
 
         if (ret != 0) {
-            row_set = {}; hdr_set = {}; return row_set;
+            row_set = {{},{}}; hdr_set = {}; return row_set;
         }
 
         // Retrieving the whole result set, including table headers and rows.
         Result row_ooo = dbcnx.store_result();
 
         if (row_ooo == null) {
-            row_set = {}; hdr_set = {}; return row_set;
+            row_set = {{},{}}; hdr_set = {}; return row_set;
         }
 
-        var num_hdrs = row_ooo.num_fields();
         var num_rows = row_ooo.num_rows();
+        var num_hdrs = row_ooo.num_fields();
 
         if (num_rows == 0) {
-            row_set = {}; hdr_set = {}; return row_set;
+            row_set = {{},{}}; hdr_set = {}; return row_set;
         }
 
+        // Allocating the hdr_set array before populating it.
         hdr_set.resize((int) num_hdrs);
 
         // Retrieving and processing the result set metadata -- table headers.
@@ -100,16 +101,25 @@ class ReporterModel {
 
         stdout.printf(aux._S_FMT, aux._NEW_LINE);
 
+        /*
+         * Note: Since the error "The name `resize' does not exist
+         *       in the context of `string[,]?'", it needs to allocate 2D-array
+         *       using a constructor:
+         */
+        row_set = new string[num_rows,num_hdrs];
+
         // Retrieving and processing the result set -- table rows.
         for (uint i = 0; i < num_rows; i++) {
-            row_set = row_ooo.fetch_row();
+            var row_ary = row_ooo.fetch_row();
 
             for (uint j = 0; j < num_hdrs; j++) {
-                if (row_set[j] == null) {
-                    row_set[j] = aux._EMPTY_STRING;
+                row_set[i,j] = row_ary[j];
+
+                if (row_set[i,j] == null) {
+                    row_set[i,j] = aux._EMPTY_STRING;
                 }
 
-                stdout.printf(aux._S_FMT, row_set[j] + "\t");
+                stdout.printf(aux._S_FMT, row_set[i,j] + "\t");
             }
 
             stdout.printf(aux._S_FMT, aux._NEW_LINE);
@@ -131,18 +141,18 @@ class ReporterModel {
      *
      * @return The result set (table rows).
      */
-    public string[] get_data_items_by_date(    string   from,
-                                               string   to,
-                                               Database dbcnx,
-                                           out string[] hdr_set) {
+    public string[,] get_data_items_by_date(    string   from,
+                                                string   to,
+                                                Database dbcnx,
+                                            out string[] hdr_set) {
+
+        string[,] row_set = {{},{}};
+                  hdr_set = {     };
 
         string __name__ = typeof(ReporterModel).name();
 
         // Instantiating the controller helper class.
         var aux = new ControllerHelper();
-
-        string[] row_set = {};
-                 hdr_set = {};
 
         var sql_select = "select"
             + "      x0.name as arch,"

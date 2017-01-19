@@ -94,15 +94,15 @@ class ReporterController {
         string[] hdr_set = {};
 
         // Retrieving a list of all data items stored in the database.
-        string[] row_set = model.get_all_data_items(dbcnx, out(hdr_set));
+        string[,] row_set = model.get_all_data_items(dbcnx, out(hdr_set));
 
         // Retrieving a list of data items for a given date period.
-//      string[] row_set = model.get_data_items_by_date(FROM, TO,
-//                                                  dbcnx, out(hdr_set));
+//      string[,] row_set = model.get_data_items_by_date(FROM, TO,
+//                                                   dbcnx, out(hdr_set));
 
         // In case of getting an empty result set, informing the user.
-//      if (row_set.length == 0) {
-        if (row_set.length  > 0) {
+        if (row_set.length[0] == 0) {
+//      if (row_set.length[0]  > 0) {
             ret = Posix.EXIT_FAILURE;
 
             stdout.printf(aux._S_FMT, __name__
