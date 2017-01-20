@@ -82,7 +82,7 @@ class ReporterModel {
          */
         Result res_set = dbcnx.store_result();
 
-        if (res_set == null) {
+        if ((res_set == null) || (dbcnx.errno() != 0)) {
             row_set = {{},{}}; hdr_set = {}; return row_set;
         }
 
@@ -223,7 +223,7 @@ class ReporterModel {
          */
         Result res_set = dbcnx.store_result();
 
-        if (res_set == null) {
+        if ((res_set == null) || (dbcnx.errno() != 0)) {
             row_set = {{},{}}; hdr_set = {}; return row_set;
         }
 
