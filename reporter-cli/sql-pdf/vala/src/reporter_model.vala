@@ -68,6 +68,7 @@ class ReporterModel {
             + " items.name,"
             + "       arch";
 
+   #if (MYSQL)
         // Executing the SQL statement.
         var ret = dbcnx.real_query(sql_select, sql_select.length);
 
@@ -87,6 +88,29 @@ class ReporterModel {
 
         var num_rows = res_set.num_rows();
         var num_hdrs = res_set.num_fields();
+ #elif (POSTGRES)
+        // Preparing the SQL statement.
+        Result res_set = dbcnx.prepare(aux._EMPTY_STRING, sql_select, null);
+
+        if ((res_set == null)
+            || (res_set.get_status() != ExecStatus.COMMAND_OK)) {
+
+            row_set = {{},{}}; hdr_set = {}; return row_set;
+        }
+
+        // Executing the SQL statement.
+        res_set = dbcnx.exec_prepared(aux._EMPTY_STRING, 0, null, null, null,
+                                                         0);
+
+        if ((res_set == null)
+            || (res_set.get_status() != ExecStatus.TUPLES_OK)) {
+
+            row_set = {{},{}}; hdr_set = {}; return row_set;
+        }
+
+        var num_rows = res_set.get_n_tuples();
+        var num_hdrs = res_set.get_n_fields();
+#endif
 
         if (num_rows == 0) {
             row_set = {{},{}}; hdr_set = {}; return row_set;
@@ -97,7 +121,11 @@ class ReporterModel {
 
         // Retrieving and processing the result set metadata -- table headers.
         for (uint i = 0; i < num_hdrs; i++) {
+   #if (MYSQL)
             hdr_set[i] = res_set.fetch_field().name;
+ #elif (POSTGRES)
+            hdr_set[i] = res_set.get_field_name((int) i);
+#endif
         }
 
         /*
@@ -109,14 +137,20 @@ class ReporterModel {
 
         // Retrieving and processing the result set -- table rows.
         for (uint i = 0; i < num_rows; i++) {
+   #if (MYSQL)
             var row_ary = res_set.fetch_row();
+#endif
 
             for (uint j = 0; j < num_hdrs; j++) {
+   #if (MYSQL)
                 row_set[i,j] = row_ary[j];
 
                 if (row_set[i,j] == null) {
                     row_set[i,j] = aux._EMPTY_STRING;
                 }
+ #elif (POSTGRES)
+                row_set[i,j] = res_set.get_value((int) i, (int) j);
+#endif
             }
         }
 
@@ -175,6 +209,7 @@ class ReporterModel {
         // Binding values to SQL placeholders.
         sql_select = sql_select.replace(aux._QM, aux._S_FMT).printf(from, to);
 
+   #if (MYSQL)
         // Executing the SQL statement.
         var ret = dbcnx.real_query(sql_select, sql_select.length);
 
@@ -194,6 +229,29 @@ class ReporterModel {
 
         var num_rows = res_set.num_rows();
         var num_hdrs = res_set.num_fields();
+ #elif (POSTGRES)
+        // Preparing the SQL statement.
+        Result res_set = dbcnx.prepare(aux._EMPTY_STRING, sql_select, null);
+
+        if ((res_set == null)
+            || (res_set.get_status() != ExecStatus.COMMAND_OK)) {
+
+            row_set = {{},{}}; hdr_set = {}; return row_set;
+        }
+
+        // Executing the SQL statement.
+        res_set = dbcnx.exec_prepared(aux._EMPTY_STRING, 0, null, null, null,
+                                                         0);
+
+        if ((res_set == null)
+            || (res_set.get_status() != ExecStatus.TUPLES_OK)) {
+
+            row_set = {{},{}}; hdr_set = {}; return row_set;
+        }
+
+        var num_rows = res_set.get_n_tuples();
+        var num_hdrs = res_set.get_n_fields();
+#endif
 
         if (num_rows == 0) {
             row_set = {{},{}}; hdr_set = {}; return row_set;
@@ -204,7 +262,11 @@ class ReporterModel {
 
         // Retrieving and processing the result set metadata -- table headers.
         for (uint i = 0; i < num_hdrs; i++) {
+   #if (MYSQL)
             hdr_set[i] = res_set.fetch_field().name;
+ #elif (POSTGRES)
+            hdr_set[i] = res_set.get_field_name((int) i);
+#endif
         }
 
         // Allocating the row_set array before populating it.
@@ -212,14 +274,20 @@ class ReporterModel {
 
         // Retrieving and processing the result set -- table rows.
         for (uint i = 0; i < num_rows; i++) {
+   #if (MYSQL)
             var row_ary = res_set.fetch_row();
+#endif
 
             for (uint j = 0; j < num_hdrs; j++) {
+   #if (MYSQL)
                 row_set[i,j] = row_ary[j];
 
                 if (row_set[i,j] == null) {
                     row_set[i,j] = aux._EMPTY_STRING;
                 }
+ #elif (POSTGRES)
+                row_set[i,j] = res_set.get_value((int) i, (int) j);
+#endif
             }
         }
 
