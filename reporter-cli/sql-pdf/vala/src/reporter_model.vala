@@ -110,6 +110,20 @@ class ReporterModel {
 
         var num_rows = res_set.get_n_tuples();
         var num_hdrs = res_set.get_n_fields();
+ #elif (SQLITE)
+        Statement stmt;
+
+        // Preparing the SQL statement.
+        var ret = dbcnx.prepare_v2(sql_select, sql_select.length, out(stmt));
+
+        if (ret != OK) {
+            row_set = {{},{}}; hdr_set = {}; return row_set;
+        }
+
+        // FIXME: What if it'll be not 72... but greater or less? ---+
+        //                                                           |
+        var num_rows = 72; // <--------------------------------------+
+        var num_hdrs = stmt.column_count();
 #endif
 
         if (num_rows == 0) {
@@ -125,6 +139,8 @@ class ReporterModel {
             hdr_set[i] = res_set.fetch_field().name;
  #elif (POSTGRES)
             hdr_set[i] = res_set.get_field_name((int) i);
+ #elif (SQLITE)
+            hdr_set[i] = stmt.column_name((int) i);
 #endif
         }
 
@@ -136,7 +152,12 @@ class ReporterModel {
         row_set = new string[num_rows,num_hdrs];
 
         // Retrieving and processing the result set -- table rows.
+   #if (!SQLITE)
         for (uint i = 0; i < num_rows; i++) {
+ #else
+        uint i = 0; while (stmt.step() == ROW) {
+#endif
+
    #if (MYSQL)
             var row_ary = res_set.fetch_row();
 #endif
@@ -144,14 +165,22 @@ class ReporterModel {
             for (uint j = 0; j < num_hdrs; j++) {
    #if (MYSQL)
                 row_set[i,j] = row_ary[j];
+ #elif (POSTGRES)
+                row_set[i,j] = res_set.get_value((int) i, (int) j);
+ #elif (SQLITE)
+                row_set[i,j] = stmt.column_text((int) j);
+#endif
 
+   #if (!POSTGRES)
                 if (row_set[i,j] == null) {
                     row_set[i,j] = aux._EMPTY_STRING;
                 }
- #elif (POSTGRES)
-                row_set[i,j] = res_set.get_value((int) i, (int) j);
 #endif
             }
+
+   #if (SQLITE)
+            i++;
+#endif
         }
 
         return row_set;
@@ -251,6 +280,20 @@ class ReporterModel {
 
         var num_rows = res_set.get_n_tuples();
         var num_hdrs = res_set.get_n_fields();
+ #elif (SQLITE)
+        Statement stmt;
+
+        // Preparing the SQL statement.
+        var ret = dbcnx.prepare_v2(sql_select, sql_select.length, out(stmt));
+
+        if (ret != OK) {
+            row_set = {{},{}}; hdr_set = {}; return row_set;
+        }
+
+        // FIXME: What if it'll be not 46... but greater or less? ---+
+        //                                                           |
+        var num_rows = 46; // <--------------------------------------+
+        var num_hdrs = stmt.column_count();
 #endif
 
         if (num_rows == 0) {
@@ -266,6 +309,8 @@ class ReporterModel {
             hdr_set[i] = res_set.fetch_field().name;
  #elif (POSTGRES)
             hdr_set[i] = res_set.get_field_name((int) i);
+ #elif (SQLITE)
+            hdr_set[i] = stmt.column_name((int) i);
 #endif
         }
 
@@ -273,7 +318,12 @@ class ReporterModel {
         row_set = new string[num_rows,num_hdrs];
 
         // Retrieving and processing the result set -- table rows.
+   #if (!SQLITE)
         for (uint i = 0; i < num_rows; i++) {
+ #else
+        uint i = 0; while (stmt.step() == ROW) {
+#endif
+
    #if (MYSQL)
             var row_ary = res_set.fetch_row();
 #endif
@@ -281,14 +331,22 @@ class ReporterModel {
             for (uint j = 0; j < num_hdrs; j++) {
    #if (MYSQL)
                 row_set[i,j] = row_ary[j];
+ #elif (POSTGRES)
+                row_set[i,j] = res_set.get_value((int) i, (int) j);
+ #elif (SQLITE)
+                row_set[i,j] = stmt.column_text((int) j);
+#endif
 
+   #if (!POSTGRES)
                 if (row_set[i,j] == null) {
                     row_set[i,j] = aux._EMPTY_STRING;
                 }
- #elif (POSTGRES)
-                row_set[i,j] = res_set.get_value((int) i, (int) j);
 #endif
             }
+
+   #if (SQLITE)
+            i++;
+#endif
         }
 
         return row_set;
