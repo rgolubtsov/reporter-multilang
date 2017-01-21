@@ -179,9 +179,10 @@ class ReporterPrimary {
                 var sqlite_db_path = _get_sqlite_db_path(__file__, aux);
 
                 // Connecting to SQLite database.
-                var cnx = Database.open(sqlite_db_path, out(dbcnx));
+                var cnx = Database.open_v2(sqlite_db_path, out(dbcnx),
+                                                       OPEN_READONLY);
 
-                if (cnx == OK) {
+                if ((cnx == OK) && (dbcnx != null)) {
                     __cnx
 = aux._NEW_LINE + " Database path" + aux._COLON_SPACE_SEP + sqlite_db_path
 + aux._NEW_LINE + "Engine ver str" + aux._COLON_SPACE_SEP + libversion()
