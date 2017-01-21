@@ -120,9 +120,9 @@ class ReporterModel {
             row_set = {{},{}}; hdr_set = {}; return row_set;
         }
 
-        // FIXME: What if it'll be not 72... but greater or less? ---+
-        //                                                           |
-        var num_rows = 72; // <--------------------------------------+
+        // FIXME: Ugly but workable... but ugly. -----------------------------+
+        //                                                                    |
+        var num_rows = 0; while (stmt.step() == ROW) { num_rows++; } // <-----+
         var num_hdrs = stmt.column_count();
 #endif
 
@@ -314,9 +314,9 @@ class ReporterModel {
         stmt.bind_text(1, from);
         stmt.bind_text(2,   to);
 
-        // FIXME: What if it'll be not 46... but greater or less? ---+
-        //                                                           |
-        var num_rows = 46; // <--------------------------------------+
+        // FIXME: Ugly but workable... but ugly. -----------------------------+
+        //                                                                    |
+        var num_rows = 0; while (stmt.step() == ROW) { num_rows++; } // <-----+
         var num_hdrs = stmt.column_count();
 #endif
 
