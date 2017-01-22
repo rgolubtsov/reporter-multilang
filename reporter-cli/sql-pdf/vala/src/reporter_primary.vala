@@ -30,11 +30,6 @@ namespace CliSqlPdf {
 
 /** The main class of the application. */
 class ReporterPrimary {
-    // Database switches. They indicate which database to connect to.
-    public const string _MY_CONNECT = "mysql";
-    public const string _PG_CONNECT = "postgres";
-    public const string _SL_CONNECT = "sqlite";
-
     /**
      * Constant: The database server name.
      *     TODO: Move to cli args.
@@ -65,7 +60,7 @@ class ReporterPrimary {
      *           the logical database identifier prefix.
      *     TODO: Move to the startup() method.
      */
-    const string PG_DSN_PREFIX = _PG_CONNECT;
+    const string PG_DSN_PREFIX = "postgres";
 
     /**
      * Constant: The SQLite database location.
@@ -88,8 +83,7 @@ class ReporterPrimary {
         // Instantiating the controller helper class.
         var aux = new ControllerHelper();
 
-        var db_switch = args[0];
-        var __file__  = args[1];
+        var __file__ = args[0];
 
         Database dbcnx;
 
@@ -101,58 +95,55 @@ class ReporterPrimary {
         // Trying to connect to the database.
         try {
    #if (MYSQL)
-            if (db_switch == _MY_CONNECT) {
-                dbcnx = new Database();
+            dbcnx = new Database();
 
-                // Connecting to MySQL database.
-                var cnx = dbcnx.real_connect(HOSTNAME,
-                                             USERNAME,
-                                             PASSWORD,
-                                             DATABASE);
+            // Connecting to MySQL database.
+            var cnx = dbcnx.real_connect(HOSTNAME,
+                                         USERNAME,
+                                         PASSWORD,
+                                         DATABASE);
 
-                if (cnx) {
-                    __cnx
+            if (cnx) {
+                __cnx
 = aux._NEW_LINE + "     Host info" + aux._COLON_SPACE_SEP + dbcnx.get_host_info()
 + aux._NEW_LINE + "   Server info" + aux._COLON_SPACE_SEP + dbcnx.get_server_info()
 + aux._NEW_LINE + "Server version" + aux._COLON_SPACE_SEP + dbcnx.get_server_version()
                                                                  .to_string();
 
-                    // Generating the PDF report.
-                    ret = ctrl.pdf_report_generate(dbcnx);
-                } else {
-                    ret = Posix.EXIT_FAILURE;
+                // Generating the PDF report.
+                ret = ctrl.pdf_report_generate(dbcnx);
+            } else {
+                ret = Posix.EXIT_FAILURE;
 
-                    stdout.printf(aux._S_FMT, __name__
-                              + aux._COLON_SPACE_SEP + aux._ERROR_PREFIX
-                              + aux._COLON_SPACE_SEP + aux._ERROR_NO_DB_CONNECT
-                              + dbcnx.error()        + aux._NEW_LINE);
+                stdout.printf(aux._S_FMT, __name__
+                            + aux._COLON_SPACE_SEP + aux._ERROR_PREFIX
+                            + aux._COLON_SPACE_SEP + aux._ERROR_NO_DB_CONNECT
+                            + dbcnx.error()        + aux._NEW_LINE);
 
-                    return ret;
-                }
+                return ret;
             }
  #elif (POSTGRES)
-            if (db_switch == _PG_CONNECT) {
-                // Connecting to PostgreSQL database.
-//              dbcnx = set_db_login(HOSTNAME, aux._EMPTY_STRING, // port
-//                                             aux._EMPTY_STRING, // options
-//                                             aux._EMPTY_STRING, // gtty
-//                                   DATABASE,
-//                                   USERNAME,
-//                                   PASSWORD);
+            // Connecting to PostgreSQL database.
+//          dbcnx = set_db_login(HOSTNAME, aux._EMPTY_STRING, // port
+//                                         aux._EMPTY_STRING, // options
+//                                         aux._EMPTY_STRING, // gtty
+//                               DATABASE,
+//                               USERNAME,
+//                               PASSWORD);
 
-                var pg_dsn = PG_DSN_PREFIX + aux._COLON + aux._SLASH
-                                           + aux._SLASH + USERNAME
-                                           + aux._COLON + PASSWORD
-                                           + aux._AT    + HOSTNAME
-                                           + aux._SLASH + DATABASE;
+            var pg_dsn = PG_DSN_PREFIX + aux._COLON + aux._SLASH
+                                       + aux._SLASH + USERNAME
+                                       + aux._COLON + PASSWORD
+                                       + aux._AT    + HOSTNAME
+                                       + aux._SLASH + DATABASE;
 
-                // Connecting to PostgreSQL database (preferred method).
-                dbcnx = connect_db(pg_dsn);
+            // Connecting to PostgreSQL database (preferred method).
+            dbcnx = connect_db(pg_dsn);
 
-                if (dbcnx != null) {
-                    if (dbcnx.get_status() == ConnectionStatus.OK) {
+            if (dbcnx != null) {
+                if (dbcnx.get_status() == ConnectionStatus.OK) {
 
-                        __cnx
+                    __cnx
 = aux._NEW_LINE + "     Host info" + aux._COLON_SPACE_SEP + dbcnx.get_host()
                                    + aux._COLON           + dbcnx.get_port()
 + aux._NEW_LINE + "   Server info" + aux._COLON_SPACE_SEP + dbcnx.get_protocol_Version()
@@ -160,34 +151,6 @@ class ReporterPrimary {
 + aux._NEW_LINE + "Server version" + aux._COLON_SPACE_SEP + dbcnx.get_server_version()
                                                                  .to_string();
 
-                        // Generating the PDF report.
-                        ret = ctrl.pdf_report_generate(dbcnx);
-                    } else {
-                        ret = Posix.EXIT_FAILURE;
-
-                        stdout.printf(aux._S_FMT, __name__
-                              + aux._COLON_SPACE_SEP + aux._ERROR_PREFIX
-                              + aux._COLON_SPACE_SEP + aux._ERROR_NO_DB_CONNECT
-                              + dbcnx.get_error_message() + aux._NEW_LINE);
-
-                        return ret;
-                    }
-                }
-            }
- #elif (SQLITE)
-            if (db_switch == _SL_CONNECT) {
-                var sqlite_db_path = _get_sqlite_db_path(__file__, aux);
-
-                // Connecting to SQLite database.
-                var cnx = Database.open(sqlite_db_path, out(dbcnx));
-
-                if (cnx == OK) {
-                    __cnx
-= aux._NEW_LINE + " Database path" + aux._COLON_SPACE_SEP + sqlite_db_path
-+ aux._NEW_LINE + "Engine ver str" + aux._COLON_SPACE_SEP + libversion()
-+ aux._NEW_LINE + "Engine version" + aux._COLON_SPACE_SEP + libversion_number()
-                                                           .to_string();
-
                     // Generating the PDF report.
                     ret = ctrl.pdf_report_generate(dbcnx);
                 } else {
@@ -196,10 +159,36 @@ class ReporterPrimary {
                     stdout.printf(aux._S_FMT, __name__
                               + aux._COLON_SPACE_SEP + aux._ERROR_PREFIX
                               + aux._COLON_SPACE_SEP + aux._ERROR_NO_DB_CONNECT
-                              + dbcnx.errmsg()       + aux._NEW_LINE);
+                              + dbcnx.get_error_message() + aux._NEW_LINE);
 
                     return ret;
                 }
+            }
+ #elif (SQLITE)
+            var sqlite_db_path = _get_sqlite_db_path(__file__, aux);
+
+            // Connecting to SQLite database.
+            var cnx = Database.open_v2(sqlite_db_path, out(dbcnx),
+                                                   OPEN_READONLY);
+
+            if ((cnx == OK) && (dbcnx != null)) {
+                __cnx
+= aux._NEW_LINE + " Database path" + aux._COLON_SPACE_SEP + sqlite_db_path
++ aux._NEW_LINE + "Engine ver str" + aux._COLON_SPACE_SEP + libversion()
++ aux._NEW_LINE + "Engine version" + aux._COLON_SPACE_SEP + libversion_number()
+                                                           .to_string();
+
+                // Generating the PDF report.
+                ret = ctrl.pdf_report_generate(dbcnx);
+            } else {
+                ret = Posix.EXIT_FAILURE;
+
+                stdout.printf(aux._S_FMT, __name__
+                            + aux._COLON_SPACE_SEP + aux._ERROR_PREFIX
+                            + aux._COLON_SPACE_SEP + aux._ERROR_NO_DB_CONNECT
+                            + dbcnx.errmsg()       + aux._NEW_LINE);
+
+                return ret;
             }
 #endif
             // ----------------------------------------------------------------
@@ -255,23 +244,11 @@ class ReporterPrimary {
 
 // The application entry point.
 public static int main(string[] args) {
-    string[] argz = {};
-
     // Instantiating the main class.
     var reporter = new CliSqlPdf.ReporterPrimary();
 
-   #if (MYSQL)
-    argz[0] = reporter._MY_CONNECT;
- #elif (POSTGRES)
-    argz[0] = reporter._PG_CONNECT;
- #elif (SQLITE)
-    argz[0] = reporter._SL_CONNECT;
-#endif
-
-    argz[1] = args[0];
-
     // Starting up the app.
-    int ret = reporter.startup(argz);
+    int ret = reporter.startup(args);
 
     return ret;
 }

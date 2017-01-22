@@ -120,9 +120,9 @@ class ReporterModel {
             row_set = {{},{}}; hdr_set = {}; return row_set;
         }
 
-        // FIXME: What if it'll be not 72... but greater or less? ---+
-        //                                                           |
-        var num_rows = 72; // <--------------------------------------+
+        // FIXME: Ugly but workable... but ugly. -----------------------------+
+        //                                                                    |
+        var num_rows = 0; while (stmt.step() == ROW) { num_rows++; } // <-----+
         var num_hdrs = stmt.column_count();
 #endif
 
@@ -226,19 +226,36 @@ class ReporterModel {
             + " (attr_x0_id = x0.id) and"
             + " (attr_x1_id = x1.id) and"
 // ----------------------------------------------------------------------------
+// Note: PostgreSQL client lib (libpq) can handle only dollar-sign-prefixed
+//       positional placeholders ($n), whilst MySQL client lib (mysql)
+//       can handle question-mark-placeholders enclosed into single quotation
+//       marks ('?'). And SQLite client lib (sqlite3) can handle question-mark-
+//       placeholders too, but without any extra stuff around them (?).
+//       Thus, for both MySQL and SQLite libs it is possible to use a unified
+//       notation, but for SQLite ops it needs to make some post-processing
+//       with the query string -- see below.
+// ----------------------------------------------------------------------------
+   #if (POSTGRES)
+//          + " (attr_x3   >=    $1) and"
+//          + " (attr_x3   <=    $2)"
+// ----------------------------------------------------------------------------
+            + " (attr_x3 between  $1 and  $2)"
+// ----------------------------------------------------------------------------
+ #else
 //          + " (attr_x3   >=   '?') and"
 //          + " (attr_x3   <=   '?')"
 // ----------------------------------------------------------------------------
             + " (attr_x3 between '?' and '?')"
 // ----------------------------------------------------------------------------
+#endif
         + " order by"
             + " items.name,"
             + "       arch";
 
+   #if (MYSQL)
         // Binding values to SQL placeholders.
         sql_select = sql_select.replace(aux._QM, aux._S_FMT).printf(from, to);
 
-   #if (MYSQL)
         // Executing the SQL statement.
         var ret = dbcnx.real_query(sql_select, sql_select.length);
 
@@ -269,8 +286,8 @@ class ReporterModel {
         }
 
         // Executing the SQL statement.
-        res_set = dbcnx.exec_prepared(aux._EMPTY_STRING, 0, null, null, null,
-                                                         0);
+        res_set = dbcnx.exec_prepared(aux._EMPTY_STRING, 2, {from, to}, null,
+                                                   null, 0);
 
         if ((res_set == null)
             || (res_set.get_status() != ExecStatus.TUPLES_OK)) {
@@ -281,18 +298,25 @@ class ReporterModel {
         var num_rows = res_set.get_n_tuples();
         var num_hdrs = res_set.get_n_fields();
  #elif (SQLITE)
+        // Removing single quotation marks from SQL placeholders.
+        sql_select = sql_select.replace(aux._SQ, aux._EMPTY_STRING);
+
         Statement stmt;
 
         // Preparing the SQL statement.
         var ret = dbcnx.prepare_v2(sql_select, sql_select.length, out(stmt));
 
-        if (ret != OK) {
+        if ((ret != OK) || (stmt == null)) {
             row_set = {{},{}}; hdr_set = {}; return row_set;
         }
 
-        // FIXME: What if it'll be not 46... but greater or less? ---+
-        //                                                           |
-        var num_rows = 46; // <--------------------------------------+
+        // Binding values to SQL placeholders.
+        stmt.bind_text(1, from);
+        stmt.bind_text(2,   to);
+
+        // FIXME: Ugly but workable... but ugly. -----------------------------+
+        //                                                                    |
+        var num_rows = 0; while (stmt.step() == ROW) { num_rows++; } // <-----+
         var num_hdrs = stmt.column_count();
 #endif
 
