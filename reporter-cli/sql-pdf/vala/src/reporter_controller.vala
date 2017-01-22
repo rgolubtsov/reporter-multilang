@@ -72,6 +72,12 @@ class ReporterController {
     /** Constant: The one millimeter (in PDF measurement terms). */
     const double MM = (25.4 / 72);
 
+    /* Various string literals. */
+    const string _ROWS_IN_SET_FOOTER   = " rows in set";
+    const string _ROWS_SHOWN_FOOTER_1  = "  (";
+    const string _ROWS_SHOWN_FOOTER_2  = " rows shown)";
+    const string _PDF_REPORT_SAVED_MSG = "PDF report saved";
+
     /**
      * Generates the PDF report.
      *
@@ -118,23 +124,80 @@ class ReporterController {
         // --------------------------------------------------------------------
         // -- Debug output - Begin --------------------------------------------
         // --------------------------------------------------------------------
-        // Printing table headers.
-        for (uint i = 0; i < num_hdrs; i++) {
-            stdout.printf(aux._S_FMT, hdr_set[i] + "\t");
+        uint[ ] hdr_set_len = new uint[         num_hdrs];
+        uint[,] row_set_len = new uint[num_rows,num_hdrs];
+        uint[ ] col_max_len = new uint[num_rows         ];
+
+        // Searching for the max data length in each column to form its width.
+        for (uint j = 0; j < num_hdrs; j++) {
+            hdr_set_len[j] = hdr_set[j].length;
+
+            for (uint i = 0; i < num_rows; i++) {
+                row_set_len[i,j] = row_set[i,j].length;
+            }
+
+            col_max_len[j] = row_set_len[0,j]; // <== Assuming this is the max.
+
+            // Searching for the max element in a column.
+            for (uint i = 0; i < num_rows; i++) {
+                if (row_set_len[i,j] > col_max_len[j]) {
+                    col_max_len[j] = row_set_len[i,j];
+                }
+            }
         }
 
-        stdout.printf(aux._S_FMT, aux._NEW_LINE);
+        _separator_draw(num_hdrs, hdr_set_len, col_max_len, aux);
+
+        // Printing table headers.
+        for (uint i = 0; i < num_hdrs; i++) {
+            stdout.printf(aux._S_FMT, aux._V_BAR + aux._SPACE + hdr_set[i]);
+
+            uint spacers = 0;
+
+            if (hdr_set_len[i] < col_max_len[i]) {
+                spacers = col_max_len[i] - hdr_set_len[i];
+            }
+
+            spacers++; // <== Additional spacer (padding).
+
+            for (uint m = 0; m < spacers; m++) {
+                stdout.printf(aux._S_FMT, aux._SPACE);
+            }
+        }
+
+        stdout.printf(aux._S_FMT, aux._V_BAR + aux._NEW_LINE);
+
+        _separator_draw(num_hdrs, hdr_set_len, col_max_len, aux);
 
         // Printing table rows.
         for (uint i = 0; i < num_rows; i++) {
             for (uint j = 0; j < num_hdrs; j++) {
-                stdout.printf(aux._S_FMT, row_set[i,j] + "\t");
+                stdout.printf(aux._S_FMT, aux._V_BAR+aux._SPACE+row_set[i,j]);
+
+                if (col_max_len[j] < hdr_set_len[j]) {
+                    col_max_len[j] = hdr_set_len[j];
+                }
+
+                uint spacers = 0;
+
+                if (row_set_len[i,j] < col_max_len[j]) {
+                    spacers = col_max_len[j] - row_set_len[i,j];
+                }
+
+                spacers++; // <== Additional spacer (padding).
+
+                for (uint m = 0; m < spacers; m++) {
+                    stdout.printf(aux._S_FMT, aux._SPACE);
+                }
             }
 
-            stdout.printf(aux._S_FMT, aux._NEW_LINE);
+            stdout.printf(aux._S_FMT, aux._V_BAR + aux._NEW_LINE);
         }
 
-        stdout.printf(aux._S_FMT, num_rows.to_string() + aux._NEW_LINE);
+        _separator_draw(num_hdrs, hdr_set_len, col_max_len, aux);
+
+        stdout.printf(aux._S_FMT, num_rows.to_string() + _ROWS_IN_SET_FOOTER
+                                       + aux._NEW_LINE + aux._NEW_LINE);
         // --------------------------------------------------------------------
         // -- Debug output - End ----------------------------------------------
         // --------------------------------------------------------------------
@@ -150,6 +213,31 @@ class ReporterController {
         // --------------------------------------------------------------------
 
         return ret;
+    }
+
+    /* Helper method. Draws a horizontal separator for a table. */
+    void _separator_draw(uint             num_hdrs,
+                         uint[]           hdr_set_len,
+                         uint[]           col_max_len,
+                         ControllerHelper aux) {
+
+        for (uint i = 0; i < num_hdrs; i++) {
+            stdout.printf(aux._S_FMT, aux._SEP_NOD);
+
+            uint sep_len = hdr_set_len[i];
+
+            if (sep_len < col_max_len[i]) {
+                sep_len = col_max_len[i];
+            }
+
+            sep_len += 2; // <== Two additional separator cogs (padding).
+
+            for (uint m = 0; m < sep_len; m++) {
+                stdout.printf(aux._S_FMT, aux._SEP_COG);
+            }
+        }
+
+        stdout.printf(aux._S_FMT, aux._SEP_NOD + aux._NEW_LINE);
     }
 
     /** Default constructor. */
