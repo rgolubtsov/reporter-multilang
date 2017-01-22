@@ -232,8 +232,8 @@ class ReporterModel {
 //       marks ('?'). And SQLite client lib (sqlite3) can handle question-mark-
 //       placeholders too, but without any extra stuff around them (?).
 //       Thus, for both MySQL and SQLite libs it is possible to use a unified
-//       notation, but for SQLite ops it needs to make some post-processing
-//       with the query string -- see below.
+//       notation, but for SQLite ops it needs to make some preprocessing
+//       of the query string -- see below.
 // ----------------------------------------------------------------------------
    #if (POSTGRES)
 //          + " (attr_x3   >=    $1) and"
@@ -298,7 +298,7 @@ class ReporterModel {
         var num_rows = res_set.get_n_tuples();
         var num_hdrs = res_set.get_n_fields();
  #elif (SQLITE)
-        // Removing single quotation marks from SQL placeholders.
+        // Removing single quotation marks from SQL placehldrs (preprocessing).
         sql_select = sql_select.replace(aux._SQ, aux._EMPTY_STRING);
 
         Statement stmt;
