@@ -32,6 +32,10 @@ class ControllerHelper {
     public const string _AT              =  "@";
     public const string _QM              =  "?";
     public const string _SQ              =  "'";
+    public const string _V_BAR           =  "|";
+    public const string _SPACE           =  " ";
+    public const string _SEP_NOD         =  "+";
+    public const string _SEP_COG         =  "-";
     public const string _CURRENT_DIR     = "./";
 
     // Common error messages.
