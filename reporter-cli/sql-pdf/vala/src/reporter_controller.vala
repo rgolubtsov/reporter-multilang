@@ -124,77 +124,11 @@ class ReporterController {
         // --------------------------------------------------------------------
         // -- Debug output - Begin --------------------------------------------
         // --------------------------------------------------------------------
-        uint[ ] hdr_set_len = new uint[         num_hdrs];
-        uint[,] row_set_len = new uint[num_rows,num_hdrs];
-        uint[ ] col_max_len = new uint[num_rows         ];
+        var dbg_output = new TabularDisplay(hdr_set);
 
-        // Searching for the max data length in each column to form its width.
-        for (uint j = 0; j < num_hdrs; j++) {
-            hdr_set_len[j] = hdr_set[j].length;
+        dbg_output.populate(row_set);
 
-            for (uint i = 0; i < num_rows; i++) {
-                row_set_len[i,j] = row_set[i,j].length;
-            }
-
-            col_max_len[j] = row_set_len[0,j]; // <== Assuming this is the max.
-
-            // Searching for the max element in a column.
-            for (uint i = 0; i < num_rows; i++) {
-                if (row_set_len[i,j] > col_max_len[j]) {
-                    col_max_len[j] = row_set_len[i,j];
-                }
-            }
-        }
-
-        _separator_draw(num_hdrs, hdr_set_len, col_max_len, aux);
-
-        // Printing table headers.
-        for (uint i = 0; i < num_hdrs; i++) {
-            stdout.printf(aux._S_FMT, aux._V_BAR + aux._SPACE + hdr_set[i]);
-
-            uint spacers = 0;
-
-            if (hdr_set_len[i] < col_max_len[i]) {
-                spacers = col_max_len[i] - hdr_set_len[i];
-            }
-
-            spacers++; // <== Additional spacer (padding).
-
-            for (uint m = 0; m < spacers; m++) {
-                stdout.printf(aux._S_FMT, aux._SPACE);
-            }
-        }
-
-        stdout.printf(aux._S_FMT, aux._V_BAR + aux._NEW_LINE);
-
-        _separator_draw(num_hdrs, hdr_set_len, col_max_len, aux);
-
-        // Printing table rows.
-        for (uint i = 0; i < num_rows; i++) {
-            for (uint j = 0; j < num_hdrs; j++) {
-                stdout.printf(aux._S_FMT, aux._V_BAR+aux._SPACE+row_set[i,j]);
-
-                if (col_max_len[j] < hdr_set_len[j]) {
-                    col_max_len[j] = hdr_set_len[j];
-                }
-
-                uint spacers = 0;
-
-                if (row_set_len[i,j] < col_max_len[j]) {
-                    spacers = col_max_len[j] - row_set_len[i,j];
-                }
-
-                spacers++; // <== Additional spacer (padding).
-
-                for (uint m = 0; m < spacers; m++) {
-                    stdout.printf(aux._S_FMT, aux._SPACE);
-                }
-            }
-
-            stdout.printf(aux._S_FMT, aux._V_BAR + aux._NEW_LINE);
-        }
-
-        _separator_draw(num_hdrs, hdr_set_len, col_max_len, aux);
+        stdout.printf(aux._S_FMT, dbg_output.render());
 
         stdout.printf(aux._S_FMT, num_rows.to_string() + _ROWS_IN_SET_FOOTER
                                        + aux._NEW_LINE + aux._NEW_LINE);
@@ -213,31 +147,6 @@ class ReporterController {
         // --------------------------------------------------------------------
 
         return ret;
-    }
-
-    /* Helper method. Draws a horizontal separator for a table. */
-    void _separator_draw(uint             num_hdrs,
-                         uint[]           hdr_set_len,
-                         uint[]           col_max_len,
-                         ControllerHelper aux) {
-
-        for (uint i = 0; i < num_hdrs; i++) {
-            stdout.printf(aux._S_FMT, aux._SEP_NOD);
-
-            uint sep_len = hdr_set_len[i];
-
-            if (sep_len < col_max_len[i]) {
-                sep_len = col_max_len[i];
-            }
-
-            sep_len += 2; // <== Two additional separator cogs (padding).
-
-            for (uint m = 0; m < sep_len; m++) {
-                stdout.printf(aux._S_FMT, aux._SEP_COG);
-            }
-        }
-
-        stdout.printf(aux._S_FMT, aux._SEP_NOD + aux._NEW_LINE);
     }
 
     /** Default constructor. */
