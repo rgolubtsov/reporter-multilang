@@ -111,7 +111,7 @@ class ReporterPrimary {
                                                                  .to_string();
 
                 // Generating the PDF report.
-                ret = ctrl.pdf_report_generate(dbcnx);
+                ret = ctrl.pdf_report_generate(dbcnx, __file__);
             } else {
                 ret = Posix.EXIT_FAILURE;
 
@@ -152,7 +152,7 @@ class ReporterPrimary {
                                                                  .to_string();
 
                     // Generating the PDF report.
-                    ret = ctrl.pdf_report_generate(dbcnx);
+                    ret = ctrl.pdf_report_generate(dbcnx, __file__);
                 } else {
                     ret = Posix.EXIT_FAILURE;
 
@@ -179,7 +179,7 @@ class ReporterPrimary {
                                                            .to_string();
 
                 // Generating the PDF report.
-                ret = ctrl.pdf_report_generate(dbcnx);
+                ret = ctrl.pdf_report_generate(dbcnx, __file__);
             } else {
                 ret = Posix.EXIT_FAILURE;
 

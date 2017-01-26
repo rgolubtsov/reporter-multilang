@@ -26,6 +26,8 @@
     using Sqlite;
 #endif
 
+using Cairo;
+
 namespace CliSqlPdf {
 
 /** The controller class of the application. */
@@ -46,7 +48,7 @@ class ReporterController {
      * Constant: The PDF report output location.
      *     TODO: Move to cli args.
      */
-    const string PDF_REPORT_DIR = "data";
+    const string PDF_REPORT_DIR = "lib/data";
 
     /**
      * Constant: The PDF report filename.
@@ -82,17 +84,20 @@ class ReporterController {
      * Generates the PDF report.
      *
      * @param dbcnx The database handle object.
-     *
+     * @param exec  The executable path.
+
      * @return The exit code indicating the status
      *         of generating the PDF report.
      */
-    public int pdf_report_generate(Database dbcnx) {
+    public int pdf_report_generate(Database dbcnx, string exec) {
         int ret = Posix.EXIT_SUCCESS;
 
         string __name__ = typeof(ReporterController).name();
 
         // Instantiating the controller helper class.
         var aux = new ControllerHelper();
+
+        var __file__ = exec;
 
         // Instantiating the model class.
         var model = new ReporterModel();
@@ -122,7 +127,7 @@ class ReporterController {
         }
 
         // --------------------------------------------------------------------
-        // -- Debug output - Begin --------------------------------------------
+        // --- Debug output - Begin -------------------------------------------
         // --------------------------------------------------------------------
         var dbg_output = new TabularDisplay(hdr_set);
 
@@ -133,20 +138,68 @@ class ReporterController {
         stdout.printf(aux._S_FMT, num_rows.to_string() + _ROWS_IN_SET_FOOTER
                                        + aux._NEW_LINE + aux._NEW_LINE);
         // --------------------------------------------------------------------
-        // -- Debug output - End ----------------------------------------------
+        // --- Debug output - End ---------------------------------------------
         // --------------------------------------------------------------------
 
         Posix.sleep(1); // <== Waiting one second...just for fun...:-)...-- OK.
 
         // --------------------------------------------------------------------
-        // -- Generating the PDF report - Begin -------------------------------
+        // --- Generating the PDF report - Begin ------------------------------
         // --------------------------------------------------------------------
-        // TODO: Implement generating the PDF report.
+        var pdf_report_path = _get_pdf_report_path(__file__, aux);
+
+        var _report = new PdfSurface(pdf_report_path, (210 / MM), (297 / MM));
+
+        _report.restrict_to_version(PdfVersion.VERSION_1_4);
+
+        var report = new Cairo.Context(_report);
+
+        // --- Page body (data) -----------------------------------------------
+        ret = _page_body_draw(report, hdr_set, row_set);
         // --------------------------------------------------------------------
-        // -- Generating the PDF report - End ---------------------------------
+        // --- Generating the PDF report - End --------------------------------
         // --------------------------------------------------------------------
 
         return ret;
+    }
+
+    /* Draws the PDF report page body (data). */
+    int _page_body_draw(Cairo.Context report,
+                        string[ ]     hdr_set,
+                        string[,]     row_set) {
+
+        int ret = Posix.EXIT_SUCCESS;
+
+        // TODO: Implement drawing the PDF report page body.
+
+        return ret;
+    }
+
+    /*
+     * Helper method.
+     * Returns the generated PDF report output path,
+     * relative to the executable's location.
+     * TODO: Remove this method when the report output location
+     *       will be passed through cli args.
+     */
+    string _get_pdf_report_path(string exec, ControllerHelper aux) {
+        var exec_path = exec.split(aux._SLASH);
+
+//      for (uint i = 0; i < exec_path.length; i++) {
+//          stdout.printf(aux._S_FMT, exec_path[i] + aux._NEW_LINE);
+//      }
+
+        exec_path.resize(exec_path.length - 1);
+        exec_path       [exec_path.length - 1] = PDF_REPORT_DIR;
+
+//      for (uint i = 0; i < exec_path.length; i++) {
+//          stdout.printf(aux._S_FMT, exec_path[i] + aux._NEW_LINE);
+//      }
+
+        var pdf_report_path = string.joinv(aux._SLASH, exec_path)
+                                         + aux._SLASH + PDF_REPORT_FILENAME;
+
+        return pdf_report_path;
     }
 
     /** Default constructor. */
