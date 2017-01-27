@@ -180,8 +180,21 @@ class ReporterController {
 
         var report = new Cairo.Context(_report);
 
-        // --- Page body (data) -----------------------------------------------
-        ret = _page_body_draw(report, hdr_set, row_set, num_hdrs, num_rows);
+        // --- Page body (data) x MAX_PAGES -----------------------------------
+        for (uint i = 0; i < MAX_PAGES; i++) {
+            ret=_page_body_draw(report, hdr_set, row_set, num_hdrs, num_rows);
+
+            if (ret == Posix.EXIT_FAILURE) {
+                stdout.printf(aux._S_FMT, __name__
+                            + aux._COLON_SPACE_SEP + aux._ERROR_PREFIX
+                            + aux._COLON_SPACE_SEP + aux._ERROR_NO_REPORT_GEN
+                                                   + aux._NEW_LINE);
+
+                return ret;
+            }
+
+            report.show_page();
+        }
         // --------------------------------------------------------------------
         // --- Generating the PDF report - End --------------------------------
         // --------------------------------------------------------------------
@@ -201,13 +214,15 @@ class ReporterController {
         HashTable<string, string> table_headers
                           = new HashTable<string, string>(str_hash, str_equal);
 
-        // Note: Without having this coordinate system translation
-        //       it needs to utilize the vertical coordinate flipping
-        //       normalizer (ZZ) to flip its y-coordinate where applicable.
-        //    Q: What is it for? -- A: When using Cairo text API,
-        //       it's quite sufficient to use the coordinate system
-        //       translation. But when using Pango text API on top of Cairo,
-        //       ZZ should be used instead.
+        /*
+         * Note: Without having this coordinate system translation
+         *       it needs to utilize the vertical coordinate flipping
+         *       normalizer (ZZ) to flip its y-coordinate where applicable.
+         *    Q: What is it for? -- A: When using Cairo text API,
+         *       it's quite sufficient to use the coordinate system
+         *       translation. But when using Pango text API on top of Cairo,
+         *       ZZ should be used instead.
+         */
 //      report.translate((0 / MM), (297 / MM)); report.scale(1, -1);
 
         // --- Border ---------------------------------------------------------
