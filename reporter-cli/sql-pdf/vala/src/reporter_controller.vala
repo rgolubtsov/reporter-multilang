@@ -195,6 +195,9 @@ class ReporterController {
 
             report.show_page();
         }
+
+        stdout.printf(aux._S_FMT, _PDF_REPORT_SAVED_MSG + aux._COLON_SPACE_SEP
+                                 + pdf_report_path      + aux._NEW_LINE);
         // --------------------------------------------------------------------
         // --- Generating the PDF report - End --------------------------------
         // --------------------------------------------------------------------
