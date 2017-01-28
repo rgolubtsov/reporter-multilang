@@ -40,7 +40,7 @@ BIN_DIR         = ../bin
 
 # Specify flags and other vars here.
 VC      = valac
-VCFLAGS = --target-glib=2.40 -X -s -X -O3 --pkg=posix --pkg=cairo
+VCFLAGS = --target-glib=2.40 -X -s -X -O3 --pkg=posix --pkg=pangocairo
 
 SUDO    = sudo
 LN      = ln

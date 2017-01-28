@@ -74,7 +74,33 @@ class ReporterController {
     /** Constant: The one millimeter (in PDF measurement terms). */
     const double MM = (25.4 / 72);
 
+    /** Constant: The RGB normalizing divisor. */
+    const double FF = 255;
+
+    /** Constant: The vertical coordinate flipping normalizer. */
+    const uint   ZZ = 297;
+
     /* Various string literals. */
+    // --- /usr/share/fonts/100dpi/helv*.pcf.gz ------------
+//  const string _SANS_FONT            = "Helvetica";
+    // --- /usr/share/fonts/TTF/DejaVuSan*.ttf -------------
+//  const string _SANS_FONT            = "DejaVu Sans";
+    // --- /usr/share/fonts/TTF/LiberationSan*.ttf ---------
+    const string _SANS_FONT            = "Liberation Sans";
+    // --- /usr/share/fonts/100dpi/tim*.pcf.gz -------------
+//  const string _SERIF_FONT           = "Times";
+    // --- /usr/share/fonts/TTF/DejaVuSeri*.ttf ------------
+//  const string _SERIF_FONT           = "DejaVu Serif";
+    // --- /usr/share/fonts/TTF/LiberationSeri*.ttf --------
+    const string _SERIF_FONT           = "Liberation Serif";
+    // ------------------------------------------------------------------------
+    const string _ARCH_HEADER          = "Arch";
+    const string _REPO_HEADER          = "Repo";
+    const string _NAME_HEADER          = "Name";
+    const string _VERSION_HEADER       = "Version";
+    const string _LAST_UPDATED_HEADER  = "Last Updated";
+    const string _FLAG_DATE_HEADER     = "Flag Date";
+    // ------------------------------------------------------------------------
     const string _ROWS_IN_SET_FOOTER   = " rows in set";
     const string _ROWS_SHOWN_FOOTER_1  = "  (";
     const string _ROWS_SHOWN_FOOTER_2  = " rows shown)";
@@ -85,7 +111,7 @@ class ReporterController {
      *
      * @param dbcnx The database handle object.
      * @param exec  The executable path.
-
+     *
      * @return The exit code indicating the status
      *         of generating the PDF report.
      */
@@ -155,7 +181,7 @@ class ReporterController {
         var report = new Cairo.Context(_report);
 
         // --- Page body (data) -----------------------------------------------
-        ret = _page_body_draw(report, hdr_set, row_set);
+        ret = _page_body_draw(report, hdr_set, row_set, num_hdrs, num_rows);
         // --------------------------------------------------------------------
         // --- Generating the PDF report - End --------------------------------
         // --------------------------------------------------------------------
@@ -166,11 +192,223 @@ class ReporterController {
     /* Draws the PDF report page body (data). */
     int _page_body_draw(Cairo.Context report,
                         string[ ]     hdr_set,
-                        string[,]     row_set) {
+                        string[,]     row_set,
+                        uint          num_hdrs,
+                        uint          num_rows) {
 
         int ret = Posix.EXIT_SUCCESS;
 
-        // TODO: Implement drawing the PDF report page body.
+        HashTable<string, string> table_headers
+                          = new HashTable<string, string>(str_hash, str_equal);
+
+        // Note: Without having this coordinate system translation
+        //       it needs to utilize the vertical coordinate flipping
+        //       normalizer (ZZ) to flip its y-coordinate where applicable.
+        //    Q: What is it for? -- A: When using Cairo text API,
+        //       it's quite sufficient to use the coordinate system
+        //       translation. But when using Pango text API on top of Cairo,
+        //       ZZ should be used instead.
+//      report.translate((0 / MM), (297 / MM)); report.scale(1, -1);
+
+        // --- Border ---------------------------------------------------------
+
+        report.set_source_rgb(( 34 / FF),             // <== _RAINY_NIGHT_COLOR
+                              ( 68 / FF),             //              (#224488)
+                              (136 / FF));
+
+        report.rectangle((16 / MM), (19 / MM), (178 / MM), (259 / MM));
+
+        report.stroke();
+
+        // --- Headers bar ----------------------------------------------------
+
+        report.set_source_rgb(( 34 / FF),             // <== _RAINY_NIGHT_COLOR
+                              ( 68 / FF),             //              (#224488)
+                              (136 / FF));
+
+        report.rectangle((              17  / MM),
+                         (((ZZ - 10) - 267) / MM),
+                         (             176  / MM),
+                         (              10  / MM));
+
+        report.fill();
+
+        // --- Headers txt ----------------------------------------------------
+
+        var font_descr = new Pango.FontDescription();
+
+        font_descr.set_family(_SANS_FONT);
+
+        font_descr.set_size((int)((12 / PT) * Pango.SCALE));
+
+        font_descr.set_weight(Pango.Weight.SEMIBOLD);
+
+        var layout = Pango.cairo_create_layout(report);
+
+        layout.set_font_description(font_descr);
+
+        // For Cairo-only output.
+//      report.select_font_face(_SANS_FONT, FontSlant.NORMAL,
+//                                          FontWeight.BOLD);
+//      report.set_font_size((16 / PT));
+//      var font_matrix = new Matrix.identity();
+//      report.get_font_matrix(out(font_matrix)); font_matrix.scale(1, -1);
+//      report.set_font_matrix(font_matrix);
+
+        report.set_source_rgb((255 / FF),                   // <== _WHITE_COLOR
+                              (255 / FF),                   //        (#ffffff)
+                              (255 / FF));
+
+        table_headers.insert(hdr_set[0], _ARCH_HEADER);
+        table_headers.insert(hdr_set[1], _REPO_HEADER);
+        table_headers.insert(hdr_set[2], _NAME_HEADER);
+        table_headers.insert(hdr_set[3], _VERSION_HEADER);
+        table_headers.insert(hdr_set[4], _LAST_UPDATED_HEADER);
+        table_headers.insert(hdr_set[5], _FLAG_DATE_HEADER);
+
+        uint x = 0;
+
+        // Printing table headers.
+        for (uint i = 0; i < num_hdrs; i++) {
+                   if (i == 1) {
+                x =  17;
+            } else if (i == 2) {
+                x =  40;
+            } else if (i == 3) {
+                x =  78;
+            } else if (i == 4) {
+                x = 107;
+            } else if (i == 5) {
+                x = 146;
+            } else { // <== Includes (i == 0).
+                x =   0;
+            }
+
+            report.move_to(((20 + x) / MM), ((ZZ - 270) / MM));
+
+            // Cairo-only output.
+//          report.show_text(table_headers.lookup(hdr_set[i]));
+
+            // Pango/Cairo output.
+            // See for ref.: https://www.cairographics.org/FAQ/#using_pango .
+            layout.set_text(table_headers.lookup(hdr_set[i]), -1);
+            Pango.cairo_show_layout_line(report, layout.get_line_readonly(0));
+        }
+
+        // --- Table rows -----------------------------------------------------
+
+        font_descr.set_size((int)((8 / PT) * Pango.SCALE));
+
+        font_descr.set_weight(Pango.Weight.NORMAL);
+
+        layout.set_font_description(font_descr);
+
+        // For Cairo-only output.
+//      report.select_font_face(_SANS_FONT, FontSlant.NORMAL,
+//                                          FontWeight.NORMAL);
+//      report.set_font_size((11 / PT));
+//      report.get_font_matrix(out(font_matrix)); font_matrix.scale(1, -1);
+//      report.set_font_matrix(font_matrix);
+
+        uint y = 0;
+
+        // Printing table rows.
+//      for (uint i = 0; i <           num_rows; i++) {
+        for (uint i = 0; i < MAX_ROWS_IN_A_PAGE; i++) {
+            if ((i & 1) == 1) {
+                report.set_source_rgb((221 / FF),       // <== _RAINY_DAY_COLOR
+                                      (221 / FF),       //            (#dddddd)
+                                      (221 / FF));
+
+                report.rectangle((              17       / MM),
+                                 (((ZZ - 6) - (260 - y)) / MM),
+                                 (             176       / MM),
+                                 (               6       / MM));
+
+                report.fill();
+            }
+
+            report.set_source_rgb((0 / FF),                 // <== _BLACK_COLOR
+                                  (0 / FF),                 //        (#000000)
+                                  (0 / FF));
+
+            for (uint j = 0; j < num_hdrs; j++) {
+                       if (j == 1) {
+                    x =  17;
+                } else if (j == 2) {
+                    x =  40;
+                } else if (j == 3) {
+                    x =  78;
+                } else if (j == 4) {
+                    x = 123;
+                } else if (j == 5) {
+                    x = 148;
+                } else { // <== Includes (j == 0).
+                    x =   0;
+                }
+
+                report.move_to(((20 + x) / MM), ((ZZ - (262 - y)) / MM));
+
+                // Cairo-only output.
+//              report.show_text(row_set[i,j]);
+
+                // Pango/Cairo output.
+                layout.set_text(row_set[i,j], -1);
+                Pango.cairo_show_layout_line(report,
+                                             layout.get_line_readonly(0));
+            }
+
+            y += 6;
+        }
+
+        // --- Footer bar -----------------------------------------------------
+
+        report.set_source_rgb((170 / FF),       // <== _VERY_LIGHT_COBALT_COLOR
+                              (170 / FF),       //                    (#aaaaaa)
+                              (170 / FF));
+
+        report.rectangle((            17  / MM),
+                         (((ZZ - 6) - 20) / MM),
+                         (           176  / MM),
+                         (             6  / MM));
+
+        report.fill();
+
+        // --- Footer txt -----------------------------------------------------
+
+        font_descr.set_family(_SERIF_FONT);
+
+        font_descr.set_size((int)((9 / PT) * Pango.SCALE));
+
+        font_descr.set_weight(Pango.Weight.SEMIBOLD);
+
+        layout.set_font_description(font_descr);
+
+        // For Cairo-only output.
+//      report.select_font_face(_SERIF_FONT, FontSlant.NORMAL,
+//                                           FontWeight.BOLD);
+//      report.set_font_size((12 / PT));
+//      report.get_font_matrix(out(font_matrix)); font_matrix.scale(1, -1);
+//      report.set_font_matrix(font_matrix);
+
+        report.set_source_rgb((238 / FF),           // <== _YET_NOT_WHITE_COLOR
+                              (238 / FF),           //                (#eeeeee)
+                              (238 / FF));
+
+        report.move_to((20 / MM), ((ZZ - 22) / MM));
+
+        // Cairo-only output.
+//      report.show_text(num_rows.to_string() + _ROWS_IN_SET_FOOTER
+//                     + _ROWS_SHOWN_FOOTER_1 + MAX_ROWS_IN_A_PAGE.to_string()
+//                     + _ROWS_SHOWN_FOOTER_2);
+
+        // Pango/Cairo output.
+        layout.set_text(num_rows.to_string() + _ROWS_IN_SET_FOOTER
+                      + _ROWS_SHOWN_FOOTER_1 + MAX_ROWS_IN_A_PAGE.to_string()
+                      + _ROWS_SHOWN_FOOTER_2, -1);
+        Pango.cairo_show_layout_line(report, layout.get_line_readonly(0));
+
+        // --------------------------------------------------------------------
 
         return ret;
     }
