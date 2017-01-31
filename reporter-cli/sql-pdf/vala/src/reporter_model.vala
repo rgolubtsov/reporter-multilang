@@ -116,7 +116,7 @@ class ReporterModel {
         // Preparing the SQL statement.
         var ret = dbcnx.prepare_v2(sql_select, sql_select.length, out(stmt));
 
-        if (ret != OK) {
+        if ((ret != OK) || (stmt == null)) {
             row_set = {{},{}}; hdr_set = {}; return row_set;
         }
 
