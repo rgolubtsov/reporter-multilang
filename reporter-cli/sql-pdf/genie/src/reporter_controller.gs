@@ -143,10 +143,10 @@ namespace CliSqlPdf
             if (num_hdrs == 0)
                 ret = Posix.EXIT_FAILURE
 
-                stdout.printf(aux.S_FMT, __name__
-                            + aux.COLON_SPACE_SEP + aux.ERROR_PREFIX
-                            + aux.COLON_SPACE_SEP + aux.ERROR_NO_DATA
-                                                  + aux.NEW_LINE)
+                stdout.printf(aux._S_FMT, __name__
+                            + aux._COLON_SPACE_SEP + aux._ERROR_PREFIX
+                            + aux._COLON_SPACE_SEP + aux._ERROR_NO_DATA
+                                                   + aux._NEW_LINE)
 
                 return ret
 
@@ -157,10 +157,10 @@ namespace CliSqlPdf
 
             dbg_output.populate(row_set)
 
-            stdout.printf(aux.S_FMT, dbg_output.render())
+            stdout.printf(aux._S_FMT, dbg_output.render())
 
-            stdout.printf(aux.S_FMT, num_rows.to_string() + _ROWS_IN_SET_FOOTER
-                                           + aux.NEW_LINE + aux.NEW_LINE)
+            stdout.printf(aux._S_FMT,num_rows.to_string() + _ROWS_IN_SET_FOOTER
+                                          + aux._NEW_LINE + aux._NEW_LINE)
             // ----------------------------------------------------------------
             // --- Debug output - End -----------------------------------------
             // ----------------------------------------------------------------
@@ -185,17 +185,17 @@ namespace CliSqlPdf
                                                                 num_rows)
 
                 if (ret == Posix.EXIT_FAILURE)
-                    stdout.printf(aux.S_FMT, __name__
-                                + aux.COLON_SPACE_SEP + aux.ERROR_PREFIX
-                                + aux.COLON_SPACE_SEP + aux.ERROR_NO_REPORT_GEN
-                                                      + aux.NEW_LINE)
+                    stdout.printf(aux._S_FMT, __name__
+                              + aux._COLON_SPACE_SEP + aux._ERROR_PREFIX
+                              + aux._COLON_SPACE_SEP + aux._ERROR_NO_REPORT_GEN
+                                                     + aux._NEW_LINE)
 
                     return ret
 
                 report.show_page()
 
-            stdout.printf(aux.S_FMT,_PDF_REPORT_SAVED_MSG + aux.COLON_SPACE_SEP
-                                   + pdf_report_path      + aux.NEW_LINE)
+            stdout.printf(aux._S_FMT,_PDF_REPORT_SAVED_MSG+aux._COLON_SPACE_SEP
+                                    + pdf_report_path     +aux._NEW_LINE)
             // ----------------------------------------------------------------
             // --- Generating the PDF report - End ----------------------------
             // ----------------------------------------------------------------
@@ -434,19 +434,19 @@ namespace CliSqlPdf
          *       will be passed through cli args.
          */
         def _get_pdf_report_path(exec: string, aux: ControllerHelper): string
-            var exec_path = exec.split(aux.SLASH)
+            var exec_path = exec.split(aux._SLASH)
 
 //          for i: uint = 0 to (exec_path.length - 1)
-//              stdout.printf(aux.S_FMT, exec_path[i] + aux.NEW_LINE)
+//              stdout.printf(aux._S_FMT, exec_path[i] + aux._NEW_LINE)
 
             exec_path.resize(exec_path.length - 1)
             exec_path       [exec_path.length - 1] = PDF_REPORT_DIR
 
 //          for i: uint = 0 to (exec_path.length - 1)
-//              stdout.printf(aux.S_FMT, exec_path[i] + aux.NEW_LINE)
+//              stdout.printf(aux._S_FMT, exec_path[i] + aux._NEW_LINE)
 
-            var pdf_report_path=(string.joinv(aux.SLASH, exec_path)
-                                            + aux.SLASH + PDF_REPORT_FILENAME)
+            var pdf_report_path=(string.joinv(aux._SLASH, exec_path)
+                                            + aux._SLASH + PDF_REPORT_FILENAME)
 
             return pdf_report_path
 

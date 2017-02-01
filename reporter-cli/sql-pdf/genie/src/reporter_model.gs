@@ -95,7 +95,7 @@ namespace CliSqlPdf
             var num_hdrs = res_set.num_fields()
 #elif (POSTGRES)
             // Preparing the SQL statement.
-            res_set: Result = dbcnx.prepare(aux.EMPTY_STRING, sql_select, null)
+            res_set:Result = dbcnx.prepare(aux._EMPTY_STRING, sql_select, null)
 
             if ((res_set == null)
                 || (res_set.get_status() != ExecStatus.COMMAND_OK))
@@ -106,8 +106,8 @@ namespace CliSqlPdf
                 return row_set
 
             // Executing the SQL statement.
-            res_set = dbcnx.exec_prepared(aux.EMPTY_STRING, 0, null, null,
-                                                      null, 0)
+            res_set = dbcnx.exec_prepared(aux._EMPTY_STRING, 0, null, null,
+                                                       null, 0)
 
             if ((res_set == null)
                 || (res_set.get_status() != ExecStatus.TUPLES_OK))
@@ -189,7 +189,7 @@ namespace CliSqlPdf
 
 #if   (!POSTGRES)
                     if (row_set[i,j] == null)
-                        row_set[i,j] = aux.EMPTY_STRING
+                        row_set[i,j] = aux._EMPTY_STRING
 #endif
 
 #if   (SQLITE)
@@ -268,7 +268,7 @@ namespace CliSqlPdf
 
 #if   (MYSQL)
             // Binding values to SQL placeholders.
-            sql_select = sql_select.replace(aux.QM, aux.S_FMT).printf(from, to)
+            sql_select = sql_select.replace(aux._QM,aux._S_FMT).printf(from,to)
 
             // Executing the SQL statement.
             var ret = dbcnx.real_query(sql_select, sql_select.length)
@@ -295,7 +295,7 @@ namespace CliSqlPdf
             var num_hdrs = res_set.num_fields()
 #elif (POSTGRES)
             // Preparing the SQL statement.
-            res_set: Result = dbcnx.prepare(aux.EMPTY_STRING, sql_select, null)
+            res_set:Result = dbcnx.prepare(aux._EMPTY_STRING, sql_select, null)
 
             if ((res_set == null)
                 || (res_set.get_status() != ExecStatus.COMMAND_OK))
@@ -306,8 +306,8 @@ namespace CliSqlPdf
                 return row_set
 
             // Executing the SQL statement.
-            res_set = dbcnx.exec_prepared(aux.EMPTY_STRING, 2, {from, to},
-                                                null, null, 0)
+            res_set = dbcnx.exec_prepared(aux._EMPTY_STRING, 2, {from, to},
+                                                 null, null, 0)
 
             if ((res_set == null)
                 || (res_set.get_status() != ExecStatus.TUPLES_OK))
@@ -321,10 +321,10 @@ namespace CliSqlPdf
             var num_hdrs = res_set.get_n_fields()
 #elif (SQLITE)
             /*
-             * Removing single quotation marks from SQL placehldrs
+             * Removing single quotation marks from SQL placeholders
              * (preprocessing).
              */
-            sql_select = sql_select.replace(aux.SQ, aux.EMPTY_STRING)
+            sql_select = sql_select.replace(aux._SQ, aux._EMPTY_STRING)
 
             stmt: Statement
 
@@ -395,7 +395,7 @@ namespace CliSqlPdf
 
 #if   (!POSTGRES)
                     if (row_set[i,j] == null)
-                        row_set[i,j] = aux.EMPTY_STRING
+                        row_set[i,j] = aux._EMPTY_STRING
 #endif
 
 #if   (SQLITE)
