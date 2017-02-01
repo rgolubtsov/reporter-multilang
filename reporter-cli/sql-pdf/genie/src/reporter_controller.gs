@@ -1,5 +1,5 @@
 [indent=4]
-/* reporter-cli/sql-pdf/vala/src/reporter_controller.vala
+/* reporter-cli/sql-pdf/genie/src/reporter_controller.gs
  * ============================================================================
  * Reporter Multilang. Version 0.1
  * ============================================================================
