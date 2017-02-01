@@ -27,7 +27,6 @@
 #endif
 
 namespace CliSqlPdf {
-
 /** The model class of the application. */
 class ReporterModel {
     /**
@@ -90,7 +89,7 @@ class ReporterModel {
         var num_hdrs = res_set.num_fields();
  #elif (POSTGRES)
         // Preparing the SQL statement.
-        Result res_set = dbcnx.prepare(aux._EMPTY_STRING, sql_select, null);
+        Result res_set = dbcnx.prepare(aux.EMPTY_STRING, sql_select, null);
 
         if ((res_set == null)
             || (res_set.get_status() != ExecStatus.COMMAND_OK)) {
@@ -99,8 +98,8 @@ class ReporterModel {
         }
 
         // Executing the SQL statement.
-        res_set = dbcnx.exec_prepared(aux._EMPTY_STRING, 0, null, null, null,
-                                                         0);
+        res_set = dbcnx.exec_prepared(aux.EMPTY_STRING, 0, null, null, null,
+                                                        0);
 
         if ((res_set == null)
             || (res_set.get_status() != ExecStatus.TUPLES_OK)) {
@@ -173,7 +172,7 @@ class ReporterModel {
 
    #if (!POSTGRES)
                 if (row_set[i,j] == null) {
-                    row_set[i,j] = aux._EMPTY_STRING;
+                    row_set[i,j] = aux.EMPTY_STRING;
                 }
 #endif
             }
@@ -254,7 +253,7 @@ class ReporterModel {
 
    #if (MYSQL)
         // Binding values to SQL placeholders.
-        sql_select = sql_select.replace(aux._QM, aux._S_FMT).printf(from, to);
+        sql_select = sql_select.replace(aux.QM, aux.S_FMT).printf(from, to);
 
         // Executing the SQL statement.
         var ret = dbcnx.real_query(sql_select, sql_select.length);
@@ -277,7 +276,7 @@ class ReporterModel {
         var num_hdrs = res_set.num_fields();
  #elif (POSTGRES)
         // Preparing the SQL statement.
-        Result res_set = dbcnx.prepare(aux._EMPTY_STRING, sql_select, null);
+        Result res_set = dbcnx.prepare(aux.EMPTY_STRING, sql_select, null);
 
         if ((res_set == null)
             || (res_set.get_status() != ExecStatus.COMMAND_OK)) {
@@ -286,8 +285,8 @@ class ReporterModel {
         }
 
         // Executing the SQL statement.
-        res_set = dbcnx.exec_prepared(aux._EMPTY_STRING, 2, {from, to}, null,
-                                                   null, 0);
+        res_set = dbcnx.exec_prepared(aux.EMPTY_STRING, 2, {from, to}, null,
+                                                  null, 0);
 
         if ((res_set == null)
             || (res_set.get_status() != ExecStatus.TUPLES_OK)) {
@@ -299,7 +298,7 @@ class ReporterModel {
         var num_hdrs = res_set.get_n_fields();
  #elif (SQLITE)
         // Removing single quotation marks from SQL placehldrs (preprocessing).
-        sql_select = sql_select.replace(aux._SQ, aux._EMPTY_STRING);
+        sql_select = sql_select.replace(aux.SQ, aux.EMPTY_STRING);
 
         Statement stmt;
 
@@ -363,7 +362,7 @@ class ReporterModel {
 
    #if (!POSTGRES)
                 if (row_set[i,j] == null) {
-                    row_set[i,j] = aux._EMPTY_STRING;
+                    row_set[i,j] = aux.EMPTY_STRING;
                 }
 #endif
             }
@@ -379,7 +378,6 @@ class ReporterModel {
     /** Default constructor. */
     public ReporterModel() {}
 }
-
 } // namespace CliSqlPdf
 
 // vim:set nu:et:ts=4:sw=4:

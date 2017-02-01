@@ -29,7 +29,6 @@
 using Cairo;
 
 namespace CliSqlPdf {
-
 /** The controller class of the application. */
 class ReporterController {
     /**
@@ -144,10 +143,10 @@ class ReporterController {
         if (num_hdrs == 0) {
             ret = Posix.EXIT_FAILURE;
 
-            stdout.printf(aux._S_FMT, __name__
-                        + aux._COLON_SPACE_SEP + aux._ERROR_PREFIX
-                        + aux._COLON_SPACE_SEP + aux._ERROR_NO_DATA
-                                               + aux._NEW_LINE);
+            stdout.printf(aux.S_FMT, __name__
+                        + aux.COLON_SPACE_SEP + aux.ERROR_PREFIX
+                        + aux.COLON_SPACE_SEP + aux.ERROR_NO_DATA
+                                              + aux.NEW_LINE);
 
             return ret;
         }
@@ -159,10 +158,10 @@ class ReporterController {
 
         dbg_output.populate(row_set);
 
-        stdout.printf(aux._S_FMT, dbg_output.render());
+        stdout.printf(aux.S_FMT, dbg_output.render());
 
-        stdout.printf(aux._S_FMT, num_rows.to_string() + _ROWS_IN_SET_FOOTER
-                                       + aux._NEW_LINE + aux._NEW_LINE);
+        stdout.printf(aux.S_FMT, num_rows.to_string() + _ROWS_IN_SET_FOOTER
+                                       + aux.NEW_LINE + aux.NEW_LINE);
         // --------------------------------------------------------------------
         // --- Debug output - End ---------------------------------------------
         // --------------------------------------------------------------------
@@ -185,10 +184,10 @@ class ReporterController {
             ret=_page_body_draw(report, hdr_set, row_set, num_hdrs, num_rows);
 
             if (ret == Posix.EXIT_FAILURE) {
-                stdout.printf(aux._S_FMT, __name__
-                            + aux._COLON_SPACE_SEP + aux._ERROR_PREFIX
-                            + aux._COLON_SPACE_SEP + aux._ERROR_NO_REPORT_GEN
-                                                   + aux._NEW_LINE);
+                stdout.printf(aux.S_FMT, __name__
+                            + aux.COLON_SPACE_SEP + aux.ERROR_PREFIX
+                            + aux.COLON_SPACE_SEP + aux.ERROR_NO_REPORT_GEN
+                                                  + aux.NEW_LINE);
 
                 return ret;
             }
@@ -196,8 +195,8 @@ class ReporterController {
             report.show_page();
         }
 
-        stdout.printf(aux._S_FMT, _PDF_REPORT_SAVED_MSG + aux._COLON_SPACE_SEP
-                                 + pdf_report_path      + aux._NEW_LINE);
+        stdout.printf(aux.S_FMT, _PDF_REPORT_SAVED_MSG + aux.COLON_SPACE_SEP
+                                + pdf_report_path      + aux.NEW_LINE);
         // --------------------------------------------------------------------
         // --- Generating the PDF report - End --------------------------------
         // --------------------------------------------------------------------
@@ -439,21 +438,21 @@ class ReporterController {
      *       will be passed through cli args.
      */
     string _get_pdf_report_path(string exec, ControllerHelper aux) {
-        var exec_path = exec.split(aux._SLASH);
+        var exec_path = exec.split(aux.SLASH);
 
 //      for (uint i = 0; i < exec_path.length; i++) {
-//          stdout.printf(aux._S_FMT, exec_path[i] + aux._NEW_LINE);
+//          stdout.printf(aux.S_FMT, exec_path[i] + aux.NEW_LINE);
 //      }
 
         exec_path.resize(exec_path.length - 1);
         exec_path       [exec_path.length - 1] = PDF_REPORT_DIR;
 
 //      for (uint i = 0; i < exec_path.length; i++) {
-//          stdout.printf(aux._S_FMT, exec_path[i] + aux._NEW_LINE);
+//          stdout.printf(aux.S_FMT, exec_path[i] + aux.NEW_LINE);
 //      }
 
-        var pdf_report_path = string.joinv(aux._SLASH, exec_path)
-                                         + aux._SLASH + PDF_REPORT_FILENAME;
+        var pdf_report_path = string.joinv(aux.SLASH, exec_path)
+                                         + aux.SLASH + PDF_REPORT_FILENAME;
 
         return pdf_report_path;
     }
@@ -461,7 +460,6 @@ class ReporterController {
     /** Default constructor. */
     public ReporterController() {}
 }
-
 } // namespace CliSqlPdf
 
 // vim:set nu:et:ts=4:sw=4:
