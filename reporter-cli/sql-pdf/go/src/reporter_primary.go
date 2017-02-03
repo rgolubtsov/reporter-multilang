@@ -21,6 +21,14 @@
 package main
 
 import "os"
+import "reflect"
+import "fmt"
+import "strconv"
+
+// Database switches. They indicate which database to connect to.
+const _MY_CONNECT string = "mysql"
+const _PG_CONNECT string = "postgres"
+const _SL_CONNECT string = "sqlite"
 
 /**
  * Constant: The database server name.
@@ -79,11 +87,54 @@ type ReporterPrimary struct {
 func (ReporterPrimary) startup(args []string) int {
     var ret int = _EXIT_SUCCESS
 
-    if (args[0] == _EMPTY_STRING) {
+    var class___ ReporterPrimary
+    var __name__ string = reflect.TypeOf(class___).Name()
+
+    __file__  := args[0]
+    db_switch := args[1]
+
+    var mycnx bool = false // <== Suppose the database is not MySQL.
+    var pgcnx bool = false // <== Suppose the database is not PostgreSQL.
+    var slcnx bool = false // <== Suppose the database is not SQLite.
+
+    // Trying to connect to the database.
+           if (db_switch == _MY_CONNECT) {
+        // TODO: Implement connecting to MySQL database.
+
+        mycnx = true
+    } else if (db_switch == _PG_CONNECT) {
+        // TODO: Implement connecting to PostgreSQL database.
+
+        pgcnx = true
+    } else if (db_switch == _SL_CONNECT) {
+        // TODO: Implement connecting to SQLite database.
+
+        slcnx = true
+    } else {
         ret = _EXIT_FAILURE
+
+        fmt.Printf(_S_FMT, __name__ +
+                   _COLON_SPACE_SEP + _ERROR_PREFIX        +
+                   _COLON_SPACE_SEP + _ERROR_NO_DB_CONNECT +
+                   _EMPTY_STRING    + _NEW_LINE)
+
+//      return ret
     }
 
     // TODO: Implement all the rest...
+
+    // ------------------------------------------------------------------------
+    // --- Debug output - Begin -----------------------------------------------
+    // ------------------------------------------------------------------------
+    fmt.Printf(_S_FMT, __name__ + _COLON_SPACE_SEP          + __file__ +
+               _COLON_SPACE_SEP + db_switch                 +
+               _COLON_SPACE_SEP + strconv.FormatBool(mycnx) +
+               _COLON_SPACE_SEP + strconv.FormatBool(pgcnx) +
+               _COLON_SPACE_SEP + strconv.FormatBool(slcnx) +
+               _COLON_SPACE_SEP + strconv.Itoa(ret)         + _NEW_LINE)
+    // ------------------------------------------------------------------------
+    // --- Debug output - End -------------------------------------------------
+    // ------------------------------------------------------------------------
 
     return ret
 }
@@ -107,13 +158,14 @@ func (ReporterPrimary) _get_sqlite_db_path(exec string) string {
 func main(/*args []string*/) {
     var args_len uint = uint(len(os.Args) - 1)
 
-    var args [1]string
+    var args [2]string
+
+    args[0] = os.Args[0]
+    args[1] = _EMPTY_STRING
 
     // Checking for cli args presence.
     if (args_len > 0) {
-        args[0] = os.Args[1]
-    } else {
-        args[0] = _EMPTY_STRING
+        args[1] = os.Args[1]
     }
 
     // Instantiating the main class.
