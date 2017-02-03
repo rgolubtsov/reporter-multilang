@@ -22,8 +22,52 @@ package main
 
 import "os"
 
+/**
+ * Constant: The database server name.
+ *     TODO: Move to cli args.
+ */
+const HOSTNAME string = "10.0.2.100"
+//const HOSTNAME string = "localhost"
+
+/**
+ * Constant: The username to connect to the database.
+ *     TODO: Move to cli args.
+ */
+const USERNAME string = "reporter"
+
+/**
+ * Constant: The password to connect to the database.
+ *     TODO: Move to cli args.
+ */
+const PASSWORD string = "retroper12345678"
+
+/**
+ * Constant: The database name.
+ *     TODO: Move to cli args.
+ */
+const DATABASE string = "reporter_multilang"
+
+/**
+ * Constant: The data source name (DSN) prefix for PostgreSQL database --
+ *           the logical database identifier prefix.
+ *     TODO: Move to the startup() method.
+ */
+const PG_DSN_PREFIX string = "postgres"
+
+/**
+ * Constant: The SQLite database location.
+ *     TODO: Move to cli args.
+ */
+const SQLITE_DB_DIR string = "lib/data"
+
 /** The main class of the application. */
-type ReporterPrimary struct {}
+type ReporterPrimary struct {
+    /*
+     * Attached methods:
+     *   - startup(args []string) int
+     *   - _get_sqlite_db_path(exec string) string
+     */
+}
 
 /**
  * Starts up the app.
@@ -33,13 +77,30 @@ type ReporterPrimary struct {}
  * @return The exit code indicating the app overall execution status.
  */
 func (ReporterPrimary) startup(args []string) int {
-    var ret int = 0
+    var ret int = _EXIT_SUCCESS
 
-    if args[0] == "" {
-        ret = 1
+    if (args[0] == _EMPTY_STRING) {
+        ret = _EXIT_FAILURE
     }
 
+    // TODO: Implement all the rest...
+
     return ret
+}
+
+/*
+ * Helper method.
+ * Returns the SQLite database path,
+ * relative to the executable's location.
+ */
+func (ReporterPrimary) _get_sqlite_db_path(exec string) string {
+    // TODO: Split the executable's location path into separate dirs.
+    exec_path := exec
+
+    // TODO: Calculate and construct the SQLite DB path from separate dirs.
+    sqlite_db_path := exec_path
+
+    return sqlite_db_path
 }
 
 // The application entry point.
@@ -48,10 +109,11 @@ func main(/*args []string*/) {
 
     var args [1]string
 
-    if args_len > 0 {
+    // Checking for cli args presence.
+    if (args_len > 0) {
         args[0] = os.Args[1]
     } else {
-        args[0] = ""
+        args[0] = _EMPTY_STRING
     }
 
     // Instantiating the main class.
