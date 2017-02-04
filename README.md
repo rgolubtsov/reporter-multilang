@@ -8,13 +8,14 @@
 * SQL-PDF :small_blue_diamond: Python 3 implementation (complete)
 * SQL-PDF :small_blue_diamond: Vala implementation (complete)
 * SQL-PDF :small_blue_diamond: Genie implementation (complete)
-* SQL-PDF :small_blue_diamond: JavaScript, Go, and Java implementations (planned)
+* SQL-PDF :small_blue_diamond: Go implementation (in progress)
+* SQL-PDF :small_blue_diamond: JavaScript, D, and Java implementations (planned)
 
 ---
 
 * SQL-CSV :small_blue_diamond: Perl 5 (5.10+) implementation (planned)
 * SQL-CSV :small_blue_diamond: Python 3 implementation (planned)
-* SQL-CSV :small_blue_diamond: Vala, Genie, JavaScript, Go, and Java implementations (planned)
+* SQL-CSV :small_blue_diamond: Vala, Genie, Go, JavaScript, D, and Java implementations (planned)
 
 ---
 
