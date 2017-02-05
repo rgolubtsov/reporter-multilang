@@ -28,23 +28,40 @@ SRCS       = reporter_primary.go    \
              reporter_controller.go \
              reporter_model.go      \
              controller_helper.go
+PKG_DIR    = ../pkg
 BIN_DIR    = ../bin
 OBJ_DIR    = ../obj
 
 # Specify flags and other vars here.
-GO            = go tool
-GO_COMP_FLAGS = compile -complete -o
-GO_LINK_FLAGS = link -s -w -o
+EXPORT        = export
+GO_ENV        = go env
+GREP          = grep
+SED           = sed
+SEDFLAGS      = -e
+SEDREGEX      = 's/\"//g'
 
-MV      = mv
-MVFLAGS = -v
+EV_GOOS       = GOOS
+EV_GOARCH     = GOARCH
+EXP_EV_GOOS   = $(EXPORT) `$(GO_ENV) | $(GREP) $(EV_GOOS)   | $(SED) $(SEDFLAGS) $(SEDREGEX)`
+EXP_EV_GOARCH = $(EXPORT) `$(GO_ENV) | $(GREP) $(EV_GOARCH) | $(SED) $(SEDFLAGS) $(SEDREGEX)`
+
+GO_TOOL       = go tool
+GO_COMP_FLAGS = compile -complete -o $(DEPS) -I $(PKG_DIR)
+GO_LINK_FLAGS = link -s -w        -o $(EXEC) -L $(PKG_DIR)
+
+MV            = mv
+MVFLAGS       = -v
 
 # Making the target.
 $(DEPS): $(SRCS)
-	$(GO) $(GO_COMP_FLAGS) $(DEPS) $(SRCS)
+	$(EXP_EV_GOOS); \
+	$(EXP_EV_GOARCH); \
+	$(GO_TOOL) $(GO_COMP_FLAGS)/$${$(EV_GOOS)}_$${$(EV_GOARCH)} $(SRCS)
 
 $(EXEC): $(DEPS)
-	$(GO) $(GO_LINK_FLAGS) $(EXEC) $(DEPS)
+	$(EXP_EV_GOOS); \
+	$(EXP_EV_GOARCH); \
+	$(GO_TOOL) $(GO_LINK_FLAGS)/$${$(EV_GOOS)}_$${$(EV_GOARCH)} $(DEPS)
 
 .PHONY: all clean
 

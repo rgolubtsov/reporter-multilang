@@ -22,6 +22,8 @@ package main
 
 import "os"
 import "reflect"
+import "database/sql"
+import _ "github.com/go-sql-driver/mysql"
 import "fmt"
 import "strconv"
 
@@ -29,13 +31,6 @@ import "strconv"
 const _MY_CONNECT string = "mysql"
 const _PG_CONNECT string = "postgres"
 const _SL_CONNECT string = "sqlite"
-
-/**
- * Constant: The database server name.
- *     TODO: Move to cli args.
- */
-const HOSTNAME string = "10.0.2.100"
-//const HOSTNAME string = "localhost"
 
 /**
  * Constant: The username to connect to the database.
@@ -50,17 +45,25 @@ const USERNAME string = "reporter"
 const PASSWORD string = "retroper12345678"
 
 /**
+ * Constant: The database server name.
+ *     TODO: Move to cli args.
+ */
+const HOSTNAME string = "10.0.2.100:3306"
+//const HOSTNAME string = "localhost:3306"
+
+/**
  * Constant: The database name.
  *     TODO: Move to cli args.
  */
 const DATABASE string = "reporter_multilang"
 
 /**
- * Constant: The data source name (DSN) prefix for PostgreSQL database --
- *           the logical database identifier prefix.
+ * Constant: The data source name (DSN) for MySQL database --
+ *           the logical database identifier.
  *     TODO: Move to the startup() method.
  */
-const PG_DSN_PREFIX string = "postgres"
+const MY_DSN string = USERNAME + _COLON   + PASSWORD + _AT    +
+                      "tcp("   + HOSTNAME + ")"      + _SLASH + DATABASE
 
 /**
  * Constant: The SQLite database location.
@@ -86,6 +89,7 @@ type ReporterPrimary struct {
  */
 func (ReporterPrimary) startup(args []string) int {
     var ret int = _EXIT_SUCCESS
+    var e   error
 
     var class___ ReporterPrimary
     var __name__ string = reflect.TypeOf(class___).Name()
@@ -93,13 +97,14 @@ func (ReporterPrimary) startup(args []string) int {
     __file__  := args[0]
     db_switch := args[1]
 
-    var mycnx bool = false // <== Suppose the database is not MySQL.
-    var pgcnx bool = false // <== Suppose the database is not PostgreSQL.
-    var slcnx bool = false // <== Suppose the database is not SQLite.
+    var cnx   *sql.DB = nil
+    var mycnx  bool   = false // <== Suppose the database is not MySQL.
+    var pgcnx  bool   = false // <== Suppose the database is not PostgreSQL.
+    var slcnx  bool   = false // <== Suppose the database is not SQLite.
 
     // Trying to connect to the database.
            if (db_switch == _MY_CONNECT) {
-        // TODO: Implement connecting to MySQL database.
+        cnx, e = sql.Open(_MY_CONNECT, MY_DSN)
 
         mycnx = true
     } else if (db_switch == _PG_CONNECT) {
@@ -110,18 +115,45 @@ func (ReporterPrimary) startup(args []string) int {
         // TODO: Implement connecting to SQLite database.
 
         slcnx = true
+    }
+
+    if (e != nil) {
+        ret = _EXIT_FAILURE
+
+        fmt.Printf(_S_FMT, __name__ + _COLON_SPACE_SEP + _ERROR_PREFIX +
+                                      _COLON_SPACE_SEP + e.Error() + _NEW_LINE)
+
+        return ret
+    }
+
+    if (cnx != nil) {
+        // Checking the database connection.
+        e = cnx.Ping()
+
+        if (e != nil) {
+            ret = _EXIT_FAILURE
+
+            fmt.Printf(_S_FMT, __name__ + _COLON_SPACE_SEP+_ERROR_PREFIX +
+                                          _COLON_SPACE_SEP+e.Error()+_NEW_LINE)
+
+            return ret
+        }
+
+        // TODO: Implement generating the PDF report.
+
+        fmt.Printf(_S_FMT, __name__ + _COLON_SPACE_SEP + MY_DSN + _NEW_LINE)
+
+        // Disconnecting from the database.
+        cnx.Close()
     } else {
         ret = _EXIT_FAILURE
 
-        fmt.Printf(_S_FMT, __name__ +
-                   _COLON_SPACE_SEP + _ERROR_PREFIX        +
-                   _COLON_SPACE_SEP + _ERROR_NO_DB_CONNECT +
-                   _EMPTY_STRING    + _NEW_LINE)
+        fmt.Printf(_S_FMT, __name__ + _COLON_SPACE_SEP + _ERROR_PREFIX +
+                                      _COLON_SPACE_SEP + _ERROR_NO_DB_CONNECT +
+                                                         _NEW_LINE)
 
-//      return ret
+        return ret
     }
-
-    // TODO: Implement all the rest...
 
     // ------------------------------------------------------------------------
     // --- Debug output - Begin -----------------------------------------------
