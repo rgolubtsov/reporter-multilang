@@ -40,7 +40,7 @@ const _CURRENT_DIR     string = "./"
 
 // Common error messages.
 const _ERROR_PREFIX        string = "Error"
-const _ERROR_NO_DB_CONNECT string = "Could not connect to the database. "
+const _ERROR_NO_DB_CONNECT string = "Could not connect to the database."
 const _ERROR_NO_DATA       string = "No data found."
 const _ERROR_NO_REPORT_GEN string = "Could not generate the report."
 
