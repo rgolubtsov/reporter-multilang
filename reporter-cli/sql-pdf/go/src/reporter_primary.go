@@ -24,6 +24,9 @@ import "os"
 import "reflect"
 import "database/sql"
 import _ "github.com/go-sql-driver/mysql"
+import _ "github.com/lib/pq"
+import _ "github.com/mattn/go-sqlite3"
+import "strings"
 import "fmt"
 import "strconv"
 
@@ -48,8 +51,8 @@ const PASSWORD string = "retroper12345678"
  * Constant: The database server name.
  *     TODO: Move to cli args.
  */
-const HOSTNAME string = "10.0.2.100:3306"
-//const HOSTNAME string = "localhost:3306"
+const HOSTNAME string = "10.0.2.100"
+//const HOSTNAME string = "localhost"
 
 /**
  * Constant: The database name.
@@ -57,13 +60,32 @@ const HOSTNAME string = "10.0.2.100:3306"
  */
 const DATABASE string = "reporter_multilang"
 
+// The MySQL DSN connection port number.
+const _MY_PORT string = "3306"
+
 /**
  * Constant: The data source name (DSN) for MySQL database --
  *           the logical database identifier.
  *     TODO: Move to the startup() method.
  */
-const MY_DSN string = USERNAME + _COLON   + PASSWORD + _AT    +
-                      "tcp("   + HOSTNAME + ")"      + _SLASH + DATABASE
+const MY_DSN string = USERNAME + _COLON +
+                      PASSWORD + _AT    + "tcp("   +
+                      HOSTNAME + _COLON + _MY_PORT + ")" + _SLASH +
+                      DATABASE
+
+// The PostgreSQL DSN connection options (params).
+const _PG_OPTS string = "sslmode=disable"
+
+/**
+ * Constant: The data source name (DSN) for PostgreSQL database --
+ *           the logical database identifier.
+ *     TODO: Move to the startup() method.
+ */
+const PG_DSN string = _PG_CONNECT + _COLON + _SLASH + _SLASH + USERNAME +
+                                                      _COLON + PASSWORD +
+                                                      _AT    + HOSTNAME +
+                                                      _SLASH + DATABASE +
+                                                      _QM    + _PG_OPTS
 
 /**
  * Constant: The SQLite database location.
@@ -102,20 +124,27 @@ func (ReporterPrimary) startup(args []string) int {
     var pgcnx  bool   = false // <== Suppose the database is not PostgreSQL.
     var slcnx  bool   = false // <== Suppose the database is not SQLite.
 
-    // Trying to connect to the database.
+    sqlite_db_path := _EMPTY_STRING
+
+    // Connecting to the database.
            if (db_switch == _MY_CONNECT) {
         cnx, e = sql.Open(_MY_CONNECT, MY_DSN)
 
         mycnx = true
     } else if (db_switch == _PG_CONNECT) {
-        // TODO: Implement connecting to PostgreSQL database.
+        cnx, e = sql.Open(_PG_CONNECT, PG_DSN)
 
         pgcnx = true
     } else if (db_switch == _SL_CONNECT) {
-        // TODO: Implement connecting to SQLite database.
+        sqlite_db_path = class___._get_sqlite_db_path(__file__)
+
+        cnx, e = sql.Open(_SL_CONNECT + "3", sqlite_db_path)
 
         slcnx = true
     }
+
+    // Disconnecting from the database (later).
+    defer cnx.Close()
 
     if (e != nil) {
         ret = _EXIT_FAILURE
@@ -141,10 +170,19 @@ func (ReporterPrimary) startup(args []string) int {
 
         // TODO: Implement generating the PDF report.
 
-        fmt.Printf(_S_FMT, __name__ + _COLON_SPACE_SEP + MY_DSN + _NEW_LINE)
+               if (mycnx) {
+            fmt.Printf(_S_FMT, __name__ + _COLON_SPACE_SEP + MY_DSN +
+                                          _NEW_LINE)
+        } else if (pgcnx) {
+            fmt.Printf(_S_FMT, __name__ + _COLON_SPACE_SEP + PG_DSN +
+                                          _NEW_LINE)
+        } else if (slcnx) {
+            fmt.Printf(_S_FMT, __name__ + _COLON_SPACE_SEP + sqlite_db_path +
+                                          _NEW_LINE)
+        }
 
         // Disconnecting from the database.
-        cnx.Close()
+//      cnx.Close()
     } else {
         ret = _EXIT_FAILURE
 
@@ -177,11 +215,23 @@ func (ReporterPrimary) startup(args []string) int {
  * relative to the executable's location.
  */
 func (ReporterPrimary) _get_sqlite_db_path(exec string) string {
-    // TODO: Split the executable's location path into separate dirs.
-    exec_path := exec
+    exec_path := strings.Split(exec, _SLASH)
 
-    // TODO: Calculate and construct the SQLite DB path from separate dirs.
-    sqlite_db_path := exec_path
+    var exec_path_len uint = uint(len(exec_path))
+
+//  for i := uint(0); i < exec_path_len; i++ {
+//      fmt.Printf(_S_FMT, exec_path[i] + _NEW_LINE)
+//  }
+
+    exec_path_new := make([]string, exec_path_len - 1)
+    copy(exec_path_new, exec_path)
+    exec_path_new[exec_path_len - 2] = SQLITE_DB_DIR
+
+//  for i := uint(0); i < (exec_path_len - 1); i++ {
+//      fmt.Printf(_S_FMT, exec_path_new[i] + _NEW_LINE)
+//  }
+
+    sqlite_db_path := strings.Join(exec_path_new, _SLASH) + _SLASH + DATABASE
 
     return sqlite_db_path
 }
