@@ -143,8 +143,10 @@ func (ReporterPrimary) startup(args []string) int {
         slcnx = true
     }
 
-    // Disconnecting from the database (later).
-    defer cnx.Close()
+    if (cnx != nil) {
+        // Disconnecting from the database (later).
+        defer cnx.Close()
+    }
 
     if (e != nil) {
         ret = _EXIT_FAILURE
