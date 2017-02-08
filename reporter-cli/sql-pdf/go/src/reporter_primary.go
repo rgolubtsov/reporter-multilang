@@ -30,7 +30,7 @@ import "strings"
 import "fmt"
 import "strconv"
 
-// Database switches. They indicate which database to connect to.
+/* Database switches. They indicate which database to connect to. */
 const _MY_CONNECT string = "mysql"
 const _PG_CONNECT string = "postgres"
 const _SL_CONNECT string = "sqlite"
@@ -60,7 +60,7 @@ const HOSTNAME string = "10.0.2.100"
  */
 const DATABASE string = "reporter_multilang"
 
-// The MySQL DSN connection port number.
+/* The MySQL DSN connection port number. */
 const _MY_PORT string = "3306"
 
 /**
@@ -73,7 +73,7 @@ const MY_DSN string = USERNAME + _COLON +
                       HOSTNAME + _COLON + _MY_PORT + ")" + _SLASH +
                       DATABASE
 
-// The PostgreSQL DSN connection options (params).
+/* The PostgreSQL DSN connection options (params). */
 const _PG_OPTS string = "sslmode=disable"
 
 /**
@@ -124,23 +124,20 @@ func (ReporterPrimary) startup(args []string) int {
     var pgcnx  bool   = false // <== Suppose the database is not PostgreSQL.
     var slcnx  bool   = false // <== Suppose the database is not SQLite.
 
-    sqlite_db_path := _EMPTY_STRING
-
     // Connecting to the database.
            if (db_switch == _MY_CONNECT) {
-        cnx, e = sql.Open(_MY_CONNECT, MY_DSN)
+        cnx, e =   sql.Open(_MY_CONNECT, MY_DSN)
 
-        mycnx = true
+        mycnx  = true
     } else if (db_switch == _PG_CONNECT) {
-        cnx, e = sql.Open(_PG_CONNECT, PG_DSN)
+        cnx, e =   sql.Open(_PG_CONNECT, PG_DSN)
 
-        pgcnx = true
+        pgcnx  = true
     } else if (db_switch == _SL_CONNECT) {
-        sqlite_db_path = class___._get_sqlite_db_path(__file__)
+        cnx, e =   sql.Open(_SL_CONNECT + "3",
+                                class___._get_sqlite_db_path(__file__))
 
-        cnx, e = sql.Open(_SL_CONNECT + "3", sqlite_db_path)
-
-        slcnx = true
+        slcnx  = true
     }
 
     if (cnx != nil) {
@@ -170,21 +167,11 @@ func (ReporterPrimary) startup(args []string) int {
             return ret
         }
 
-        // TODO: Implement generating the PDF report.
+        // Instantiating the controller class.
+        ctrl := new(ReporterController)
 
-               if (mycnx) {
-            fmt.Printf(_S_FMT, __name__ + _COLON_SPACE_SEP + MY_DSN +
-                                          _NEW_LINE)
-        } else if (pgcnx) {
-            fmt.Printf(_S_FMT, __name__ + _COLON_SPACE_SEP + PG_DSN +
-                                          _NEW_LINE)
-        } else if (slcnx) {
-            fmt.Printf(_S_FMT, __name__ + _COLON_SPACE_SEP + sqlite_db_path +
-                                          _NEW_LINE)
-        }
-
-        // Disconnecting from the database.
-//      cnx.Close()
+        // Generating the PDF report.
+        ret = ctrl.pdf_report_generate(cnx, mycnx, pgcnx, __file__)
     } else {
         ret = _EXIT_FAILURE
 
@@ -198,12 +185,14 @@ func (ReporterPrimary) startup(args []string) int {
     // ------------------------------------------------------------------------
     // --- Debug output - Begin -----------------------------------------------
     // ------------------------------------------------------------------------
-    fmt.Printf(_S_FMT, __name__ + _COLON_SPACE_SEP          + __file__ +
-               _COLON_SPACE_SEP + db_switch                 +
-               _COLON_SPACE_SEP + strconv.FormatBool(mycnx) +
-               _COLON_SPACE_SEP + strconv.FormatBool(pgcnx) +
-               _COLON_SPACE_SEP + strconv.FormatBool(slcnx) +
-               _COLON_SPACE_SEP + strconv.Itoa(ret)         + _NEW_LINE)
+    fmt.Printf(_S_FMT,       __name__         + _COLON_SPACE_SEP          +
+               _MY_CONNECT + _COLON_SPACE_SEP + strconv.FormatBool(mycnx) +
+               _SPACE      + _V_BAR           + _SPACE                    +
+               _PG_CONNECT + _COLON_SPACE_SEP + strconv.FormatBool(pgcnx) +
+               _SPACE      + _V_BAR           + _SPACE                    +
+               _SL_CONNECT + _COLON_SPACE_SEP + strconv.FormatBool(slcnx) +
+               _SPACE      + _V_BAR           + _SPACE                    +
+               strconv.Itoa(ret)              + _NEW_LINE)
     // ------------------------------------------------------------------------
     // --- Debug output - End -------------------------------------------------
     // ------------------------------------------------------------------------
@@ -238,7 +227,7 @@ func (ReporterPrimary) _get_sqlite_db_path(exec string) string {
     return sqlite_db_path
 }
 
-// The application entry point.
+/* The application entry point. */
 func main(/*args []string*/) {
     var args_len uint = uint(len(os.Args) - 1)
 
