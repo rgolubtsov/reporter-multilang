@@ -30,7 +30,7 @@ import "strings"
 import "fmt"
 import "strconv"
 
-// Database switches. They indicate which database to connect to.
+/* Database switches. They indicate which database to connect to. */
 const _MY_CONNECT string = "mysql"
 const _PG_CONNECT string = "postgres"
 const _SL_CONNECT string = "sqlite"
@@ -60,7 +60,7 @@ const HOSTNAME string = "10.0.2.100"
  */
 const DATABASE string = "reporter_multilang"
 
-// The MySQL DSN connection port number.
+/* The MySQL DSN connection port number. */
 const _MY_PORT string = "3306"
 
 /**
@@ -73,7 +73,7 @@ const MY_DSN string = USERNAME + _COLON +
                       HOSTNAME + _COLON + _MY_PORT + ")" + _SLASH +
                       DATABASE
 
-// The PostgreSQL DSN connection options (params).
+/* The PostgreSQL DSN connection options (params). */
 const _PG_OPTS string = "sslmode=disable"
 
 /**
@@ -167,15 +167,11 @@ func (ReporterPrimary) startup(args []string) int {
             return ret
         }
 
-        // TODO: Implement generating the PDF report.
+        // Instantiating the controller class.
+        ctrl := new(ReporterController)
 
-               if (mycnx) {
-        } else if (pgcnx) {
-        } else if (slcnx) {
-        }
-
-        // Disconnecting from the database.
-//      cnx.Close()
+        // Generating the PDF report.
+        ret = ctrl.pdf_report_generate(cnx, mycnx, pgcnx, __file__)
     } else {
         ret = _EXIT_FAILURE
 
@@ -231,7 +227,7 @@ func (ReporterPrimary) _get_sqlite_db_path(exec string) string {
     return sqlite_db_path
 }
 
-// The application entry point.
+/* The application entry point. */
 func main(/*args []string*/) {
     var args_len uint = uint(len(os.Args) - 1)
 

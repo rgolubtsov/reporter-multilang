@@ -20,7 +20,55 @@
 
 package main
 
+import "database/sql"
+
 /** The model class of the application. */
-type ReporterModel struct {}
+type ReporterModel struct {
+    /*
+     * Attached methods:
+     *   - get_all_data_items(cnx *sql.DB) ([]string, [][]string)
+     *   - get_data_items_by_date(from  string,
+     *                            to    string,
+     *                            cnx  *sql.DB) ([]string, [][]string)
+     */
+}
+
+/**
+ * Retrieves a list of all data items stored in the database.
+ *
+ * @param cnx The database connection object.
+ *
+ * @return Two arrays containing table headers and rows.
+ */
+func (ReporterModel) get_all_data_items(cnx *sql.DB) ([]string, [][]string) {
+    var hdr_set [  ]string
+    var row_set [][]string
+
+    // TODO: Implement getting a list of data items.
+
+    return hdr_set, row_set
+}
+
+/**
+ * Retrieves a list of data items for a given date period.
+ *
+ * @param from The start date to retrieve data set.
+ * @param to   The end   date to retrieve data set.
+ * @param cnx  The database connection object.
+ *
+ * @return Two arrays containing table headers and rows.
+ */
+func (ReporterModel) get_data_items_by_date(from  string,
+                                            to    string,
+                                            cnx  *sql.DB) ([  ]string,
+                                                           [][]string) {
+
+    var hdr_set [  ]string
+    var row_set [][]string
+
+    // TODO: Implement getting a list of data items.
+
+    return hdr_set, row_set
+}
 
 // vim:set nu:et:ts=4:sw=4:
