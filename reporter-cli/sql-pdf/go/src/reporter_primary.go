@@ -124,23 +124,20 @@ func (ReporterPrimary) startup(args []string) int {
     var pgcnx  bool   = false // <== Suppose the database is not PostgreSQL.
     var slcnx  bool   = false // <== Suppose the database is not SQLite.
 
-    sqlite_db_path := _EMPTY_STRING
-
     // Connecting to the database.
            if (db_switch == _MY_CONNECT) {
-        cnx, e = sql.Open(_MY_CONNECT, MY_DSN)
+        cnx, e =   sql.Open(_MY_CONNECT, MY_DSN)
 
-        mycnx = true
+        mycnx  = true
     } else if (db_switch == _PG_CONNECT) {
-        cnx, e = sql.Open(_PG_CONNECT, PG_DSN)
+        cnx, e =   sql.Open(_PG_CONNECT, PG_DSN)
 
-        pgcnx = true
+        pgcnx  = true
     } else if (db_switch == _SL_CONNECT) {
-        sqlite_db_path = class___._get_sqlite_db_path(__file__)
+        cnx, e =   sql.Open(_SL_CONNECT + "3",
+                                class___._get_sqlite_db_path(__file__))
 
-        cnx, e = sql.Open(_SL_CONNECT + "3", sqlite_db_path)
-
-        slcnx = true
+        slcnx  = true
     }
 
     if (cnx != nil) {
@@ -173,14 +170,8 @@ func (ReporterPrimary) startup(args []string) int {
         // TODO: Implement generating the PDF report.
 
                if (mycnx) {
-            fmt.Printf(_S_FMT, __name__ + _COLON_SPACE_SEP + MY_DSN +
-                                          _NEW_LINE)
         } else if (pgcnx) {
-            fmt.Printf(_S_FMT, __name__ + _COLON_SPACE_SEP + PG_DSN +
-                                          _NEW_LINE)
         } else if (slcnx) {
-            fmt.Printf(_S_FMT, __name__ + _COLON_SPACE_SEP + sqlite_db_path +
-                                          _NEW_LINE)
         }
 
         // Disconnecting from the database.
@@ -198,12 +189,14 @@ func (ReporterPrimary) startup(args []string) int {
     // ------------------------------------------------------------------------
     // --- Debug output - Begin -----------------------------------------------
     // ------------------------------------------------------------------------
-    fmt.Printf(_S_FMT, __name__ + _COLON_SPACE_SEP          + __file__ +
-               _COLON_SPACE_SEP + db_switch                 +
-               _COLON_SPACE_SEP + strconv.FormatBool(mycnx) +
-               _COLON_SPACE_SEP + strconv.FormatBool(pgcnx) +
-               _COLON_SPACE_SEP + strconv.FormatBool(slcnx) +
-               _COLON_SPACE_SEP + strconv.Itoa(ret)         + _NEW_LINE)
+    fmt.Printf(_S_FMT,       __name__         + _COLON_SPACE_SEP          +
+               _MY_CONNECT + _COLON_SPACE_SEP + strconv.FormatBool(mycnx) +
+               _SPACE      + _V_BAR           + _SPACE                    +
+               _PG_CONNECT + _COLON_SPACE_SEP + strconv.FormatBool(pgcnx) +
+               _SPACE      + _V_BAR           + _SPACE                    +
+               _SL_CONNECT + _COLON_SPACE_SEP + strconv.FormatBool(slcnx) +
+               _SPACE      + _V_BAR           + _SPACE                    +
+               strconv.Itoa(ret)              + _NEW_LINE)
     // ------------------------------------------------------------------------
     // --- Debug output - End -------------------------------------------------
     // ------------------------------------------------------------------------
