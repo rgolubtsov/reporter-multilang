@@ -23,9 +23,9 @@ package main
 import "database/sql"
 import "reflect"
 import "fmt"
-import "strings"
 import "strconv"
 import "time"
+import "strings"
 
 /**
  * Constant: The start date to retrieve data set.
@@ -118,8 +118,8 @@ func (ReporterController) pdf_report_generate(cnx      *sql.DB,
     // Retrieving a list of data items for a given date period.
 //  hdr_set, row_set := model.get_data_items_by_date(FROM, TO, cnx)
 
-    num_rows := uint(len(row_set))
     num_hdrs := uint(len(hdr_set))
+    num_rows := uint(len(row_set))
 
     // In case of getting an empty result set, informing the user.
     if (num_hdrs == 0) {
@@ -135,13 +135,9 @@ func (ReporterController) pdf_report_generate(cnx      *sql.DB,
     // ------------------------------------------------------------------------
     // --- Debug output - Begin -----------------------------------------------
     // ------------------------------------------------------------------------
-    for i := uint(0); i < num_rows; i++ {
-        for j := uint(0); j < num_hdrs; j++ {
-            fmt.Printf(_S_FMT, row_set[i][j] + _SPACE + _V_BAR + _SPACE)
-        }
+    dbg_output := new(TabularDisplay)
 
-        fmt.Printf(_S_FMT, _NEW_LINE)
-    }
+    fmt.Printf(_S_FMT, dbg_output.render(hdr_set, row_set))
 
     fmt.Printf(_S_FMT, strconv.Itoa(int(num_rows)) + _ROWS_IN_SET_FOOTER +
                                          _NEW_LINE + _NEW_LINE)
