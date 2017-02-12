@@ -28,7 +28,6 @@ import _ "github.com/lib/pq"
 import _ "github.com/mattn/go-sqlite3"
 import "strings"
 import "fmt"
-import "strconv"
 
 /* Database switches. They indicate which database to connect to. */
 const _MY_CONNECT string = "mysql"
@@ -122,7 +121,6 @@ func (ReporterPrimary) startup(args []string) int {
     var cnx   *sql.DB = nil
     var mycnx  bool   = false // <== Suppose the database is not MySQL.
     var pgcnx  bool   = false // <== Suppose the database is not PostgreSQL.
-    var slcnx  bool   = false // <== Suppose the database is not SQLite.
 
     // Connecting to the database.
            if (db_switch == _MY_CONNECT) {
@@ -136,8 +134,6 @@ func (ReporterPrimary) startup(args []string) int {
     } else if (db_switch == _SL_CONNECT) {
         cnx, e =   sql.Open(_SL_CONNECT + "3",
                                 class___._get_sqlite_db_path(__file__))
-
-        slcnx  = true
     }
 
     if (cnx != nil) {
@@ -181,21 +177,6 @@ func (ReporterPrimary) startup(args []string) int {
 
         return ret
     }
-
-    // ------------------------------------------------------------------------
-    // --- Debug output - Begin -----------------------------------------------
-    // ------------------------------------------------------------------------
-    fmt.Printf(_S_FMT,       __name__         + _COLON_SPACE_SEP          +
-               _MY_CONNECT + _COLON_SPACE_SEP + strconv.FormatBool(mycnx) +
-               _SPACE      + _V_BAR           + _SPACE                    +
-               _PG_CONNECT + _COLON_SPACE_SEP + strconv.FormatBool(pgcnx) +
-               _SPACE      + _V_BAR           + _SPACE                    +
-               _SL_CONNECT + _COLON_SPACE_SEP + strconv.FormatBool(slcnx) +
-               _SPACE      + _V_BAR           + _SPACE                    +
-               strconv.Itoa(ret)              + _NEW_LINE)
-    // ------------------------------------------------------------------------
-    // --- Debug output - End -------------------------------------------------
-    // ------------------------------------------------------------------------
 
     return ret
 }
