@@ -21,6 +21,16 @@
 package main
 
 import "database/sql"
+import "reflect"
+import "fmt"
+import "strings"
+
+/*
+ * This TZ pattern is used to get rid of it when retrieving date-records
+ * taken from PostgreSQL and SQLite databases; MySQL records are already
+ * free of it.
+ */
+const _TZ_PATTERN string = "T00:00:00Z"
 
 /** The model class of the application. */
 type ReporterModel struct {
@@ -44,7 +54,127 @@ func (ReporterModel) get_all_data_items(cnx *sql.DB) ([]string, [][]string) {
     var hdr_set [  ]string
     var row_set [][]string
 
-    // TODO: Implement getting a list of data items.
+    var class___ ReporterModel
+    var __name__ string = reflect.TypeOf(class___).Name()
+
+    var e error
+
+    sql_select := "select"               +
+        "      x0.name as arch,"         +
+        "      x1.name as repo,"         +
+        "   items.name,"                 +
+        " attr_x2      as version,"      +
+//      "   items.description,"          +
+        " attr_x3      as last_updated," +
+        " attr_x4      as flag_date"     +
+    " from"                              +
+        " data_items items,"             +
+        "   attr_x0s x0,"                +
+        "   attr_x1s x1"                 +
+    " where"                             +
+        " (attr_x0_id  = x0.id) and"     +
+        " (attr_x1_id  = x1.id)"/*and"*/ +
+//      " (attr_x4 is not null)"         +
+    " order by"                          +
+        " items.name,"                   +
+        "       arch"
+
+    var stmt *sql.Stmt
+
+    // Preparing the SQL statement.
+    stmt, e = cnx.Prepare(sql_select)
+
+    if (e != nil) {
+        fmt.Printf(_S_FMT, __name__ + _COLON_SPACE_SEP + _ERROR_PREFIX +
+                                      _COLON_SPACE_SEP + e.Error() + _NEW_LINE)
+    }; if (stmt == nil) {
+        hdr_set = []string{}; row_set = [][]string{{}}; return hdr_set, row_set
+    }
+
+    defer stmt.Close()
+
+    var res_set *sql.Rows
+
+    // Executing the SQL statement.
+    res_set, e = stmt.Query()
+
+    if (e != nil) {
+        fmt.Printf(_S_FMT, __name__ + _COLON_SPACE_SEP + _ERROR_PREFIX +
+                                      _COLON_SPACE_SEP + e.Error() + _NEW_LINE)
+    }; if (res_set == nil) {
+        hdr_set = []string{}; row_set = [][]string{{}}; return hdr_set, row_set
+    }
+
+    defer res_set.Close()
+
+    // Retrieving the result set metadata -- table headers.
+    hdr_set, e = res_set.Columns()
+
+    if (e != nil) {
+        fmt.Printf(_S_FMT, __name__ + _COLON_SPACE_SEP + _ERROR_PREFIX +
+                                      _COLON_SPACE_SEP + e.Error() + _NEW_LINE)
+    }; if (hdr_set == nil) {
+        hdr_set = []string{}; row_set = [][]string{{}}; return hdr_set, row_set
+    }
+
+    num_rows := uint(0); for (res_set.Next()) { num_rows++ }
+    num_hdrs := uint(len(hdr_set))
+
+    if (num_rows == 0) {
+        hdr_set = []string{}; row_set = [][]string{{}}; return hdr_set, row_set
+    }
+
+    // Executing the SQL statement once again.
+    res_set, e = stmt.Query()
+
+    if (e != nil) {
+        fmt.Printf(_S_FMT, __name__ + _COLON_SPACE_SEP + _ERROR_PREFIX +
+                                      _COLON_SPACE_SEP + e.Error() + _NEW_LINE)
+    }; if (res_set == nil) {
+        hdr_set = []string{}; row_set = [][]string{{}}; return hdr_set, row_set
+    }
+
+    defer res_set.Close()
+
+    var row_ary []sql.NullString
+
+    // Allocating the row_set array before populating it.
+    row_set = make([][]string, num_rows)
+
+    // Retrieving and processing the result set -- table rows.
+    var i uint = 0; for (res_set.Next()) {
+        row_ary = make([]sql.NullString, num_hdrs)
+
+        e = res_set.Scan(&row_ary[0], // arch
+                         &row_ary[1], // repo
+                         &row_ary[2], // name
+                         &row_ary[3], // version
+                         &row_ary[4], // last_updated
+                         &row_ary[5]) // flag_date
+
+        if (e != nil) {
+            fmt.Printf(_S_FMT, __name__ + _COLON_SPACE_SEP+_ERROR_PREFIX +
+                                          _COLON_SPACE_SEP+e.Error()+_NEW_LINE)
+
+            hdr_set=[]string{}; row_set=[][]string{{}}; return hdr_set, row_set
+        }
+
+        row_set[i] = make([]string, num_hdrs)
+
+        for j := uint(0); j < num_hdrs; j++ {
+            if (row_ary[j].Valid) {
+                row_set[i][j] = row_ary[j].String
+            } else {
+                row_set[i][j] = _EMPTY_STRING
+            }
+
+            if ((j == 4) || (j == 5)) {
+                row_set[i][j] = strings.TrimSuffix(row_set[i][j], _TZ_PATTERN)
+            }
+        }
+
+        i++
+    }
 
     return hdr_set, row_set
 }
