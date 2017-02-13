@@ -69,7 +69,6 @@ type ReporterController struct {
     /*
      * Attached methods:
      *   - pdf_report_generate(cnx      *sql.DB,
-     *                         mysql     bool,
      *                         postgres  bool,
      *                         exec      string) int
      *
@@ -87,18 +86,13 @@ type ReporterController struct {
  * Generates the PDF report.
  *
  * @param cnx      The database connection object.
- * @param mysql    The indicator that shows whether the database connection
- *                 object is MySQL connection.
- *                 (Default is False)
  * @param postgres The indicator that shows whether the database connection
  *                 object is PostgreSQL connection.
- *                 (Default is False)
  * @param exec     The executable path.
  *
  * @return The exit code indicating the status of generating the PDF report.
  */
 func (ReporterController) pdf_report_generate(cnx      *sql.DB,
-                                              mysql     bool,
                                               postgres  bool,
                                               exec      string) int {
 
@@ -113,10 +107,10 @@ func (ReporterController) pdf_report_generate(cnx      *sql.DB,
     model := new(ReporterModel)
 
     // Retrieving a list of all data items stored in the database.
-    hdr_set, row_set := model.get_all_data_items(cnx)
+//  hdr_set, row_set := model.get_all_data_items(cnx)
 
     // Retrieving a list of data items for a given date period.
-//  hdr_set, row_set := model.get_data_items_by_date(FROM, TO, cnx)
+    hdr_set, row_set := model.get_data_items_by_date(FROM, TO, cnx, postgres)
 
     num_hdrs := uint(len(hdr_set))
     num_rows := uint(len(row_set))

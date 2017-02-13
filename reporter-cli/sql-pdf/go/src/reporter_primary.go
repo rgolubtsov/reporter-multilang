@@ -119,14 +119,11 @@ func (ReporterPrimary) startup(args []string) int {
     db_switch := args[1]
 
     var cnx   *sql.DB = nil
-    var mycnx  bool   = false // <== Suppose the database is not MySQL.
     var pgcnx  bool   = false // <== Suppose the database is not PostgreSQL.
 
     // Connecting to the database.
            if (db_switch == _MY_CONNECT) {
         cnx, e =   sql.Open(_MY_CONNECT, MY_DSN)
-
-        mycnx  = true
     } else if (db_switch == _PG_CONNECT) {
         cnx, e =   sql.Open(_PG_CONNECT, PG_DSN)
 
@@ -167,7 +164,7 @@ func (ReporterPrimary) startup(args []string) int {
         ctrl := new(ReporterController)
 
         // Generating the PDF report.
-        ret = ctrl.pdf_report_generate(cnx, mycnx, pgcnx, __file__)
+        ret = ctrl.pdf_report_generate(cnx, pgcnx, __file__)
     } else {
         ret = _EXIT_FAILURE
 
