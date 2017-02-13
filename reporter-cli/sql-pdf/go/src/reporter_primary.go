@@ -208,7 +208,28 @@ func (ReporterPrimary) _get_sqlite_db_path(exec string) string {
     return sqlite_db_path
 }
 
-/* The application entry point. */
+/*
+ * The application entry point.
+ *
+ * It looks for the presence of the first and the only cmd-line argument.
+ * This should be one of the following:
+ *   - mysql    -- if the database used is MySQL/MariaDB.
+ *   - postgres -- if the database used is PostgreSQL.
+ *   - sqlite   -- if the database used is SQLite.
+ *
+ * Currently these three RDBMSs are only supported.
+ *
+ * Any other cmd-line args are ignored; if the first cmd-line arg is not valid
+ * or there are no any passed args at all, the application will issue
+ * the following error and exit:
+ *
+ *   <main-app-class-name>: Error: Could not connect to the database.
+ *
+ * Thus, to use e.g. PostgreSQL database as the data source, run the app
+ * in the following way:
+ *
+ *   $ ./reporter-cli/sql-pdf/go/bin/reporter-sql-pdf postgres
+ */
 func main(/*args []string*/) {
     var args_len uint = uint(len(os.Args) - 1)
 
