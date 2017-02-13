@@ -23,8 +23,9 @@ package main
 import "database/sql"
 import "reflect"
 import "fmt"
-import "strings"
 import "strconv"
+import "time"
+import "strings"
 
 /**
  * Constant: The start date to retrieve data set.
@@ -49,6 +50,19 @@ const PDF_REPORT_DIR string = "lib/data"
  *     TODO: Move to cli args.
  */
 const PDF_REPORT_FILENAME string = "packages.pdf"
+
+/* Various string literals. */
+const _ARCH_HEADER          string = "Arch"
+const _REPO_HEADER          string = "Repo"
+const _NAME_HEADER          string = "Name"
+const _VERSION_HEADER       string = "Version"
+const _LAST_UPDATED_HEADER  string = "Last Updated"
+const _FLAG_DATE_HEADER     string = "Flag Date"
+// ----------------------------------------------------------------------------
+const _ROWS_IN_SET_FOOTER   string = " rows in set"
+const _ROWS_SHOWN_FOOTER_1  string = "  ("
+const _ROWS_SHOWN_FOOTER_2  string = " rows shown)"
+const _PDF_REPORT_SAVED_MSG string = "PDF report saved"
 
 /** The controller class of the application. */
 type ReporterController struct {
@@ -93,7 +107,7 @@ func (ReporterController) pdf_report_generate(cnx      *sql.DB,
     var class___ ReporterController
     var __name__ string = reflect.TypeOf(class___).Name()
 
-    __file__ := exec
+//  __file__ := exec
 
     // Instantiating the model class.
     model := new(ReporterModel)
@@ -104,19 +118,46 @@ func (ReporterController) pdf_report_generate(cnx      *sql.DB,
     // Retrieving a list of data items for a given date period.
 //  hdr_set, row_set := model.get_data_items_by_date(FROM, TO, cnx)
 
+    num_hdrs := uint(len(hdr_set))
+    num_rows := uint(len(row_set))
+
+    // In case of getting an empty result set, informing the user.
+    if (num_hdrs == 0) {
+        ret = _EXIT_FAILURE
+
+        fmt.Printf(_S_FMT, __name__ + _COLON_SPACE_SEP + _ERROR_PREFIX +
+                                      _COLON_SPACE_SEP + _ERROR_NO_DATA +
+                                                         _NEW_LINE)
+
+        return ret
+    }
+
     // ------------------------------------------------------------------------
     // --- Debug output - Begin -----------------------------------------------
     // ------------------------------------------------------------------------
-    pdf_report_path := class___._get_pdf_report_path(__file__)
+    dbg_output := new(TabularDisplay)
 
-    fmt.Printf(_S_FMT,     __name__ + _COLON_SPACE_SEP + pdf_report_path +
-               _SPACE    + _V_BAR           + _SPACE                     +
-               "hdr_set" + _COLON_SPACE_SEP + strconv.Itoa(len(hdr_set)) +
-               _SPACE    + _V_BAR           + _SPACE                     +
-               "row_set" + _COLON_SPACE_SEP + strconv.Itoa(len(row_set)) +
-               _NEW_LINE)
+    fmt.Printf(_S_FMT, dbg_output.render(hdr_set, row_set))
+
+    fmt.Printf(_S_FMT, strconv.Itoa(int(num_rows)) + _ROWS_IN_SET_FOOTER +
+                                         _NEW_LINE + _NEW_LINE)
     // ------------------------------------------------------------------------
     // --- Debug output - End -------------------------------------------------
+    // ------------------------------------------------------------------------
+
+                            //     Waiting one second...
+    time.Sleep(time.Second) // <== Just for fun...:-)...
+                            //     Please!   --   OK.
+
+    // ------------------------------------------------------------------------
+    // --- Generating the PDF report - Begin ----------------------------------
+    // ------------------------------------------------------------------------
+//  pdf_report_path := class___._get_pdf_report_path(__file__)
+
+    // TODO: Implement generating the PDF report.
+
+    // ------------------------------------------------------------------------
+    // --- Generating the PDF report - End ------------------------------------
     // ------------------------------------------------------------------------
 
     return ret
@@ -130,6 +171,8 @@ func (ReporterController) _page_body_draw(report       string,
                                           num_rows     uint) int {
 
     var ret int = _EXIT_SUCCESS
+
+    // TODO: Implement drawing the PDF report page body.
 
     return ret
 }
