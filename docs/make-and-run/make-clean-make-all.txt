@@ -3,6 +3,9 @@ $ cd reporter-cli &&                       \
   cd sql-pdf      &&                       \
   cd perl         && make clean && cd - && \
   cd python       && make clean && cd - && \
+  cd vala         && make clean && cd - && \
+  cd genie        && make clean && cd - && \
+  cd go           && make clean && cd - && \
   cd ..           &&                       \
   cd ..
 
@@ -11,6 +14,9 @@ $ cd reporter-cli &&                       \
   cd sql-pdf      &&                       \
   cd perl         && make all   && cd - && \
   cd python       && make all   && cd - && \
+  cd vala         && make all   && cd - && \
+  cd genie        && make all   && cd - && \
+  cd go           && make all   && cd - && \
   cd ..           &&                       \
   cd ..
 
