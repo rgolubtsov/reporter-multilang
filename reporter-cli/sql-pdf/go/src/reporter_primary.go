@@ -119,14 +119,11 @@ func (ReporterPrimary) startup(args []string) int {
     db_switch := args[1]
 
     var cnx   *sql.DB = nil
-    var mycnx  bool   = false // <== Suppose the database is not MySQL.
     var pgcnx  bool   = false // <== Suppose the database is not PostgreSQL.
 
     // Connecting to the database.
            if (db_switch == _MY_CONNECT) {
         cnx, e =   sql.Open(_MY_CONNECT, MY_DSN)
-
-        mycnx  = true
     } else if (db_switch == _PG_CONNECT) {
         cnx, e =   sql.Open(_PG_CONNECT, PG_DSN)
 
@@ -167,7 +164,7 @@ func (ReporterPrimary) startup(args []string) int {
         ctrl := new(ReporterController)
 
         // Generating the PDF report.
-        ret = ctrl.pdf_report_generate(cnx, mycnx, pgcnx, __file__)
+        ret = ctrl.pdf_report_generate(cnx, pgcnx, __file__)
     } else {
         ret = _EXIT_FAILURE
 
@@ -208,7 +205,28 @@ func (ReporterPrimary) _get_sqlite_db_path(exec string) string {
     return sqlite_db_path
 }
 
-/* The application entry point. */
+/*
+ * The application entry point.
+ *
+ * It looks for the presence of the first and the only cmd-line argument.
+ * This should be one of the following:
+ *   - mysql    -- if the database used is MySQL/MariaDB.
+ *   - postgres -- if the database used is PostgreSQL.
+ *   - sqlite   -- if the database used is SQLite.
+ *
+ * Currently these three RDBMSs are only supported.
+ *
+ * Any other cmd-line args are ignored; if the first cmd-line arg is not valid
+ * or there are no any passed args at all, the application will issue
+ * the following error and exit:
+ *
+ *   <main-app-class-name>: Error: Could not connect to the database.
+ *
+ * Thus, to use e.g. PostgreSQL database as the data source, run the app
+ * in the following way:
+ *
+ *   $ ./reporter-cli/sql-pdf/go/bin/reporter-sql-pdf postgres
+ */
 func main(/*args []string*/) {
     var args_len uint = uint(len(os.Args) - 1)
 
