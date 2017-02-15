@@ -26,6 +26,7 @@ import "fmt"
 import "strconv"
 import "time"
 import "strings"
+import "github.com/jung-kurt/gofpdf"
 
 /**
  * Constant: The start date to retrieve data set.
@@ -51,7 +52,20 @@ const PDF_REPORT_DIR string = "lib/data"
  */
 const PDF_REPORT_FILENAME string = "packages.pdf"
 
+/** Constant: The PDF basic measurement unit -- PostScript point. */
+const PT uint    =   1
+
+/** Constant: The one inch       (in PDF measurement terms). */
+const IN float64 = ( 1   / 72)
+
+/** Constant: The one millimeter (in PDF measurement terms). */
+const MM float64 = (25.4 / 72)
+
 /* Various string literals. */
+const _REPORT_ORIENTATION_P string = "Portrait"
+const _REPORT_UNITS_MM      string = "mm"
+const _REPORT_PAGE_SIZE_A4  string = "A4"
+// ----------------------------------------------------------------------------
 const _ARCH_HEADER          string = "Arch"
 const _REPO_HEADER          string = "Repo"
 const _NAME_HEADER          string = "Name"
@@ -72,7 +86,7 @@ type ReporterController struct {
      *                         postgres  bool,
      *                         exec      string) int
      *
-     *   - _page_body_draw(report       string,
+     *   - _page_body_draw(report      *gofpdf.Fpdf,
      *                     hdr_set  [  ]string,
      *                     row_set  [][]string,
      *                     num_hdrs     uint,
@@ -101,7 +115,9 @@ func (ReporterController) pdf_report_generate(cnx      *sql.DB,
     var class___ ReporterController
     var __name__ string = reflect.TypeOf(class___).Name()
 
-//  __file__ := exec
+    __file__ := exec
+
+    var e error
 
     // Instantiating the model class.
     model := new(ReporterModel)
@@ -146,10 +162,30 @@ func (ReporterController) pdf_report_generate(cnx      *sql.DB,
     // ------------------------------------------------------------------------
     // --- Generating the PDF report - Begin ----------------------------------
     // ------------------------------------------------------------------------
-//  pdf_report_path := class___._get_pdf_report_path(__file__)
+    pdf_report_path := class___._get_pdf_report_path(__file__)
 
-    // TODO: Implement generating the PDF report.
+    report := gofpdf.New(_REPORT_ORIENTATION_P, // <== "Portrait".
+                         _REPORT_UNITS_MM,
+                         _REPORT_PAGE_SIZE_A4,  // <== 210 x 297 mm.
+                         _EMPTY_STRING)
 
+    // --- Page body (data) ---------------------------------------------------
+    ret=class___._page_body_draw(report, hdr_set, row_set, num_hdrs, num_rows)
+
+    // Trying to save the report.
+    e = report.OutputFileAndClose(pdf_report_path)
+
+    if (e != nil) {
+        ret = _EXIT_FAILURE
+
+        fmt.Printf(_S_FMT, __name__ + _COLON_SPACE_SEP + _ERROR_PREFIX +
+                                      _COLON_SPACE_SEP + e.Error() + _NEW_LINE)
+
+        return ret
+    }
+
+    fmt.Printf(_S_FMT, _PDF_REPORT_SAVED_MSG + _COLON_SPACE_SEP +
+                        pdf_report_path      + _NEW_LINE)
     // ------------------------------------------------------------------------
     // --- Generating the PDF report - End ------------------------------------
     // ------------------------------------------------------------------------
@@ -158,7 +194,7 @@ func (ReporterController) pdf_report_generate(cnx      *sql.DB,
 }
 
 /* Draws the PDF report page body (data). */
-func (ReporterController) _page_body_draw(report       string,
+func (ReporterController) _page_body_draw(report      *gofpdf.Fpdf,
                                           hdr_set  [  ]string,
                                           row_set  [][]string,
                                           num_hdrs     uint,
