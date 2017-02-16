@@ -3,12 +3,12 @@
 **A tool to generate human-readable reports based on data from various sources
 <br />with the focus on its implementation using a series of programming languages:**&nbsp;&nbsp;:camel:&nbsp;&nbsp;|&nbsp;&nbsp;:snake:&nbsp;&nbsp;|&nbsp;&nbsp;:envelope:&nbsp;&nbsp;|&nbsp;&nbsp;:rat:&nbsp;&nbsp;|&nbsp;&nbsp;:coffee:
 
-**TODO:** Gentlemen, start your axes! &ndash; I.e. wait a little while there would not be **at least five** complete implementations. For the moment there are the following ones:
+**TODO:** Gentlemen, start your axes! &ndash; I.e. wait a little while there would not be **at least six** complete implementations. For the moment there are the following ones:
 * SQL-PDF :small_blue_diamond: Perl 5 (5.10+) implementation (complete)
 * SQL-PDF :small_blue_diamond: Python 3 implementation (complete)
 * SQL-PDF :small_blue_diamond: Vala implementation (complete)
 * SQL-PDF :small_blue_diamond: Genie implementation (complete)
-* SQL-PDF :small_blue_diamond: Go implementation (in progress)
+* SQL-PDF :small_blue_diamond: Go implementation (complete)
 * SQL-PDF :small_blue_diamond: JavaScript, D, and Java implementations (planned)
 
 ---
