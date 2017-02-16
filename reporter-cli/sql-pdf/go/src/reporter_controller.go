@@ -52,6 +52,12 @@ const PDF_REPORT_DIR string = "lib/data"
  */
 const PDF_REPORT_FILENAME string = "packages.pdf"
 
+/**
+ * Constant: The number of pages generated in a PDF report.
+ *     TODO: Move to cli args.
+ */
+const MAX_PAGES uint = 20
+
 /** Constant: The maximum number of data rows displayed in a page. */
 const MAX_ROWS_IN_A_PAGE uint = 40
 
@@ -181,10 +187,19 @@ func (ReporterController) pdf_report_generate(cnx      *sql.DB,
                          _REPORT_PAGE_SIZE_A4,  // <== 210 x 297 mm.
                          _EMPTY_STRING)
 
-    report.AddPage()
+    // --- Page body (data) x MAX_PAGES ---------------------------------------
+    for i := uint(0); i < MAX_PAGES; i++ {
+        report.AddPage()
 
-    // --- Page body (data) ---------------------------------------------------
-    ret=class___._page_body_draw(report, hdr_set, row_set, num_hdrs, num_rows)
+        ret=class___._page_body_draw(report,hdr_set,row_set,num_hdrs,num_rows)
+
+        if (ret == _EXIT_FAILURE) {
+            fmt.Printf(_S_FMT, __name__ + _COLON_SPACE_SEP + _ERROR_PREFIX +
+                       _COLON_SPACE_SEP + _ERROR_NO_REPORT_GEN + _NEW_LINE)
+
+            return ret
+        }
+    }
 
     // Trying to save the report.
     e = report.OutputFileAndClose(pdf_report_path)
