@@ -78,6 +78,15 @@ const _REPORT_ORIENTATION_P string = "Portrait"
 const _REPORT_UNITS_MM      string = "mm"
 const _REPORT_PAGE_SIZE_A4  string = "A4"
 // ----------------------------------------------------------------------------
+const _REPORT_TITLE         string = "Arch Linux Packages"
+const _REPORT_AUTHOR        string = "Arch Linux Package Maintainers"
+const _REPORT_SUBJECT       string = "Sample list of Arch Linux packages."
+const _REPORT_KEYWORDS      string = "Linux ArchLinux Packages Arch Repo "    +
+                                     "core extra community multilib"
+const _REPORT_CREATOR       string = "Reporter Multilang 0.1 - "              +
+                                     "https://github.com/rgolubtsov/"         +
+                                     "reporter-multilang"
+// ----------------------------------------------------------------------------
 const _RECT_STYLE_DRAW      string = "D"
 const _RECT_STYLE_FILL      string = "F"
 const _FONT_STYLE_BOLD      string = "B"
@@ -186,6 +195,13 @@ func (ReporterController) pdf_report_generate(cnx      *sql.DB,
                          _REPORT_UNITS_MM,
                          _REPORT_PAGE_SIZE_A4,  // <== 210 x 297 mm.
                          _EMPTY_STRING)
+
+    // --- Report metadata ----------------------------------------------------
+    report.SetTitle   (_REPORT_TITLE,    true)
+    report.SetAuthor  (_REPORT_AUTHOR,   true)
+    report.SetSubject (_REPORT_SUBJECT,  true)
+    report.SetKeywords(_REPORT_KEYWORDS, true)
+    report.SetCreator (_REPORT_CREATOR,  true)
 
     // --- Page body (data) x MAX_PAGES ---------------------------------------
     for i := uint(0); i < MAX_PAGES; i++ {
