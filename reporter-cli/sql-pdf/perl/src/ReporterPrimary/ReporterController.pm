@@ -1,5 +1,5 @@
 #
-# reporter-cli/sql-pdf/perl/src/PDFAPI2PKG/ReporterController.pm
+# reporter-cli/sql-pdf/perl/src/ReporterPrimary/ReporterController.pm
 # =============================================================================
 # Reporter Multilang. Version 0.1
 # =============================================================================
@@ -18,7 +18,7 @@
 # (See the LICENSE file at the top of the source tree.)
 #
 
-package PDFAPI2PKG::ReporterController;
+package ReporterPrimary::ReporterController;
 
 use strict;
 use warnings;
@@ -29,7 +29,7 @@ use Text::TabularDisplay;
 use PDF::API2;
 use Try::Tiny;
 
-use PDFAPI2PKG::ControllerHelper
+use ReporterPrimary::ControllerHelper
     "_EXIT_FAILURE",
     "_EXIT_SUCCESS",
     "_COLON_SPACE_SEP",
@@ -41,7 +41,7 @@ use PDFAPI2PKG::ControllerHelper
     "_ERROR_NO_DATA",
     "_ERROR_NO_REPORT_GEN";
 
-use PDFAPI2PKG::ReporterModel;
+use ReporterPrimary::ReporterModel;
 
 ##
 # Constant: The start date to retrieve data set.
@@ -126,7 +126,7 @@ sub pdf_report_generate {
     my $ret = _EXIT_SUCCESS;
 
     # Instantiating the model component.
-    my $model = PDFAPI2PKG::ReporterModel->new();
+    my $model = ReporterPrimary::ReporterModel->new();
 
     # Retrieving a list of all data items stored in the database.
 #   my ($hdr_set, $row_set) = $model->get_all_data_items($dbh);

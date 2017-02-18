@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# reporter-cli/sql-pdf/python/src/reportlabpkq/reporter_model.py
+# reporter-cli/sql-pdf/python/src/reporterprimary/reporter_model.py
 # =============================================================================
 # Reporter Multilang. Version 0.1
 # =============================================================================
@@ -18,7 +18,7 @@
 # (See the LICENSE file at the top of the source tree.)
 #
 
-from reportlabpkq.controller_helper import ControllerHelper
+from reporterprimary.controller_helper import ControllerHelper
 
 class ReporterModel:
     """The model class of the application."""

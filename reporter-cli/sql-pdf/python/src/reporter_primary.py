@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# reporter-cli/sql-pdf/python/src/reportlabpkg.py
+# reporter-cli/sql-pdf/python/src/reporter_primary.py
 # =============================================================================
 # Reporter Multilang. Version 0.1
 # =============================================================================
@@ -22,8 +22,8 @@ import mysql.connector
 import psycopg2
 import sqlite3
 
-from reportlabpkq.controller_helper   import ControllerHelper
-from reportlabpkq.reporter_controller import ReporterController
+from reporterprimary.controller_helper   import ControllerHelper
+from reporterprimary.reporter_controller import ReporterController
 
 class ReportLabPkg:
     """The main class of the application."""

@@ -1,5 +1,5 @@
 #
-# reporter-cli/sql-pdf/perl/src/PDFAPI2PKG/ControllerHelper.pm
+# reporter-cli/sql-pdf/perl/src/ReporterPrimary/ControllerHelper.pm
 # =============================================================================
 # Reporter Multilang. Version 0.1
 # =============================================================================
@@ -18,7 +18,7 @@
 # (See the LICENSE file at the top of the source tree.)
 #
 
-package PDFAPI2PKG::ControllerHelper;
+package ReporterPrimary::ControllerHelper;
 
 use strict;
 use warnings;

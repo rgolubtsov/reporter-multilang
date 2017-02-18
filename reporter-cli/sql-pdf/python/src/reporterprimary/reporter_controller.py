@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# reporter-cli/sql-pdf/python/src/reportlabpkq/reporter_controller.py
+# reporter-cli/sql-pdf/python/src/reporterprimary/reporter_controller.py
 # =============================================================================
 # Reporter Multilang. Version 0.1
 # =============================================================================
@@ -24,8 +24,8 @@ from prettytable             import PrettyTable
 from reportlab.pdfgen        import canvas
 from reportlab.lib.pagesizes import A4
 
-from reportlabpkq.controller_helper import ControllerHelper
-from reportlabpkq.reporter_model    import ReporterModel
+from reporterprimary.controller_helper import ControllerHelper
+from reporterprimary.reporter_model    import ReporterModel
 
 class ReporterController:
     """The controller class of the application."""

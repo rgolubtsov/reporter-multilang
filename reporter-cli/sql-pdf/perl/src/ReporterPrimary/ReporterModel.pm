@@ -1,5 +1,5 @@
 #
-# reporter-cli/sql-pdf/perl/src/PDFAPI2PKG/ReporterModel.pm
+# reporter-cli/sql-pdf/perl/src/ReporterPrimary/ReporterModel.pm
 # =============================================================================
 # Reporter Multilang. Version 0.1
 # =============================================================================
@@ -18,7 +18,7 @@
 # (See the LICENSE file at the top of the source tree.)
 #
 
-package PDFAPI2PKG::ReporterModel;
+package ReporterPrimary::ReporterModel;
 
 use strict;
 use warnings;

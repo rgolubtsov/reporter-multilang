@@ -1,5 +1,5 @@
 #
-# reporter-cli/sql-pdf/perl/src/PDFAPI2PKG.pm
+# reporter-cli/sql-pdf/perl/src/ReporterPrimary.pm
 # =============================================================================
 # Reporter Multilang. Version 0.1
 # =============================================================================
@@ -18,7 +18,7 @@
 # (See the LICENSE file at the top of the source tree.)
 #
 
-package PDFAPI2PKG;
+package ReporterPrimary;
 
 use strict;
 use warnings;
@@ -28,7 +28,7 @@ use v5.10;
 use Try::Tiny;
 use DBI;
 
-use PDFAPI2PKG::ControllerHelper
+use ReporterPrimary::ControllerHelper
     "_EXIT_FAILURE",
     "_EXIT_SUCCESS",
     "_COLON_SPACE_SEP",
@@ -38,7 +38,7 @@ use PDFAPI2PKG::ControllerHelper
     "_ERROR_PREFIX",
     "_ERROR_NO_DB_CONNECT";
 
-use PDFAPI2PKG::ReporterController;
+use ReporterPrimary::ReporterController;
 
 ##
 # Constant: The SQLite database location.
@@ -145,7 +145,7 @@ sub startup {
     };
 
     # Instantiating the controller component.
-    my $ctrl = PDFAPI2PKG::ReporterController->new();
+    my $ctrl = ReporterPrimary::ReporterController->new();
 
     if ($dbh) {
         # Generating the PDF report.
