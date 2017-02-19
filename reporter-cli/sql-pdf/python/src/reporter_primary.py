@@ -112,10 +112,10 @@ class ReportLabPkg:
 
             return ret
 
-        # Instantiating the controller class.
-        ctrl = ReporterController()
-
         if (cnx):
+            # Instantiating the controller class.
+            ctrl = ReporterController()
+
             # Generating the PDF report.
             ret = ctrl.pdf_report_generate(cnx, mysql=mycnx, postgres=pgcnx)
 

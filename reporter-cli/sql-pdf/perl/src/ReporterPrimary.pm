@@ -144,10 +144,10 @@ sub startup {
         return $ret;
     };
 
-    # Instantiating the controller class.
-    my $ctrl = ReporterPrimary::ReporterController->new();
-
     if ($dbh) {
+        # Instantiating the controller class.
+        my $ctrl = ReporterPrimary::ReporterController->new();
+
         # Generating the PDF report.
         $ret = $ctrl->pdf_report_generate($dbh);
 

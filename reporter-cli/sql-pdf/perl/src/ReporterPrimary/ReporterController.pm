@@ -291,8 +291,6 @@ sub _page_body_draw {
 
     $row_txt->fillcolor(_BLACK_COLOR);
 
-    $row_txt->translate((20 / MM), (262 / MM));
-
     my $y = 0;
 
     # Printing table rows.
