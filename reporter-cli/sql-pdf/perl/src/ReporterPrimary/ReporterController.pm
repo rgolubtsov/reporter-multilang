@@ -25,6 +25,7 @@ use warnings;
 use utf8;
 use v5.10;
 
+use POSIX;
 use Text::TabularDisplay;
 use PDF::API2;
 use Try::Tiny;
@@ -86,6 +87,16 @@ use constant IN => ( 1   / 72);
 use constant MM => (25.4 / 72);
 
 # Various string literals.
+use constant _REPORT_TITLE            => "Arch Linux Packages";
+use constant _REPORT_AUTHOR           => "Arch Linux Package Maintainers";
+use constant _REPORT_SUBJECT          => "Sample list of Arch Linux packages.";
+use constant _REPORT_KEYWORDS         => "Linux ArchLinux Packages Arch Repo "
+                                       . "core extra community multilib";
+use constant _REPORT_CREATION_DATE    => strftime("%Y%m%d%H%M%S", localtime());
+use constant _REPORT_CREATOR          => "Reporter Multilang 0.1 - "
+                                       . "https://github.com/rgolubtsov/"
+                                       . "reporter-multilang";
+# -----------------------------------------------------------------------------
 use constant _REPORT_PAGE_SIZE_A4     => "A4";
 # -----------------------------------------------------------------------------
 use constant _HELVETICA_BOLD_FONT     => "Helvetica-Bold";
@@ -166,6 +177,16 @@ sub pdf_report_generate {
     my $pdf_report_path = _get_pdf_report_path(__FILE__);
 
     my $report = PDF::API2->new(-file => $pdf_report_path);
+
+    # --- Report metadata -----------------------------------------------------
+    $report->info(
+        Title        => _REPORT_TITLE,
+        Author       => _REPORT_AUTHOR,
+        Subject      => _REPORT_SUBJECT,
+        Keywords     => _REPORT_KEYWORDS,
+        CreationDate => _REPORT_CREATION_DATE,
+        Creator      => _REPORT_CREATOR,
+    );
 
     # --- Page body (data) x MAX_PAGES ----------------------------------------
     for (my $i = 0; $i < MAX_PAGES; $i++) {

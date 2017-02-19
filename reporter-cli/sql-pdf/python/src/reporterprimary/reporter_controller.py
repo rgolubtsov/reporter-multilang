@@ -76,6 +76,15 @@ class ReporterController:
     FF = 255
 
     # Various string literals.
+    _REPORT_TITLE         = "Arch Linux Packages"
+    _REPORT_AUTHOR        = "Arch Linux Package Maintainers"
+    _REPORT_SUBJECT       = "Sample list of Arch Linux packages."
+    _REPORT_KEYWORDS      =("Linux ArchLinux Packages Arch Repo "
+                          + "core extra community multilib")
+    _REPORT_CREATOR       =("Reporter Multilang 0.1 - "
+                          + "https://github.com/rgolubtsov/"
+                          + "reporter-multilang")
+    # -------------------------------------------------------------------------
     _HELVETICA_BOLD_FONT  = "Helvetica-Bold"
     _HELVETICA_FONT       = "Helvetica"
     _TIMES_BOLD_FONT      = "Times-Bold"
@@ -197,6 +206,13 @@ class ReporterController:
 # trimBox=((210 / self.MM), (297 / self.MM)                                  ),
 #bleedBox=(  (5 / self.MM),   (5 / self.MM), (205 / self.MM), (292 / self.MM))
                               )
+
+        # --- Report metadata -------------------------------------------------
+        report.setTitle   (self._REPORT_TITLE   )
+        report.setAuthor  (self._REPORT_AUTHOR  )
+        report.setSubject (self._REPORT_SUBJECT )
+        report.setKeywords(self._REPORT_KEYWORDS)
+        report.setCreator (self._REPORT_CREATOR )
 
         # --- Page body (data) x MAX_PAGES ------------------------------------
         i = 0
