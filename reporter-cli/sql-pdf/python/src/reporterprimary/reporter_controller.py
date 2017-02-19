@@ -192,7 +192,7 @@ class ReporterController:
                                pagesize=A4,     # <== 210 x 297 mm.
                              pdfVersion=(1, 4), # <== PDF version 1.4.
         # --- Page boxes ------------------------------------------------------
-  cropBox=( (10 / self.MM),  (10 / self.MM), (200 / self.MM), (287 / self.MM)),
+# cropBox=( (10 / self.MM),  (10 / self.MM), (200 / self.MM), (287 / self.MM)),
 #  artBox=( (15 / self.MM),  (15 / self.MM), (195 / self.MM), (282 / self.MM)),
 # trimBox=((210 / self.MM), (297 / self.MM)                                  ),
 #bleedBox=(  (5 / self.MM),   (5 / self.MM), (205 / self.MM), (292 / self.MM))

@@ -86,7 +86,7 @@ use constant IN => ( 1   / 72);
 use constant MM => (25.4 / 72);
 
 # Various string literals.
-use constant _A4_PAPER_SIZE           => "A4";
+use constant _REPORT_PAGE_SIZE_A4     => "A4";
 # -----------------------------------------------------------------------------
 use constant _HELVETICA_BOLD_FONT     => "Helvetica-Bold";
 use constant _HELVETICA_FONT          => "Helvetica";
@@ -125,7 +125,7 @@ sub pdf_report_generate {
 
     my $ret = _EXIT_SUCCESS;
 
-    # Instantiating the model component.
+    # Instantiating the model class.
     my $model = ReporterPrimary::ReporterModel->new();
 
     # Retrieving a list of all data items stored in the database.
@@ -211,10 +211,10 @@ sub _page_body_draw {
 
     my $page = $report->page();
 
-#   $page->mediabox(_A4_PAPER_SIZE); # <== 210 x 297 mm.
-    $page->mediabox((210 / MM), (297 / MM)                        );
+    $page->mediabox(_REPORT_PAGE_SIZE_A4); # <== 210 x 297 mm.
+#   $page->mediabox((210 / MM), (297 / MM)                        );
 #   $page->bleedbox(  (5 / MM),   (5 / MM), (205 / MM), (292 / MM));
-    $page->cropbox ( (10 / MM),  (10 / MM), (200 / MM), (287 / MM));
+#   $page->cropbox ( (10 / MM),  (10 / MM), (200 / MM), (287 / MM));
 #   $page->artbox  ( (15 / MM),  (15 / MM), (195 / MM), (282 / MM));
 
     # --- Border --------------------------------------------------------------

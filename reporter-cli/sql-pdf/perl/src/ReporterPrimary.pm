@@ -144,7 +144,7 @@ sub startup {
         return $ret;
     };
 
-    # Instantiating the controller component.
+    # Instantiating the controller class.
     my $ctrl = ReporterPrimary::ReporterController->new();
 
     if ($dbh) {
