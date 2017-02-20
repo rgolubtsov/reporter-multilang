@@ -84,125 +84,67 @@ class ReporterPrimary {
 
         var __file__ = args[0];
 
-        Database dbcnx;
+        Database cnx = null;
 
-        var __cnx = aux.EMPTY_STRING;
-
-        // Instantiating the controller class.
-        var ctrl = new ReporterController();
-
-        // Trying to connect to the database.
-        try {
+        // Connecting to the database.
    #if (MYSQL)
-            dbcnx = new Database();
+        cnx = new Database();
 
-            // Connecting to MySQL database.
-            var cnx = dbcnx.real_connect(HOSTNAME,
-                                         USERNAME,
-                                         PASSWORD,
-                                         DATABASE);
+        var cnx_ok = cnx.real_connect(HOSTNAME,
+                                      USERNAME,
+                                      PASSWORD,
+                                      DATABASE);
 
-            if (cnx) {
-                __cnx
-= aux.NEW_LINE + "     Host info" + aux.COLON_SPACE_SEP + dbcnx.get_host_info()
-+ aux.NEW_LINE + "   Server info" + aux.COLON_SPACE_SEP + dbcnx.get_server_info()
-+ aux.NEW_LINE + "Server version" + aux.COLON_SPACE_SEP + dbcnx.get_server_version()
-                                                               .to_string();
-
-                // Generating the PDF report.
-                ret = ctrl.pdf_report_generate(dbcnx, __file__);
-            } else {
-                ret = Posix.EXIT_FAILURE;
-
-                stdout.printf(aux.S_FMT, __name__
-                            + aux.COLON_SPACE_SEP + aux.ERROR_PREFIX
-                            + aux.COLON_SPACE_SEP + aux.ERROR_NO_DB_CONNECT
-                            + dbcnx.error()       + aux.NEW_LINE);
-
-                return ret;
-            }
+        if (cnx != null) {
+            if (cnx_ok) {
  #elif (POSTGRES)
-            // Connecting to PostgreSQL database.
-//          dbcnx = set_db_login(HOSTNAME, aux.EMPTY_STRING, // port
-//                                         aux.EMPTY_STRING, // options
-//                                         aux.EMPTY_STRING, // gtty
-//                               DATABASE,
-//                               USERNAME,
-//                               PASSWORD);
+        var pg_dsn = PG_DSN_PREFIX + aux.COLON + aux.SLASH
+                                   + aux.SLASH + USERNAME
+                                   + aux.COLON + PASSWORD
+                                   + aux.AT    + HOSTNAME
+                                   + aux.SLASH + DATABASE;
 
-            var pg_dsn = PG_DSN_PREFIX + aux.COLON + aux.SLASH
-                                       + aux.SLASH + USERNAME
-                                       + aux.COLON + PASSWORD
-                                       + aux.AT    + HOSTNAME
-                                       + aux.SLASH + DATABASE;
+        cnx = connect_db(pg_dsn);
 
-            // Connecting to PostgreSQL database (preferred method).
-            dbcnx = connect_db(pg_dsn);
-
-            if (dbcnx != null) {
-                if (dbcnx.get_status() == ConnectionStatus.OK) {
-                    __cnx
-= aux.NEW_LINE + "     Host info" + aux.COLON_SPACE_SEP + dbcnx.get_host()
-                                  + aux.COLON           + dbcnx.get_port()
-+ aux.NEW_LINE + "   Server info" + aux.COLON_SPACE_SEP + dbcnx.get_protocol_Version()
-                                                               .to_string()
-+ aux.NEW_LINE + "Server version" + aux.COLON_SPACE_SEP + dbcnx.get_server_version()
-                                                               .to_string();
-
-                    // Generating the PDF report.
-                    ret = ctrl.pdf_report_generate(dbcnx, __file__);
-                } else {
-                    ret = Posix.EXIT_FAILURE;
-
-                    stdout.printf(aux.S_FMT, __name__
-                              + aux.COLON_SPACE_SEP + aux.ERROR_PREFIX
-                              + aux.COLON_SPACE_SEP + aux.ERROR_NO_DB_CONNECT
-                              + dbcnx.get_error_message() + aux.NEW_LINE);
-
-                    return ret;
-                }
-            }
+        if (cnx != null) {
+            if (cnx.get_status() == ConnectionStatus.OK) {
  #elif (SQLITE)
-            var sqlite_db_path = _get_sqlite_db_path(__file__, aux);
+        var sqlite_db_path = _get_sqlite_db_path(__file__, aux);
 
-            // Connecting to SQLite database.
-            var cnx = Database.open_v2(sqlite_db_path, out(dbcnx),
-                                                   OPEN_READONLY);
+        var cnx_ok = Database.open_v2(sqlite_db_path, out(cnx),
+                                                OPEN_READONLY);
 
-            if ((cnx == OK) && (dbcnx != null)) {
-                __cnx
-= aux.NEW_LINE + " Database path" + aux.COLON_SPACE_SEP + sqlite_db_path
-+ aux.NEW_LINE + "Engine ver str" + aux.COLON_SPACE_SEP + libversion()
-+ aux.NEW_LINE + "Engine version" + aux.COLON_SPACE_SEP + libversion_number()
-                                                         .to_string();
+        if (cnx != null) {
+            if (cnx_ok == OK) {
+#endif
+                // Instantiating the controller class.
+                var ctrl = new ReporterController();
 
                 // Generating the PDF report.
-                ret = ctrl.pdf_report_generate(dbcnx, __file__);
+                ret = ctrl.pdf_report_generate(cnx, __file__);
             } else {
                 ret = Posix.EXIT_FAILURE;
 
                 stdout.printf(aux.S_FMT, __name__
-                            + aux.COLON_SPACE_SEP + aux.ERROR_PREFIX
-                            + aux.COLON_SPACE_SEP + aux.ERROR_NO_DB_CONNECT
-                            + dbcnx.errmsg()      + aux.NEW_LINE);
+                            + aux.COLON_SPACE_SEP     + aux.ERROR_PREFIX
+                            + aux.COLON_SPACE_SEP     + aux.ERROR_NO_DB_CONNECT
+   #if (MYSQL)
+                            + cnx.error()             + aux.NEW_LINE);
+ #elif (POSTGRES)
+                            + cnx.get_error_message() + aux.NEW_LINE);
+ #elif (SQLITE)
+                            + cnx.errmsg()            + aux.NEW_LINE);
+#endif
 
                 return ret;
             }
-#endif
-            // ----------------------------------------------------------------
-            // --- Debug output - Begin ---------------------------------------
-            // ----------------------------------------------------------------
-//          stdout.printf(aux.S_FMT, __name__
-//                      + aux.COLON_SPACE_SEP + __cnx + aux.NEW_LINE);
-            // ----------------------------------------------------------------
-            // --- Debug output - End -----------------------------------------
-            // ----------------------------------------------------------------
-        } catch (Error e) {
+        } else {
             ret = Posix.EXIT_FAILURE;
 
             stdout.printf(aux.S_FMT, __name__
                         + aux.COLON_SPACE_SEP + aux.ERROR_PREFIX
-                        + aux.COLON_SPACE_SEP + e.message + aux.NEW_LINE);
+                        + aux.COLON_SPACE_SEP + aux.ERROR_NO_DB_CONNECT
+                                              + aux.NEW_LINE);
 
             return ret;
         }
@@ -210,6 +152,7 @@ class ReporterPrimary {
         return ret;
     }
 
+   #if (SQLITE)
     /*
      * Helper method.
      * Returns the SQLite database path, relative to the executable's location.
@@ -233,6 +176,7 @@ class ReporterPrimary {
 
         return sqlite_db_path;
     }
+#endif
 
     /** Default constructor. */
     public ReporterPrimary() {}

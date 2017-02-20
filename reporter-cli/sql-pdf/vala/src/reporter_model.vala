@@ -42,8 +42,6 @@ class ReporterModel {
         string[,] row_set = {{},{}};
                   hdr_set = {     };
 
-        string __name__ = typeof(ReporterModel).name();
-
         // Instantiating the controller helper class.
         var aux = new ControllerHelper();
 
@@ -203,8 +201,6 @@ class ReporterModel {
 
         string[,] row_set = {{},{}};
                   hdr_set = {     };
-
-        string __name__ = typeof(ReporterModel).name();
 
         // Instantiating the controller helper class.
         var aux = new ControllerHelper();

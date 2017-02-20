@@ -44,8 +44,6 @@ namespace CliSqlPdf
             var row_set = new array of string[0,0]
                 hdr_set = new array of string[ 0 ]
 
-            __name__: string = typeof(ReporterModel).name()
-
             // Instantiating the controller helper class.
             var aux = new ControllerHelper()
 
@@ -216,8 +214,6 @@ namespace CliSqlPdf
 
             var row_set = new array of string[0,0]
                 hdr_set = new array of string[ 0 ]
-
-            __name__: string = typeof(ReporterModel).name()
 
             // Instantiating the controller helper class.
             var aux = new ControllerHelper()

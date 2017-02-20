@@ -84,129 +84,72 @@ namespace CliSqlPdf
 
             var __file__ = args[0]
 
-            dbcnx: Database
+            cnx: Database = null
 
-            var __cnx = aux._EMPTY_STRING
-
-            // Instantiating the controller class.
-            var ctrl = new ReporterController()
-
-            // Trying to connect to the database.
-            try
+            // Connecting to the database.
 #if   (MYSQL)
-                dbcnx = new Database()
+            cnx = new Database()
 
-                // Connecting to MySQL database.
-                var cnx = dbcnx.real_connect(HOSTNAME,
-                                             USERNAME,
-                                             PASSWORD,
-                                             DATABASE)
+            var cnx_ok = cnx.real_connect(HOSTNAME,
+                                          USERNAME,
+                                          PASSWORD,
+                                          DATABASE)
 
-                if (cnx)
-                    __cnx = (
-  aux._NEW_LINE + "     Host info" + aux._COLON_SPACE_SEP + dbcnx
-                                        .get_host_info()
-+ aux._NEW_LINE + "   Server info" + aux._COLON_SPACE_SEP + dbcnx
-                                        .get_server_info()
-+ aux._NEW_LINE + "Server version" + aux._COLON_SPACE_SEP + dbcnx
-                                        .get_server_version().to_string())
-
-                    // Generating the PDF report.
-                    ret = ctrl.pdf_report_generate(dbcnx, __file__)
-                else
-                    ret = Posix.EXIT_FAILURE
-
-                    stdout.printf(aux._S_FMT, __name__
-                              + aux._COLON_SPACE_SEP + aux._ERROR_PREFIX
-                              + aux._COLON_SPACE_SEP + aux._ERROR_NO_DB_CONNECT
-                              + dbcnx.error()        + aux._NEW_LINE)
-
-                    return ret
+            if (cnx != null)
+                if (cnx_ok)
 #elif (POSTGRES)
-                // Connecting to PostgreSQL database.
-//              dbcnx = set_db_login(HOSTNAME, aux._EMPTY_STRING, // port
-//                                             aux._EMPTY_STRING, // options
-//                                             aux._EMPTY_STRING, // gtty
-//                                   DATABASE,
-//                                   USERNAME,
-//                                   PASSWORD)
+            var pg_dsn = (PG_DSN_PREFIX + aux._COLON + aux._SLASH
+                                        + aux._SLASH + USERNAME
+                                        + aux._COLON + PASSWORD
+                                        + aux._AT    + HOSTNAME
+                                        + aux._SLASH + DATABASE)
 
-                var pg_dsn = (PG_DSN_PREFIX + aux._COLON + aux._SLASH
-                                            + aux._SLASH + USERNAME
-                                            + aux._COLON + PASSWORD
-                                            + aux._AT    + HOSTNAME
-                                            + aux._SLASH + DATABASE)
+            cnx = connect_db(pg_dsn)
 
-                // Connecting to PostgreSQL database (preferred method).
-                dbcnx = connect_db(pg_dsn)
-
-                if (dbcnx != null)
-                    if (dbcnx.get_status() == ConnectionStatus.OK)
-                        __cnx = (
-  aux._NEW_LINE + "     Host info" + aux._COLON_SPACE_SEP + dbcnx.get_host()
-                                   + aux._COLON           + dbcnx.get_port()
-+ aux._NEW_LINE + "   Server info" + aux._COLON_SPACE_SEP + dbcnx
-                                        .get_protocol_Version().to_string()
-+ aux._NEW_LINE + "Server version" + aux._COLON_SPACE_SEP + dbcnx
-                                        .get_server_version().to_string())
-
-                        // Generating the PDF report.
-                        ret = ctrl.pdf_report_generate(dbcnx, __file__)
-                    else
-                        ret = Posix.EXIT_FAILURE
-
-                        stdout.printf(aux._S_FMT, __name__
-                              + aux._COLON_SPACE_SEP + aux._ERROR_PREFIX
-                              + aux._COLON_SPACE_SEP + aux._ERROR_NO_DB_CONNECT
-                              + dbcnx.get_error_message() + aux._NEW_LINE)
-
-                        return ret
+            if (cnx != null)
+                if (cnx.get_status() == ConnectionStatus.OK)
 #elif (SQLITE)
-                var sqlite_db_path = _get_sqlite_db_path(__file__, aux)
+            var sqlite_db_path = _get_sqlite_db_path(__file__, aux)
 
-                // Connecting to SQLite database.
-                var cnx = Database.open_v2(sqlite_db_path, out(dbcnx),
-                                                       OPEN_READONLY)
+            var cnx_ok = Database.open_v2(sqlite_db_path, out(cnx),
+                                                    OPEN_READONLY)
 
-                if ((cnx == OK) && (dbcnx != null))
-                    __cnx = (
-  aux._NEW_LINE + " Database path" + aux._COLON_SPACE_SEP + sqlite_db_path
-+ aux._NEW_LINE + "Engine ver str" + aux._COLON_SPACE_SEP + libversion()
-+ aux._NEW_LINE + "Engine version" + aux._COLON_SPACE_SEP + libversion_number()
-                                                           .to_string())
+            if (cnx != null)
+                if (cnx_ok == OK)
+#endif
+                    // Instantiating the controller class.
+                    var ctrl = new ReporterController()
 
                     // Generating the PDF report.
-                    ret = ctrl.pdf_report_generate(dbcnx, __file__)
+                    ret = ctrl.pdf_report_generate(cnx, __file__)
                 else
                     ret = Posix.EXIT_FAILURE
 
-                    stdout.printf(aux._S_FMT, __name__
-                              + aux._COLON_SPACE_SEP + aux._ERROR_PREFIX
-                              + aux._COLON_SPACE_SEP + aux._ERROR_NO_DB_CONNECT
-                              + dbcnx.errmsg()       + aux._NEW_LINE)
+                    var error_msg = (aux._COLON_SPACE_SEP + aux._ERROR_PREFIX
+                            + aux._COLON_SPACE_SEP + aux._ERROR_NO_DB_CONNECT)
+#if   (MYSQL)
+                    error_msg += cnx.error()
+#elif (POSTGRES)
+                    error_msg += cnx.get_error_message()
+#elif (SQLITE)
+                    error_msg += cnx.errmsg()
+#endif
+                    stdout.printf(aux._S_FMT,__name__+error_msg+aux._NEW_LINE)
 
                     return ret
-#endif
-                // ------------------------------------------------------------
-                // --- Debug output - Begin -----------------------------------
-                // ------------------------------------------------------------
-//              stdout.printf(aux._S_FMT, __name__
-//                          + aux._COLON_SPACE_SEP + __cnx + aux._NEW_LINE)
-                // ------------------------------------------------------------
-                // --- Debug output - End -------------------------------------
-                // ------------------------------------------------------------
-
-            except e: Error
+            else
                 ret = Posix.EXIT_FAILURE
 
                 stdout.printf(aux._S_FMT, __name__
                             + aux._COLON_SPACE_SEP + aux._ERROR_PREFIX
-                            + aux._COLON_SPACE_SEP + e.message + aux._NEW_LINE)
+                            + aux._COLON_SPACE_SEP + aux._ERROR_NO_DB_CONNECT
+                                                   + aux._NEW_LINE)
 
                 return ret
 
             return ret
 
+#if   (SQLITE)
         /*
          * Helper method.
          * Returns the SQLite database path,
@@ -228,6 +171,7 @@ namespace CliSqlPdf
                                              + aux._SLASH + DATABASE)
 
             return sqlite_db_path
+#endif
 
         /** Default constructor. */
         construct()
