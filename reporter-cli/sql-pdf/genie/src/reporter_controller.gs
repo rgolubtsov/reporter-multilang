@@ -80,6 +80,17 @@ namespace CliSqlPdf
         const ZZ: uint   = 297
 
         /* Various string literals. */
+        const  _REPORT_TITLE       : string =  "Arch Linux Packages"
+        const  _REPORT_AUTHOR      : string =  "Arch Linux Package Maintainers"
+        const  _REPORT_SUBJECT     : string = ("Sample list of Arch Linux "
+                                            +  "packages.")
+        const  _REPORT_KEYWORDS    : string = ("Linux ArchLinux Packages Arch "
+                                            +  "Repo core extra community "
+                                            +  "multilib")
+        const  _REPORT_CREATOR     : string = ("Reporter Multilang 0.1 - "
+                                            +  "https://github.com/rgolubtsov/"
+                                            +  "reporter-multilang")
+        // --------------------------------------------------------------------
         // --- /usr/share/fonts/100dpi/helv*.pcf.gz ------------
 //      const _SANS_FONT           : string = "Helvetica"
         // --- /usr/share/fonts/TTF/DejaVuSan*.ttf -------------
@@ -176,6 +187,31 @@ namespace CliSqlPdf
                                                           (297 / MM))
 
             _report.restrict_to_version(PdfVersion.VERSION_1_4)
+
+            // --- Report metadata --------------------------------------------
+            /*
+             * Note: The possibility to inject PDF metadata entries
+             *       has appeared in Cairo 1.16, but even in Arch Linux
+             *       the "cairo" package currently is just of version 1.14.8.
+             *       And, of course, its Vala bindings are in the same state.
+             *       After upgrading to Cairo 1.16+ appropriate calls should
+             *       look something like the given below
+             *       (commented out for now).
+             *
+             * See for reference:
+             *   - Cairo sources:
+             *       https://cgit.freedesktop.org/cairo/tree/src/cairo-pdf.h
+             *       https://cgit.freedesktop.org/cairo/tree/src/
+             *                                           cairo-pdf-surface.c
+             *
+             *   - Cairo Valadoc:
+             *       https://valadoc.org/cairo/Cairo.PdfSurface.html
+             */
+//          _report.set_metadata(PdfMetadata.TITLE,    _REPORT_TITLE   )
+//          _report.set_metadata(PdfMetadata.AUTHOR,   _REPORT_AUTHOR  )
+//          _report.set_metadata(PdfMetadata.SUBJECT,  _REPORT_SUBJECT )
+//          _report.set_metadata(PdfMetadata.KEYWORDS, _REPORT_KEYWORDS)
+//          _report.set_metadata(PdfMetadata.CREATOR,  _REPORT_CREATOR )
 
             var report = new Cairo.Context(_report)
 
