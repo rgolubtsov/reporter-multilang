@@ -9,7 +9,8 @@
 * SQL-PDF :small_blue_diamond: Vala implementation (complete)
 * SQL-PDF :small_blue_diamond: Genie implementation (complete)
 * SQL-PDF :small_blue_diamond: Go implementation (complete)
-* SQL-PDF :small_blue_diamond: JavaScript, D, and Java implementations (planned)
+* SQL-PDF :small_blue_diamond: JavaScript (ES5) implementation (in progress)
+* SQL-PDF :small_blue_diamond: D and Java implementations (planned)
 
 ---
 
