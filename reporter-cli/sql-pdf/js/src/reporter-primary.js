@@ -20,6 +20,10 @@
 
 "use strict";
 
+var mysql    = require("mysql");
+var postgres = require("pg");
+var sqlite   = require("sqlite3");
+
 var ControllerHelper = require("./reporter-primary/controller-helper.js");
 
 /** The main class of the application. */
@@ -31,6 +35,37 @@ var ReporterPrimary = function() {
     var _MY_CONNECT = "mysql";
     var _PG_CONNECT = "postgres";
     var _SL_CONNECT = "sqlite";
+
+    /**
+     * Constant: The database server name.
+     *     TODO: Move to cli args.
+     */
+    var HOSTNAME = "10.0.2.100";
+//  var HOSTNAME = "localhost";
+
+    /**
+     * Constant: The username to connect to the database.
+     *     TODO: Move to cli args.
+     */
+    var USERNAME = "reporter";
+
+    /**
+     * Constant: The password to connect to the database.
+     *     TODO: Move to cli args.
+     */
+    var PASSWORD = "retroper12345678";
+
+    /**
+     * Constant: The database name.
+     *     TODO: Move to cli args.
+     */
+    var DATABASE = "reporter_multilang";
+
+    /**
+     * Constant: The SQLite database location.
+     *     TODO: Move to cli args.
+     */
+    var SQLITE_DB_DIR = "data";
 
     /**
      * Starts up the app.
@@ -46,6 +81,7 @@ var ReporterPrimary = function() {
         var ret = aux._EXIT_SUCCESS;
 
         var __name__ = _CLASS_NAME;
+        var __file__ = module.filename;
 
         var db_switch = args[0];
 
@@ -53,16 +89,27 @@ var ReporterPrimary = function() {
 
         // Trying to connect to the database.
         try {
-            // TODO: Implement connecting to the database.
-
                    if (db_switch === _MY_CONNECT) {
-                cnx = _MY_CONNECT;
+                cnx = mysql.createConnection({
+                        host : HOSTNAME,
+                        user : USERNAME,
+                    password : PASSWORD,
+                    database : DATABASE,
+                });
             } else if (db_switch === _PG_CONNECT) {
-                cnx = _PG_CONNECT;
+                cnx = new postgres.Client({
+                        host : HOSTNAME,
+                        user : USERNAME,
+                    password : PASSWORD,
+                    database : DATABASE,
+                });
             } else if (db_switch === _SL_CONNECT) {
-                cnx = _SL_CONNECT;
-            } else                                {
-                cnx = aux._EMPTY_STRING;
+                var sqlite_db_path = _get_sqlite_db_path(__file__, aux);
+
+                cnx = new sqlite.Database(
+                    sqlite_db_path,
+                    sqlite.OPEN_READONLY
+                );
             }
         } catch (e) {
             ret = aux._EXIT_FAILURE;
@@ -73,11 +120,48 @@ var ReporterPrimary = function() {
             return ret;
         }
 
-        console.log(__name__ + aux._COLON_SPACE_SEP + ret
-                             + aux._SPACE           + aux._V_BAR
-                             + aux._SPACE           + cnx);
+        if (cnx) {
+            if (db_switch !== _SL_CONNECT) {
+                cnx.connect();
+            }
+
+            console.log(__name__ + aux._COLON_SPACE_SEP + ret
+                                 + aux._SPACE           + aux._V_BAR
+                                 + aux._SPACE           + cnx);
+
+            // TODO: Implement generating the PDF report.
+
+            // Disconnecting from the database.
+            if (db_switch !== _SL_CONNECT) {
+                cnx.end();
+            } else {
+                cnx.close();
+            }
+        } else {
+            ret = aux._EXIT_FAILURE;
+
+            console.log(__name__ + aux._COLON_SPACE_SEP + aux._ERROR_PREFIX
+                                 + aux._COLON_SPACE_SEP
+                                 + aux._ERROR_NO_DB_CONNECT);
+
+            return ret;
+        }
 
         return ret;
+    };
+
+    /*
+     * Helper method.
+     * Returns the SQLite database path, relative to this module location.
+     */
+    var _get_sqlite_db_path = function(module_, aux) {
+        var module_path    = module_.split(aux._SLASH);
+        var module_name    = module_path.pop();
+        var sqlite_db_path = module_path.join(aux._SLASH)
+                           + aux._SLASH + SQLITE_DB_DIR
+                           + aux._SLASH + DATABASE;
+
+        return sqlite_db_path;
     };
 };
 
