@@ -24,11 +24,12 @@ var mysql    = require("mysql");
 var postgres = require("pg");
 var sqlite   = require("sqlite3");
 
-var ControllerHelper = require("./reporter-primary/controller-helper.js");
+var ControllerHelper   = require("./reporter-primary/controller-helper.js");
+var ReporterController = require("./reporter-primary/reporter-controller.js");
 
 /** The main class of the application. */
 var ReporterPrimary = function() {
-    /* The name of the class. */
+    /* Constant: The name of the class. */
     var _CLASS_NAME = "ReporterPrimary";
 
     /* Database switches. They indicate which database to connect to. */
@@ -125,11 +126,15 @@ var ReporterPrimary = function() {
                 cnx.connect();
             }
 
-            console.log(__name__ + aux._COLON_SPACE_SEP + ret
-                                 + aux._SPACE           + aux._V_BAR
-                                 + aux._SPACE           + cnx);
+            // Instantiating the controller class.
+            var ctrl = new ReporterController();
 
-            // TODO: Implement generating the PDF report.
+            // Generating the PDF report.
+            ret = ctrl.pdf_report_generate(cnx);
+
+            console.log(__name__ + aux._COLON_SPACE_SEP + cnx
+                                 + aux._SPACE           + aux._V_BAR
+                                 + aux._SPACE           + ret);
 
             // Disconnecting from the database.
             if (db_switch !== _SL_CONNECT) {
