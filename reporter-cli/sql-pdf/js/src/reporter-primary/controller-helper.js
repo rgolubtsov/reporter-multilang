@@ -22,7 +22,10 @@
 
 /** The helper for the controller class and related ones. */
 var ControllerHelper = function() {
-    // Helper constants.
+    /* Constant: The name of the class. */
+    var _CLASS_NAME = "ControllerHelper";
+
+    /* Helper constants. */
     this._EXIT_FAILURE    =    1; //    Failing exit status.
     this._EXIT_SUCCESS    =    0; // Successful exit status.
     this._EMPTY_STRING    =   "";
@@ -39,7 +42,7 @@ var ControllerHelper = function() {
     this._SEP_COG         =  "-";
     this._CURRENT_DIR     = "./";
 
-    // Common error messages.
+    /* Common error messages. */
     this._ERROR_PREFIX        = "Error";
     this._ERROR_NO_DB_CONNECT = "Could not connect to the database. ";
     this._ERROR_NO_DATA       = "No data found.";
