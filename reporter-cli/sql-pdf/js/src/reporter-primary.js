@@ -86,9 +86,11 @@ var ReporterPrimary = function() {
 
         var db_switch = args[0];
 
-        var cnx = null;
+        var cnx   = null;
+        var mycnx = false; // <== Suppose the database is not MySQL.
+        var pgcnx = false; // <== Suppose the database is not PostgreSQL.
 
-        // Trying to connect to the database.
+        // Trying to get the database connection object.
         try {
                    if (db_switch === _MY_CONNECT) {
                 cnx = mysql.createConnection({
@@ -97,6 +99,8 @@ var ReporterPrimary = function() {
                     password : PASSWORD,
                     database : DATABASE,
                 });
+
+                mycnx = true;
             } else if (db_switch === _PG_CONNECT) {
                 cnx = new postgres.Client({
                         host : HOSTNAME,
@@ -104,6 +108,8 @@ var ReporterPrimary = function() {
                     password : PASSWORD,
                     database : DATABASE,
                 });
+
+                pgcnx = true;
             } else if (db_switch === _SL_CONNECT) {
                 var sqlite_db_path = _get_sqlite_db_path(__file__, aux);
 
@@ -122,25 +128,22 @@ var ReporterPrimary = function() {
         }
 
         if (cnx) {
+            // Connecting to the database.
             if (db_switch !== _SL_CONNECT) {
-                cnx.connect();
+                cnx.connect(function(e) { if (e) { throw e; }});
             }
 
             // Instantiating the controller class.
             var ctrl = new ReporterController();
 
             // Generating the PDF report.
-            ret = ctrl.pdf_report_generate(cnx);
-
-            console.log(__name__ + aux._COLON_SPACE_SEP + cnx
-                                 + aux._SPACE           + aux._V_BAR
-                                 + aux._SPACE           + ret);
+            ret = ctrl.pdf_report_generate(cnx, mycnx, pgcnx);
 
             // Disconnecting from the database.
-            if (db_switch !== _SL_CONNECT) {
-                cnx.end();
-            } else {
-                cnx.close();
+                   if (db_switch === _MY_CONNECT) {
+                cnx.end  (function(e) { if (e) { throw e; }});
+            } else if (db_switch === _SL_CONNECT) {
+                cnx.close(function(e) { if (e) { throw e; }});
             }
         } else {
             ret = aux._EXIT_FAILURE;
@@ -151,6 +154,14 @@ var ReporterPrimary = function() {
 
             return ret;
         }
+
+        // --------------------------------------------------------------------
+        // --- Debug output - Begin -------------------------------------------
+        // --------------------------------------------------------------------
+        console.log(__name__ + aux._COLON_SPACE_SEP + ret);
+        // --------------------------------------------------------------------
+        // --- Debug output - End ---------------------------------------------
+        // --------------------------------------------------------------------
 
         return ret;
     };
