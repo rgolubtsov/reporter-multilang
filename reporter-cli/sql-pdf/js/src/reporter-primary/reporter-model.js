@@ -30,15 +30,17 @@ var ReporterModel = function() {
     /**
      * Retrieves a list of all data items stored in the database.
      *
-     * @param cnx The database connection object.
+     * @param cnx      The database connection object.
+     * @param mysql    The indicator that shows whether the database connection
+     *                 object is MySQL connection.
+     * @param postgres The indicator that shows whether the database connection
+     *                 object is PostgreSQL connection.
+     * @param res_set  The callback function that will be returned
+     *                 to the controller.
      *
-     * @return Two arrays containing table headers and rows
-     *         enclosed into an umbrella array.
+     * @return The callback function containing table headers and rows.
      */
-    this.get_all_data_items = function(cnx) {
-        var hdr_set = [  ];
-        var row_set = [[]];
-
+    this.get_all_data_items = function(cnx, mysql, postgres, res_set) {
         // Instantiating the controller helper class.
         var aux = new ControllerHelper();
 
@@ -64,13 +66,53 @@ var ReporterModel = function() {
             + " items.name,"
             + "       arch";
 
-        console.log(__name__ + aux._COLON_SPACE_SEP + cnx
-                             + aux._SPACE           + aux._V_BAR
-                             + aux._SPACE           + hdr_set
-                             + aux._SPACE           + aux._V_BAR
-                             + aux._SPACE           + row_set);
+        if (mysql) {
+            // Executing the SQL statement.
+            cnx.query(sql_select, function(e, row_set, hdr_set) {
+                if (e) { throw e; }
 
-        return [hdr_set, row_set];
+                return res_set(row_set, hdr_set);
+            });
+        } else if (postgres) {
+            // Executing the SQL statement.
+            var query = cnx.query(sql_select);
+
+            query.on("error", function(e) { if (e) { throw e; }});
+
+            var hdr_set = [];
+
+            query.on("row", function(row_ary, row_set) {
+                row_set.addRow(row_ary);
+            });
+
+            query.on("end", function(row_set) {
+                cnx.end(function(e) { if (e) { throw e; }});
+
+                return res_set(row_set.rows, hdr_set);
+            });
+        } else { // <== Suppose the database is SQLite.
+            // Preparing the SQL statement.
+            var stmt = cnx.prepare(sql_select, function(e) {
+                if (e) { throw e; }
+            });
+
+            var row_set = [];
+            var hdr_set = [];
+
+            // Executing the SQL statement.
+            stmt.each(function(e, row_ary) {
+                if (e) { throw e; }
+
+                row_set.push(row_ary);
+            }, function(e, num_rows) {
+                if (e) { throw e; }
+
+                return res_set(row_set, hdr_set);
+            });
+
+            // Finalizing the SQL statement.
+            stmt.finalize(function(e) { if (e) { throw e; }});
+        }
     };
 };
 

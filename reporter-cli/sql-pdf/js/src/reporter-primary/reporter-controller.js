@@ -43,12 +43,16 @@ var ReporterController = function() {
     /**
      * Generates the PDF report.
      *
-     * @param cnx The database connection object.
+     * @param cnx      The database connection object.
+     * @param mysql    The indicator that shows whether the database connection
+     *                 object is MySQL connection.
+     * @param postgres The indicator that shows whether the database connection
+     *                 object is PostgreSQL connection.
      *
      * @return The exit code indicating the status
      *         of generating the PDF report.
      */
-    this.pdf_report_generate = function(cnx) {
+    this.pdf_report_generate = function(cnx, mysql, postgres) {
         // Instantiating the controller helper class.
         var aux = new ControllerHelper();
 
@@ -60,19 +64,28 @@ var ReporterController = function() {
         var model = new ReporterModel();
 
         // Retrieving a list of all data items stored in the database.
-        var res_set = model.get_all_data_items(cnx);
+        model.get_all_data_items(cnx, mysql, postgres,
+        function(row_set, hdr_set) {
+            var num_rows = row_set.length;
+            var num_hdrs = hdr_set.length;
+
+            // ----------------------------------------------------------------
+            // --- Debug output - Begin ---------------------------------------
+            // ----------------------------------------------------------------
+            console.log(__name__ + aux._COLON_SPACE_SEP + hdr_set
+                                 + aux._NEW_LINE        + row_set
+                                 + aux._NEW_LINE        + num_hdrs
+                                 + aux._NEW_LINE        + num_rows);
+            // ----------------------------------------------------------------
+            // --- Debug output - End -----------------------------------------
+            // ----------------------------------------------------------------
+        });
 
         // Retrieving a list of data items for a given date period.
-//      var res_set = model.get_data_items_by_date(FROM, TO, cnx);
+//      model.get_data_items_by_date(FROM, TO, cnx, mysql, postgres,
+//      function(row_set, hdr_set) {});
 
-        var hdr_set = res_set[0];
-        var row_set = res_set[1];
-
-        console.log(__name__ + aux._COLON_SPACE_SEP + cnx
-                             + aux._SPACE           + aux._V_BAR
-                             + aux._SPACE           + hdr_set
-                             + aux._SPACE           + aux._V_BAR
-                             + aux._SPACE           + row_set);
+        // TODO: Implement generating the PDF report.
 
         return ret;
     };
