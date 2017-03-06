@@ -68,8 +68,15 @@ var ReporterModel = function() {
 
         if (mysql) {
             // Executing the SQL statement.
-            cnx.query(sql_select, function(e, row_set, hdr_set) {
+            cnx.query(sql_select, function(e, row_set, hdr_ary) {
                 if (e) { throw e; }
+
+                var hdr_set = [];
+
+                // Processing the result set metadata -- table headers.
+                for (var i = 0; i < hdr_ary.length; i++) {
+                    hdr_set.push(hdr_ary[i].name);
+                }
 
                 return res_set(row_set, hdr_set);
             });
@@ -79,14 +86,19 @@ var ReporterModel = function() {
 
             query.on("error", function(e) { if (e) { throw e; }});
 
-            var hdr_set = [];
-
             query.on("row", function(row_ary, row_set) {
                 row_set.addRow(row_ary);
             });
 
             query.on("end", function(row_set) {
                 cnx.end(function(e) { if (e) { throw e; }});
+
+                var hdr_set = [];
+
+                // Processing the result set metadata -- table headers.
+                for (var i = 0; i < row_set.fields.length; i++) {
+                    hdr_set.push(row_set.fields[i].name);
+                }
 
                 return res_set(row_set.rows, hdr_set);
             });
@@ -97,7 +109,6 @@ var ReporterModel = function() {
             });
 
             var row_set = [];
-            var hdr_set = [];
 
             // Executing the SQL statement.
             stmt.each(function(e, row_ary) {
@@ -106,6 +117,16 @@ var ReporterModel = function() {
                 row_set.push(row_ary);
             }, function(e, num_rows) {
                 if (e) { throw e; }
+
+                // Constructing :-) the result set metadata -- table headers.
+                var hdr_set = [
+                    "arch",         // In the SQLite module there is no such
+                    "repo",         // possibility to retrieve table headers
+                    "name",         // (column names) as there is implemented
+                    "version",      // in MySQL and PostgreSQL modules (see
+                    "last_updated", // above). So the only way is to populate
+                    "flag_date",    // and return this array of headers as is.
+                ];
 
                 return res_set(row_set, hdr_set);
             });
