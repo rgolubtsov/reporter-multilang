@@ -86,7 +86,17 @@ var ReporterModel = function() {
                     row_set.push([]); //<== Making a quasi-2-dimensional array.
 
                     for (var j = 0; j < num_hdrs; j++) {
-                        row_set[i].push(row_lot[i][hdr_set[j]]);
+                        var row_cur = row_lot[i][hdr_set[j]];
+
+                        if ((j === 4) || (j === 5)) {
+                            if (row_cur) {
+                                row_cur = row_cur.toISOString().slice(0, 10);
+                            } else {
+                                row_cur = aux._EMPTY_STRING;
+                            }
+                        }
+
+                        row_set[i].push(row_cur);
                     }
                 }
 
@@ -120,7 +130,17 @@ var ReporterModel = function() {
                     row_set.push([]); //<== Making a quasi-2-dimensional array.
 
                     for (var j = 0; j < num_hdrs; j++) {
-                        row_set[i].push(row_lot.rows[i][hdr_set[j]]);
+                        var row_cur = row_lot.rows[i][hdr_set[j]];
+
+                        if ((j === 4) || (j === 5)) {
+                            if (row_cur) {
+                                row_cur = row_cur.toISOString().slice(0, 10);
+                            } else {
+                                row_cur = aux._EMPTY_STRING;
+                            }
+                        }
+
+                        row_set[i].push(row_cur);
                     }
                 }
 
@@ -161,7 +181,15 @@ var ReporterModel = function() {
                     row_set.push([]); //<== Making a quasi-2-dimensional array.
 
                     for (var j = 0; j < num_hdrs; j++) {
-                        row_set[i].push(row_lot[i][hdr_set[j]]);
+                        var row_cur = row_lot[i][hdr_set[j]];
+
+                        if ((j === 4) || (j === 5)) {
+                            if (!row_cur) {
+                                row_cur = aux._EMPTY_STRING;
+                            }
+                        }
+
+                        row_set[i].push(row_cur);
                     }
                 }
 
