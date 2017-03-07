@@ -68,17 +68,29 @@ var ReporterModel = function() {
 
         if (mysql) {
             // Executing the SQL statement.
-            cnx.query(sql_select, function(e, row_set, hdr_ary) {
+            cnx.query(sql_select, function(e, row_lot, hdr_lot) {
                 if (e) { throw e; }
 
-                var hdr_set = [];
+                var num_hdrs = hdr_lot.length;
+                var num_rows = row_lot.length;
+
+                var hdr_set = [], row_set = [];
 
                 // Processing the result set metadata -- table headers.
-                for (var i = 0; i < hdr_ary.length; i++) {
-                    hdr_set.push(hdr_ary[i].name);
+                for (var i = 0; i < num_hdrs; i++) {
+                    hdr_set.push(hdr_lot[i].name);
                 }
 
-                return res_set(row_set, hdr_set);
+                // Processing the result set -- table rows.
+                for (var i = 0; i < num_rows; i++) {
+                    row_set.push([]); //<== Making a quasi-2-dimensional array.
+
+                    for (var j = 0; j < num_hdrs; j++) {
+                        row_set[i].push(row_lot[i][hdr_set[j]]);
+                    }
+                }
+
+                return res_set(hdr_set, row_set);
             });
         } else if (postgres) {
             // Executing the SQL statement.
@@ -86,21 +98,33 @@ var ReporterModel = function() {
 
             query.on("error", function(e) { if (e) { throw e; }});
 
-            query.on("row", function(row_ary, row_set) {
-                row_set.addRow(row_ary);
+            query.on("row", function(row_ary, row_lot) {
+                row_lot.addRow(row_ary);
             });
 
-            query.on("end", function(row_set) {
+            query.on("end", function(row_lot) {
                 cnx.end(function(e) { if (e) { throw e; }});
 
-                var hdr_set = [];
+                var num_hdrs = row_lot.fields.length;
+                var num_rows = row_lot.rows.length;
+
+                var hdr_set = [], row_set = [];
 
                 // Processing the result set metadata -- table headers.
-                for (var i = 0; i < row_set.fields.length; i++) {
-                    hdr_set.push(row_set.fields[i].name);
+                for (var i = 0; i < num_hdrs; i++) {
+                    hdr_set.push(row_lot.fields[i].name);
                 }
 
-                return res_set(row_set.rows, hdr_set);
+                // Processing the result set -- table rows.
+                for (var i = 0; i < num_rows; i++) {
+                    row_set.push([]); //<== Making a quasi-2-dimensional array.
+
+                    for (var j = 0; j < num_hdrs; j++) {
+                        row_set[i].push(row_lot.rows[i][hdr_set[j]]);
+                    }
+                }
+
+                return res_set(hdr_set, row_set);
             });
         } else { // <== Suppose the database is SQLite.
             // Preparing the SQL statement.
@@ -108,18 +132,20 @@ var ReporterModel = function() {
                 if (e) { throw e; }
             });
 
-            var row_set = [];
+            var row_lot = [];
 
             // Executing the SQL statement.
             stmt.each(function(e, row_ary) {
                 if (e) { throw e; }
 
-                row_set.push(row_ary);
+                row_lot.push(row_ary);
             }, function(e, num_rows) {
                 if (e) { throw e; }
 
+                var hdr_set = [], row_set = [];
+
                 // Constructing :-) the result set metadata -- table headers.
-                var hdr_set = [
+                hdr_set = [
                     "arch",         // In the SQLite module there is no such
                     "repo",         // possibility to retrieve table headers
                     "name",         // (column names) as there is implemented
@@ -128,7 +154,18 @@ var ReporterModel = function() {
                     "flag_date",    // and return this array of headers as is.
                 ];
 
-                return res_set(row_set, hdr_set);
+                var num_hdrs = hdr_set.length;
+
+                // Processing the result set -- table rows.
+                for (var i = 0; i < num_rows; i++) {
+                    row_set.push([]); //<== Making a quasi-2-dimensional array.
+
+                    for (var j = 0; j < num_hdrs; j++) {
+                        row_set[i].push(row_lot[i][hdr_set[j]]);
+                    }
+                }
+
+                return res_set(hdr_set, row_set);
             });
 
             // Finalizing the SQL statement.

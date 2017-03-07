@@ -65,9 +65,9 @@ var ReporterController = function() {
 
         // Retrieving a list of all data items stored in the database.
         model.get_all_data_items(cnx, mysql, postgres,
-        function(row_set, hdr_set) {
-            var num_rows = row_set.length;
+        function(hdr_set, row_set) {
             var num_hdrs = hdr_set.length;
+            var num_rows = row_set.length;
 
             // ----------------------------------------------------------------
             // --- Debug output - Begin ---------------------------------------
@@ -83,7 +83,7 @@ var ReporterController = function() {
 
         // Retrieving a list of data items for a given date period.
 //      model.get_data_items_by_date(FROM, TO, cnx, mysql, postgres,
-//      function(row_set, hdr_set) {});
+//      function(hdr_set, row_set) {});
 
         // TODO: Implement generating the PDF report.
 
