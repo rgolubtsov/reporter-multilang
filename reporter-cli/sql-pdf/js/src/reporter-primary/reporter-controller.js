@@ -41,6 +41,36 @@ var ReporterController = function() {
     var TO   = "2016-12-01";
 
     /**
+     * Constant: The PDF report output location.
+     *     TODO: Move to cli args.
+     */
+    var PDF_REPORT_DIR = "lib/data";
+
+    /**
+     * Constant: The PDF report filename.
+     *     TODO: Move to cli args.
+     */
+    var PDF_REPORT_FILENAME = "packages.pdf";
+
+    /**
+     * Constant: The number of pages generated in a PDF report.
+     *     TODO: Move to cli args.
+     */
+    var MAX_PAGES = 20;
+
+    /** Constant: The maximum number of data rows displayed in a page. */
+    var MAX_ROWS_IN_A_PAGE = 40;
+
+    /** Constant: The PDF basic measurement unit -- PostScript point. */
+    var PT =   1;
+
+    /** Constant: The one inch       (in PDF measurement terms). */
+    var IN = ( 1   / 72);
+
+    /** Constant: The one millimeter (in PDF measurement terms). */
+    var MM = (25.4 / 72);
+
+    /**
      * Generates the PDF report.
      *
      * @param cnx      The database connection object.
@@ -66,16 +96,14 @@ var ReporterController = function() {
         // Retrieving a list of all data items stored in the database.
         model.get_all_data_items(cnx, mysql, postgres,
         function(hdr_set, row_set) {
-            var num_hdrs = hdr_set.length;
-            var num_rows = row_set.length;
+//          var num_hdrs = hdr_set.length;
+//          var num_rows = row_set.length;
 
             // ----------------------------------------------------------------
             // --- Debug output - Begin ---------------------------------------
             // ----------------------------------------------------------------
             console.log(__name__ + aux._COLON_SPACE_SEP + hdr_set
-                                 + aux._NEW_LINE        + row_set
-                                 + aux._NEW_LINE        + num_hdrs
-                                 + aux._NEW_LINE        + num_rows);
+      + aux._NEW_LINE + __name__ + aux._COLON_SPACE_SEP + row_set);
             // ----------------------------------------------------------------
             // --- Debug output - End -----------------------------------------
             // ----------------------------------------------------------------

@@ -27,6 +27,21 @@ var ReporterModel = function() {
     /* Constant: The name of the class. */
     var _CLASS_NAME = "ReporterModel";
 
+    /* The Coordinated Universal Time (UTC) date conversion trick suffix. */
+    var _UTC = "UTC";
+
+    /* Various string literals. */
+    var _ERROR_        = "error";
+    var _ROW_          = "row";
+    var _END_          = "end";
+    // ------------------------------------------------------------------------
+    var _ARCH_         = "arch";
+    var _REPO_         = "repo";
+    var _NAME_         = "name";
+    var _VERSION_      = "version";
+    var _LAST_UPDATED_ = "last_updated";
+    var _FLAG_DATE_    = "flag_date";
+
     /**
      * Retrieves a list of all data items stored in the database.
      *
@@ -90,7 +105,9 @@ var ReporterModel = function() {
 
                         if ((j === 4) || (j === 5)) {
                             if (row_cur) {
-                                row_cur = row_cur.toISOString().slice(0, 10);
+                                row_cur = new Date(row_cur + _UTC)
+                                                  .toISOString().slice(0, 10);
+      // The same effect when using this one: ==> .toJSON().slice(0, 10);
                             } else {
                                 row_cur = aux._EMPTY_STRING;
                             }
@@ -106,13 +123,13 @@ var ReporterModel = function() {
             // Executing the SQL statement.
             var query = cnx.query(sql_select);
 
-            query.on("error", function(e) { if (e) { throw e; }});
+            query.on(_ERROR_, function(e) { if (e) { throw e; }});
 
-            query.on("row", function(row_ary, row_lot) {
+            query.on(_ROW_, function(row_ary, row_lot) {
                 row_lot.addRow(row_ary);
             });
 
-            query.on("end", function(row_lot) {
+            query.on(_END_, function(row_lot) {
                 cnx.end(function(e) { if (e) { throw e; }});
 
                 var num_hdrs = row_lot.fields.length;
@@ -134,7 +151,9 @@ var ReporterModel = function() {
 
                         if ((j === 4) || (j === 5)) {
                             if (row_cur) {
-                                row_cur = row_cur.toISOString().slice(0, 10);
+                                row_cur = new Date(row_cur + _UTC)
+                                                  .toJSON().slice(0, 10);
+      // The same effect when using this one: ==> .toISOString().slice(0, 10);
                             } else {
                                 row_cur = aux._EMPTY_STRING;
                             }
@@ -166,12 +185,12 @@ var ReporterModel = function() {
 
                 // Constructing :-) the result set metadata -- table headers.
                 hdr_set = [
-                    "arch",         // In the SQLite module there is no such
-                    "repo",         // possibility to retrieve table headers
-                    "name",         // (column names) as there is implemented
-                    "version",      // in MySQL and PostgreSQL modules (see
-                    "last_updated", // above). So the only way is to populate
-                    "flag_date",    // and return this array of headers as is.
+                    _ARCH_,         // In the SQLite module there is no such
+                    _REPO_,         // possibility to retrieve table headers
+                    _NAME_,         // (column names) as there is implemented
+                    _VERSION_,      // in MySQL and PostgreSQL modules (see
+                    _LAST_UPDATED_, // above). So the only way is to populate
+                    _FLAG_DATE_,    // and return this array of headers as is.
                 ];
 
                 var num_hdrs = hdr_set.length;
