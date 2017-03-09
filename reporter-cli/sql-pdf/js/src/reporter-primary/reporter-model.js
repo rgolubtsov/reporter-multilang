@@ -20,7 +20,7 @@
 
 "use strict";
 
-var ControllerHelper = require("./controller-helper.js");
+var CtrlHlpr = require("./controller-helper.js");
 
 /** The model class of the application. */
 var ReporterModel = function() {
@@ -57,7 +57,7 @@ var ReporterModel = function() {
      */
     this.get_all_data_items = function(cnx, mysql, postgres, res_set) {
         // Instantiating the controller helper class.
-        var aux = new ControllerHelper();
+        var aux = new CtrlHlpr.ControllerHelper();
 
         var __name__ = _CLASS_NAME;
 

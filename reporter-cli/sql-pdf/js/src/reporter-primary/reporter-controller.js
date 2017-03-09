@@ -20,8 +20,8 @@
 
 "use strict";
 
-var ControllerHelper = require("./controller-helper.js");
-var ReporterModel    = require("./reporter-model.js");
+var CtrlHlpr      = require("./controller-helper.js");
+var ReporterModel = require("./reporter-model.js");
 
 /** The controller class of the application. */
 var ReporterController = function() {
@@ -84,7 +84,7 @@ var ReporterController = function() {
      */
     this.pdf_report_generate = function(cnx, mysql, postgres) {
         // Instantiating the controller helper class.
-        var aux = new ControllerHelper();
+        var aux = new CtrlHlpr.ControllerHelper();
 
         var ret = aux._EXIT_SUCCESS;
 
@@ -96,14 +96,28 @@ var ReporterController = function() {
         // Retrieving a list of all data items stored in the database.
         model.get_all_data_items(cnx, mysql, postgres,
         function(hdr_set, row_set) {
-//          var num_hdrs = hdr_set.length;
-//          var num_rows = row_set.length;
+            var num_hdrs = hdr_set.length;
+            var num_rows = row_set.length;
+
+            // In case of getting an empty result set, informing the user.
+            if (num_hdrs === 0) {
+                ret = aux._EXIT_FAILURE;
+
+                console.log(__name__ + aux._COLON_SPACE_SEP + aux._ERROR_PREFIX
+                                     + aux._COLON_SPACE_SEP
+                                     + aux._ERROR_NO_DATA);
+
+                return ret;
+            }
 
             // ----------------------------------------------------------------
             // --- Debug output - Begin ---------------------------------------
             // ----------------------------------------------------------------
-            console.log(__name__ + aux._COLON_SPACE_SEP + hdr_set
-      + aux._NEW_LINE + __name__ + aux._COLON_SPACE_SEP + row_set);
+            var dbg_output = new CtrlHlpr.TabularDisplay(hdr_set);
+
+            dbg_output.populate(row_set);
+
+            console.log(dbg_output.render());
             // ----------------------------------------------------------------
             // --- Debug output - End -----------------------------------------
             // ----------------------------------------------------------------
