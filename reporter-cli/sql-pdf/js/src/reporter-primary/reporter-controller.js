@@ -20,6 +20,8 @@
 
 "use strict";
 
+var sleep = require("sleep");
+
 var CtrlHlpr      = require("./controller-helper.js");
 var ReporterModel = require("./reporter-model.js");
 
@@ -121,13 +123,25 @@ var ReporterController = function() {
             // ----------------------------------------------------------------
             // --- Debug output - End -----------------------------------------
             // ----------------------------------------------------------------
+
+                            //     Waiting one second...
+            sleep.sleep(1); // <== Just for fun...:-)...
+                            //     Please!   --   OK.
+
+            // ----------------------------------------------------------------
+            // --- Generating the PDF report - Begin --------------------------
+            // ----------------------------------------------------------------
+
+            // TODO: Implement generating the PDF report.
+
+            // ----------------------------------------------------------------
+            // --- Generating the PDF report - End ----------------------------
+            // ----------------------------------------------------------------
         });
 
         // Retrieving a list of data items for a given date period.
 //      model.get_data_items_by_date(FROM, TO, cnx, mysql, postgres,
 //      function(hdr_set, row_set) {});
-
-        // TODO: Implement generating the PDF report.
 
         return ret;
     };
