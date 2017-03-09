@@ -76,7 +76,7 @@ var TabularDisplay = function(_hdr_set) {
      * The finally consolidated tabular data,
      * which has to be printed to the client.
      */
-    var tableau;
+    var tableau = [];
 
     if (_hdr_set) {
         hdr_set = _hdr_set;
@@ -132,8 +132,8 @@ var TabularDisplay = function(_hdr_set) {
 // ----------------------------------------------------------------------------
             // Printing table headers.
             for (var i = 0; i < num_hdrs; i++) {
-                process.stdout.write(aux._V_BAR + aux._SPACE + hdr_set[i]);
-//              tableau      +=      aux._V_BAR + aux._SPACE + hdr_set[i];
+//              process.stdout.write(aux._V_BAR + aux._SPACE + hdr_set[i]);
+                tableau.push        (aux._V_BAR + aux._SPACE + hdr_set[i]);
 
                 var spacers = 0;
 
@@ -144,21 +144,21 @@ var TabularDisplay = function(_hdr_set) {
                 spacers++; // <== Additional spacer (padding).
 
                 for (var m = 0; m < spacers; m++) {
-                    process.stdout.write(aux._SPACE);
-//                  tableau      +=      aux._SPACE;
+//                  process.stdout.write(aux._SPACE);
+                    tableau.push        (aux._SPACE);
                 }
             }
 
-            console.log(aux._V_BAR);
-//          tableau +=  aux._V_BAR + aux._NEW_LINE;
+//          console.log (aux._V_BAR);
+            tableau.push(aux._V_BAR + aux._NEW_LINE);
 // ----------------------------------------------------------------------------
             _separator_draw(num_hdrs, hdr_set_len, col_max_len, aux);
 // ----------------------------------------------------------------------------
             // Printing table rows.
             for (var i = 0; i < num_rows; i++) {
                 for (var j = 0; j < num_hdrs; j++) {
-                    process.stdout.write(aux._V_BAR+aux._SPACE+row_set[i][j]);
-//                  tableau      +=      aux._V_BAR+aux._SPACE+row_set[i][j];
+//                  process.stdout.write(aux._V_BAR+aux._SPACE+row_set[i][j]);
+                    tableau.push        (aux._V_BAR+aux._SPACE+row_set[i][j]);
 
                     if (col_max_len[j] < hdr_set_len[j]) {
                         col_max_len[j] = hdr_set_len[j];
@@ -173,13 +173,13 @@ var TabularDisplay = function(_hdr_set) {
                     spacers++; // <== Additional spacer (padding).
 
                     for (var m = 0; m < spacers; m++) {
-                        process.stdout.write(aux._SPACE);
-//                      tableau      +=      aux._SPACE;
+//                      process.stdout.write(aux._SPACE);
+                        tableau.push        (aux._SPACE);
                     }
                 }
 
-                console.log(aux._V_BAR);
-//              tableau +=  aux._V_BAR + aux._NEW_LINE;
+//              console.log (aux._V_BAR);
+                tableau.push(aux._V_BAR + aux._NEW_LINE);
             }
 // ----------------------------------------------------------------------------
             _separator_draw(num_hdrs, hdr_set_len, col_max_len, aux);
@@ -212,8 +212,8 @@ var TabularDisplay = function(_hdr_set) {
     /* Helper method. Draws a horizontal separator for a table. */
     var _separator_draw = function(num_hdrs, hdr_set_len, col_max_len, aux) {
         for (var i = 0; i < num_hdrs; i++) {
-            process.stdout.write(aux._SEP_NOD);
-//          tableau      +=      aux._SEP_NOD;
+//          process.stdout.write(aux._SEP_NOD);
+            tableau.push        (aux._SEP_NOD);
 
             var sep_len = hdr_set_len[i];
 
@@ -224,13 +224,13 @@ var TabularDisplay = function(_hdr_set) {
             sep_len += 2; // <== Two additional separator cogs (padding).
 
             for (var m = 0; m < sep_len; m++) {
-                process.stdout.write(aux._SEP_COG);
-//              tableau      +=      aux._SEP_COG;
+//              process.stdout.write(aux._SEP_COG);
+                tableau.push        (aux._SEP_COG);
             }
         }
 
-        console.log(aux._SEP_NOD);
-//      tableau +=  aux._SEP_NOD + aux._NEW_LINE;
+//      console.log (aux._SEP_NOD);
+        tableau.push(aux._SEP_NOD + aux._NEW_LINE);
     };
 };
 
