@@ -72,6 +72,11 @@ var ReporterController = function() {
     /** Constant: The one millimeter (in PDF measurement terms). */
     var MM = (25.4 / 72);
 
+    /* Various string literals. */
+    var _ROWS_IN_SET_FOOTER   = " rows in set";
+    var _ROWS_SHOWN_FOOTER    = "  (" + MAX_ROWS_IN_A_PAGE + " rows shown)";
+    var _PDF_REPORT_SAVED_MSG = "PDF report saved";
+
     /**
      * Generates the PDF report.
      *
@@ -120,6 +125,8 @@ var ReporterController = function() {
             dbg_output.populate(row_set);
 
             console.log(dbg_output.render());
+
+            console.log(num_rows + _ROWS_IN_SET_FOOTER + aux._NEW_LINE);
             // ----------------------------------------------------------------
             // --- Debug output - End -----------------------------------------
             // ----------------------------------------------------------------

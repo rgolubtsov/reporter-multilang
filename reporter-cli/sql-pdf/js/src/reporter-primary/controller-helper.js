@@ -129,6 +129,8 @@ var TabularDisplay = function(_hdr_set) {
             }
 // ----------------------------------------------------------------------------
             _separator_draw(num_hdrs, hdr_set_len, col_max_len, aux);
+//          console.log (             );
+            tableau.push(aux._NEW_LINE);
 // ----------------------------------------------------------------------------
             // Printing table headers.
             for (var i = 0; i < num_hdrs; i++) {
@@ -153,6 +155,8 @@ var TabularDisplay = function(_hdr_set) {
             tableau.push(aux._V_BAR + aux._NEW_LINE);
 // ----------------------------------------------------------------------------
             _separator_draw(num_hdrs, hdr_set_len, col_max_len, aux);
+//          console.log (             );
+            tableau.push(aux._NEW_LINE);
 // ----------------------------------------------------------------------------
             // Printing table rows.
             for (var i = 0; i < num_rows; i++) {
@@ -229,8 +233,8 @@ var TabularDisplay = function(_hdr_set) {
             }
         }
 
-//      console.log (aux._SEP_NOD);
-        tableau.push(aux._SEP_NOD + aux._NEW_LINE);
+//      process.stdout.write(aux._SEP_NOD);
+        tableau.push        (aux._SEP_NOD);
     };
 };
 
