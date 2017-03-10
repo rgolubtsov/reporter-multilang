@@ -24,7 +24,7 @@ var mysql    = require("mysql");
 var postgres = require("pg");
 var sqlite   = require("sqlite3");
 
-var ControllerHelper   = require("./reporter-primary/controller-helper.js");
+var CtrlHlpr           = require("./reporter-primary/controller-helper.js");
 var ReporterController = require("./reporter-primary/reporter-controller.js");
 
 /** The main class of the application. */
@@ -77,7 +77,7 @@ var ReporterPrimary = function() {
      */
     this.startup = function(args) {
         // Instantiating the controller helper class.
-        var aux = new ControllerHelper();
+        var aux = new CtrlHlpr.ControllerHelper();
 
         var ret = aux._EXIT_SUCCESS;
 
