@@ -86,8 +86,11 @@ var ReporterController = function() {
      * @param postgres The indicator that shows whether the database connection
      *                 object is PostgreSQL connection.
      *
-     * @return The exit code indicating the status
-     *         of generating the PDF report.
+     * @return The exit code indicating the status of generating
+     *         the PDF report. (Due to asynchronicity of model calls
+     *         it'll be always successful and explicitly presented
+     *         in this method for conforming to other blocking implementations
+     *         (Python/Vala/Go, etc.) only. Don't rely on it seriously.)
      */
     this.pdf_report_generate = function(cnx, mysql, postgres) {
         // Instantiating the controller helper class.
@@ -101,54 +104,62 @@ var ReporterController = function() {
         var model = new ReporterModel();
 
         // Retrieving a list of all data items stored in the database.
-        model.get_all_data_items(cnx, mysql, postgres,
-        function(hdr_set, row_set) {
-            var num_hdrs = hdr_set.length;
-            var num_rows = row_set.length;
-
-            // In case of getting an empty result set, informing the user.
-            if (num_hdrs === 0) {
-                ret = aux._EXIT_FAILURE;
-
-                console.log(__name__ + aux._COLON_SPACE_SEP + aux._ERROR_PREFIX
-                                     + aux._COLON_SPACE_SEP
-                                     + aux._ERROR_NO_DATA);
-
-                return ret;
-            }
-
-            // ----------------------------------------------------------------
-            // --- Debug output - Begin ---------------------------------------
-            // ----------------------------------------------------------------
-            var dbg_output = new CtrlHlpr.TabularDisplay(hdr_set);
-
-            dbg_output.populate(row_set);
-
-            console.log(dbg_output.render());
-
-            console.log(num_rows + _ROWS_IN_SET_FOOTER + aux._NEW_LINE);
-            // ----------------------------------------------------------------
-            // --- Debug output - End -----------------------------------------
-            // ----------------------------------------------------------------
-
-                            //     Waiting one second...
-            sleep.sleep(1); // <== Just for fun...:-)...
-                            //     Please!   --   OK.
-
-            // ----------------------------------------------------------------
-            // --- Generating the PDF report - Begin --------------------------
-            // ----------------------------------------------------------------
-
-            // TODO: Implement generating the PDF report.
-
-            // ----------------------------------------------------------------
-            // --- Generating the PDF report - End ----------------------------
-            // ----------------------------------------------------------------
-        });
+//      model.get_all_data_items(cnx, mysql, postgres,
+//      function(hdr_set, row_set) {
+//          _do_all_the_rest(hdr_set, row_set, aux, __name__);
+//      });
 
         // Retrieving a list of data items for a given date period.
-//      model.get_data_items_by_date(FROM, TO, cnx, mysql, postgres,
-//      function(hdr_set, row_set) {});
+        model.get_data_items_by_date(FROM, TO, cnx, mysql, postgres,
+        function(hdr_set, row_set) {
+            _do_all_the_rest(hdr_set, row_set, aux, __name__);
+        });
+
+        return ret;
+    };
+
+    /* Helper/common method for using in both async model calls. */
+    var _do_all_the_rest = function(hdr_set, row_set, aux, __name__) {
+        var ret = aux._EXIT_SUCCESS;
+
+        var num_hdrs = hdr_set.length;
+        var num_rows = row_set.length;
+
+        // In case of getting an empty result set, informing the user.
+        if (num_hdrs === 0) {
+            ret = aux._EXIT_FAILURE;
+
+            console.log(__name__ + aux._COLON_SPACE_SEP + aux._ERROR_PREFIX
+                                 + aux._COLON_SPACE_SEP + aux._ERROR_NO_DATA);
+
+            return ret;
+        }
+
+        // --------------------------------------------------------------------
+        // --- Debug output - Begin -------------------------------------------
+        // --------------------------------------------------------------------
+        var dbg_output = new CtrlHlpr.TabularDisplay(hdr_set);
+
+        dbg_output.populate(row_set);
+
+        console.log(dbg_output.render());
+
+        console.log(num_rows + _ROWS_IN_SET_FOOTER + aux._NEW_LINE);
+        // --------------------------------------------------------------------
+        // --- Debug output - End ---------------------------------------------
+        // --------------------------------------------------------------------
+
+        sleep.sleep(1); // <== Waiting one second...just for fun...:-)...-- OK.
+
+        // --------------------------------------------------------------------
+        // --- Generating the PDF report - Begin ------------------------------
+        // --------------------------------------------------------------------
+
+        // TODO: Implement generating the PDF report.
+
+        // --------------------------------------------------------------------
+        // --- Generating the PDF report - End --------------------------------
+        // --------------------------------------------------------------------
 
         return ret;
     };
