@@ -104,16 +104,16 @@ var ReporterController = function() {
         var model = new ReporterModel();
 
         // Retrieving a list of all data items stored in the database.
-        model.get_all_data_items(cnx, mysql, postgres,
-        function(hdr_set, row_set) {
-            _do_all_the_rest(hdr_set, row_set, aux, __name__);
-        });
-
-        // Retrieving a list of data items for a given date period.
-//      model.get_data_items_by_date(FROM, TO, cnx, mysql, postgres,
+//      model.get_all_data_items(cnx, mysql, postgres,
 //      function(hdr_set, row_set) {
 //          _do_all_the_rest(hdr_set, row_set, aux, __name__);
 //      });
+
+        // Retrieving a list of data items for a given date period.
+        model.get_data_items_by_date(FROM, TO, cnx, mysql, postgres,
+        function(hdr_set, row_set) {
+            _do_all_the_rest(hdr_set, row_set, aux, __name__);
+        });
 
         return ret;
     };
