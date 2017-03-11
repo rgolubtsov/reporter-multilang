@@ -20,7 +20,9 @@
 
 "use strict";
 
-var sleep = require("sleep");
+var sleep  = require("sleep");
+var Canvas = require("canvas");
+var fs     = require("fs");
 
 var CtrlHlpr      = require("./controller-helper.js");
 var ReporterModel = require("./reporter-model.js");
@@ -154,9 +156,23 @@ var ReporterController = function() {
         // --------------------------------------------------------------------
         // --- Generating the PDF report - Begin ------------------------------
         // --------------------------------------------------------------------
+        var pdf_report_path = PDF_REPORT_DIR + aux._SLASH + PDF_REPORT_FILENAME;//_get_pdf_report_path(__file__, aux);
 
-        // TODO: Implement generating the PDF report.
+        var _report = new Canvas((210 / MM), (297 / MM), "pdf");
 
+        var report = _report.getContext();
+
+        // TODO: Implement generating the PDF report (here).
+
+        var pdf_stream = _report.createPDFStream();
+        var pdf_report = fs.createWriteStream(pdf_report_path);
+
+        /*
+         * Attaching the Writable stream to the Readable stream
+         * and pushing all of its data to the attached one, i.e.:
+         *              (W) pdf_report   <==   (R) pdf_stream
+         */
+        pdf_stream.pipe(pdf_report);
         // --------------------------------------------------------------------
         // --- Generating the PDF report - End --------------------------------
         // --------------------------------------------------------------------
