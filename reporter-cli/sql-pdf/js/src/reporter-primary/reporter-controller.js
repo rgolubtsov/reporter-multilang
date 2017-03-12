@@ -48,7 +48,7 @@ var ReporterController = function() {
      * Constant: The PDF report output location.
      *     TODO: Move to cli args.
      */
-    var PDF_REPORT_DIR = "lib/data";
+    var PDF_REPORT_DIR = "data";
 
     /**
      * Constant: The PDF report filename.
@@ -75,6 +75,24 @@ var ReporterController = function() {
     var MM = (25.4 / 72);
 
     /* Various string literals. */
+    var _PDF                  = "pdf";
+    // ------------------------------------------------------------------------
+    var _REPORT_TITLE         = "Arch Linux Packages";
+    var _REPORT_AUTHOR        = "Arch Linux Package Maintainers";
+    var _REPORT_SUBJECT       = "Sample list of Arch Linux packages.";
+    var _REPORT_KEYWORDS      = "Linux ArchLinux Packages Arch Repo "
+                              + "core extra community multilib";
+    var _REPORT_CREATOR       = "Reporter Multilang 0.1 - "
+                              + "https://github.com/rgolubtsov/"
+                              + "reporter-multilang";
+    // ------------------------------------------------------------------------
+    var _ARCH_HEADER          = "Arch";
+    var _REPO_HEADER          = "Repo";
+    var _NAME_HEADER          = "Name";
+    var _VERSION_HEADER       = "Version";
+    var _LAST_UPDATED_HEADER  = "Last Updated";
+    var _FLAG_DATE_HEADER     = "Flag Date";
+    // ------------------------------------------------------------------------
     var _ROWS_IN_SET_FOOTER   = " rows in set";
     var _ROWS_SHOWN_FOOTER    = "  (" + MAX_ROWS_IN_A_PAGE + " rows shown)";
     var _PDF_REPORT_SAVED_MSG = "PDF report saved";
@@ -101,6 +119,7 @@ var ReporterController = function() {
         var ret = aux._EXIT_SUCCESS;
 
         var __name__ = _CLASS_NAME;
+        var __file__ = module.filename;
 
         // Instantiating the model class.
         var model = new ReporterModel();
@@ -108,20 +127,20 @@ var ReporterController = function() {
         // Retrieving a list of all data items stored in the database.
 //      model.get_all_data_items(cnx, mysql, postgres,
 //      function(hdr_set, row_set) {
-//          _do_all_the_rest(hdr_set, row_set, aux, __name__);
+//          _do_all_the_rest(hdr_set, row_set, aux, __name__, __file__);
 //      });
 
         // Retrieving a list of data items for a given date period.
         model.get_data_items_by_date(FROM, TO, cnx, mysql, postgres,
         function(hdr_set, row_set) {
-            _do_all_the_rest(hdr_set, row_set, aux, __name__);
+            _do_all_the_rest(hdr_set, row_set, aux, __name__, __file__);
         });
 
         return ret;
     };
 
     /* Helper/common method for using in both async model calls. */
-    var _do_all_the_rest = function(hdr_set, row_set, aux, __name__) {
+    var _do_all_the_rest = function(hdr_set, row_set, aux, __name__, __file__){
         var ret = aux._EXIT_SUCCESS;
 
         var num_hdrs = hdr_set.length;
@@ -156,9 +175,9 @@ var ReporterController = function() {
         // --------------------------------------------------------------------
         // --- Generating the PDF report - Begin ------------------------------
         // --------------------------------------------------------------------
-        var pdf_report_path = PDF_REPORT_DIR + aux._SLASH + PDF_REPORT_FILENAME;//_get_pdf_report_path(__file__, aux);
+        var pdf_report_path = _get_pdf_report_path(__file__, aux);
 
-        var _report = new Canvas((210 / MM), (297 / MM), "pdf");
+        var _report = new Canvas((210 / MM), (297 / MM), _PDF);
 
         var report = _report.getContext();
 
@@ -167,17 +186,64 @@ var ReporterController = function() {
         var pdf_stream = _report.createPDFStream();
         var pdf_report = fs.createWriteStream(pdf_report_path);
 
+        // --- Report metadata ------------------------------------------------
+        /*
+         * Note: The possibility to inject PDF metadata entries has appeared
+         *       in Cairo 1.16, but even in Arch Linux the "cairo" package
+         *       currently is just of version 1.14.8. And, of course,
+         *       its Node.js bindings are in the same state. After upgrading
+         *       to Cairo 1.16+ appropriate calls should look something
+         *       like the given below (commented out for now).
+         *       (Also note that the "canvas" npm package used
+         *       must explicitly implement it.)
+         *
+         * See for reference:
+         *   - Cairo sources:
+         *       https://cgit.freedesktop.org/cairo/tree/src/cairo-pdf.h
+         *       https://cgit.freedesktop.org/cairo/tree/src/
+         *                                           cairo-pdf-surface.c
+         *
+         *   - canvas at npm:
+         *       https://npmjs.com/package/canvas
+         */
+//      _report.set_metadata(Canvas.TITLE,    _REPORT_TITLE   );
+//      _report.set_metadata(Canvas.AUTHOR,   _REPORT_AUTHOR  );
+//      _report.set_metadata(Canvas.SUBJECT,  _REPORT_SUBJECT );
+//      _report.set_metadata(Canvas.KEYWORDS, _REPORT_KEYWORDS);
+//      _report.set_metadata(Canvas.CREATOR,  _REPORT_CREATOR );
+
         /*
          * Attaching the Writable stream to the Readable stream
          * and pushing all of its data to the attached one, i.e.:
          *              (W) pdf_report   <==   (R) pdf_stream
          */
         pdf_stream.pipe(pdf_report);
+
+        console.log(_PDF_REPORT_SAVED_MSG + aux._COLON_SPACE_SEP
+                                          + pdf_report_path);
         // --------------------------------------------------------------------
         // --- Generating the PDF report - End --------------------------------
         // --------------------------------------------------------------------
 
         return ret;
+    };
+
+    /*
+     * Helper method.
+     * Returns the generated PDF report output path,
+     * relative to this module location.
+     * TODO: Remove this method when the report output location
+     *       will be passed through cli args.
+     */
+    var _get_pdf_report_path = function(module_, aux) {
+        var module_path     = module_.split(aux._SLASH);
+        var module_name     = module_path.pop();
+        var package_name    = module_path.pop();
+        var pdf_report_path = module_path.join(aux._SLASH)
+                            + aux._SLASH + PDF_REPORT_DIR
+                            + aux._SLASH + PDF_REPORT_FILENAME;
+
+        return pdf_report_path;
     };
 };
 
