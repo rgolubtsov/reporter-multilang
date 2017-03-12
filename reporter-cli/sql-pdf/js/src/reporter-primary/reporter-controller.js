@@ -75,7 +75,7 @@ var ReporterController = function() {
     var MM = (25.4 / 72);
 
     /* Various string literals. */
-    var _PDF = "pdf";
+    var _PDF                  = "pdf";
     // ------------------------------------------------------------------------
     var _REPORT_TITLE         = "Arch Linux Packages";
     var _REPORT_AUTHOR        = "Arch Linux Package Maintainers";
@@ -85,6 +85,13 @@ var ReporterController = function() {
     var _REPORT_CREATOR       = "Reporter Multilang 0.1 - "
                               + "https://github.com/rgolubtsov/"
                               + "reporter-multilang";
+    // ------------------------------------------------------------------------
+    var _ARCH_HEADER          = "Arch";
+    var _REPO_HEADER          = "Repo";
+    var _NAME_HEADER          = "Name";
+    var _VERSION_HEADER       = "Version";
+    var _LAST_UPDATED_HEADER  = "Last Updated";
+    var _FLAG_DATE_HEADER     = "Flag Date";
     // ------------------------------------------------------------------------
     var _ROWS_IN_SET_FOOTER   = " rows in set";
     var _ROWS_SHOWN_FOOTER    = "  (" + MAX_ROWS_IN_A_PAGE + " rows shown)";
