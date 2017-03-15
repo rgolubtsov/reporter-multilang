@@ -74,8 +74,12 @@ var ReporterController = function() {
     /** Constant: The one millimeter (in PDF measurement terms). */
     var MM = (25.4 / 72);
 
+    /** Constant: The vertical coordinate flipping normalizer. */
+    var ZZ = 297;
+
     /* Various string literals. */
     var _PDF                  = "pdf";
+    var _2D                   = "2d";
     // ------------------------------------------------------------------------
     var _REPORT_TITLE         = "Arch Linux Packages";
     var _REPORT_AUTHOR        = "Arch Linux Package Maintainers";
@@ -85,6 +89,18 @@ var ReporterController = function() {
     var _REPORT_CREATOR       = "Reporter Multilang 0.1 - "
                               + "https://github.com/rgolubtsov/"
                               + "reporter-multilang";
+    // ------------------------------------------------------------------------
+    var _RAINY_NIGHT_COLOR    = "#224488";
+    var _WHITE_COLOR          = "#ffffff";
+    var _BLACK_COLOR          = "#000000";
+    var _RAINY_DAY_COLOR      = "#dddddd";
+    var _VERY_LIGHT_COBALT_COLOR = "#aaaaaa";
+    var _YET_NOT_WHITE_COLOR  = "#eeeeee";
+    // ------------------------------------------------------------------------
+    // --- /usr/share/fonts/TTF/LiberationSan*.ttf ---------
+    var _SANS_FONT            = "Liberation Sans";
+    // --- /usr/share/fonts/TTF/LiberationSeri*.ttf --------
+    var _SERIF_FONT           = "Liberation Serif";
     // ------------------------------------------------------------------------
     var _ARCH_HEADER          = "Arch";
     var _REPO_HEADER          = "Repo";
@@ -179,9 +195,7 @@ var ReporterController = function() {
 
         var _report = new Canvas((210 / MM), (297 / MM), _PDF);
 
-        var report = _report.getContext();
-
-        // TODO: Implement generating the PDF report (here).
+        var report = _report.getContext(_2D);
 
         var pdf_stream = _report.createPDFStream();
         var pdf_report = fs.createWriteStream(pdf_report_path);
@@ -219,10 +233,90 @@ var ReporterController = function() {
          */
         pdf_stream.pipe(pdf_report);
 
+        // --- Page body (data) -----------------------------------------------
+        ret = _page_body_draw(report,     hdr_set,     row_set,
+                                      num_hdrs,    num_rows,    aux);
+
+        if (ret === aux._EXIT_FAILURE) {
+            console.log(__name__ + aux._COLON_SPACE_SEP + aux._ERROR_PREFIX
+                                 + aux._COLON_SPACE_SEP
+                                 + aux._ERROR_NO_REPORT_GEN);
+
+            return ret;
+        }
+
         console.log(_PDF_REPORT_SAVED_MSG + aux._COLON_SPACE_SEP
                                           + pdf_report_path);
         // --------------------------------------------------------------------
         // --- Generating the PDF report - End --------------------------------
+        // --------------------------------------------------------------------
+
+        return ret;
+    };
+
+    /* Draws the PDF report page body (data). */
+    var _page_body_draw = function(report,     hdr_set,     row_set,
+                                           num_hdrs,    num_rows,    aux) {
+
+        var ret = aux._EXIT_SUCCESS;
+
+        var table_headers = [];
+
+        // --- Border ---------------------------------------------------------
+
+        report._setStrokeColor(_RAINY_NIGHT_COLOR);
+
+        report.lineWidth = 2;
+
+        report.strokeRect((16 / MM), (19 / MM), (178 / MM), (259 / MM));
+
+        // --- Headers bar ----------------------------------------------------
+
+        report._setFillColor(_RAINY_NIGHT_COLOR);
+
+        report.fillRect((              17  / MM),
+                        (((ZZ - 10) - 267) / MM),
+                        (             176  / MM),
+                        (              10  / MM));
+
+        // --- Headers txt ----------------------------------------------------
+
+        report._setFillColor(_WHITE_COLOR);
+
+        table_headers = [
+            _ARCH_HEADER,
+            _REPO_HEADER,
+            _NAME_HEADER,
+            _VERSION_HEADER,
+            _LAST_UPDATED_HEADER,
+            _FLAG_DATE_HEADER,
+        ];
+
+        var x = 0;
+
+        // Printing table headers.
+        for (var i = 0; i < num_hdrs; i++) {
+                   if (i === 1) {
+                x =  17;
+            } else if (i === 2) {
+                x =  40;
+            } else if (i === 3) {
+                x =  78;
+            } else if (i === 4) {
+                x = 107;
+            } else if (i === 5) {
+                x = 146;
+            } else { // <== Includes (i === 0).
+                x =   0;
+            }
+
+            report.fillText(table_headers[i], ((20 +   x) / MM),
+                                              ((ZZ - 270) / MM));
+        }
+
+        // --- Table rows -----------------------------------------------------
+        // --- Footer bar -----------------------------------------------------
+        // --- Footer txt -----------------------------------------------------
         // --------------------------------------------------------------------
 
         return ret;
