@@ -78,40 +78,51 @@ var ReporterController = function() {
     var ZZ = 297;
 
     /* Various string literals. */
-    var _PDF                  = "pdf";
-    var _2D                   = "2d";
+    var _PDF                     = "pdf";
+    var _2D                      = "2d";
     // ------------------------------------------------------------------------
-    var _REPORT_TITLE         = "Arch Linux Packages";
-    var _REPORT_AUTHOR        = "Arch Linux Package Maintainers";
-    var _REPORT_SUBJECT       = "Sample list of Arch Linux packages.";
-    var _REPORT_KEYWORDS      = "Linux ArchLinux Packages Arch Repo "
-                              + "core extra community multilib";
-    var _REPORT_CREATOR       = "Reporter Multilang 0.1 - "
-                              + "https://github.com/rgolubtsov/"
-                              + "reporter-multilang";
+    var _REPORT_TITLE            = "Arch Linux Packages";
+    var _REPORT_AUTHOR           = "Arch Linux Package Maintainers";
+    var _REPORT_SUBJECT          = "Sample list of Arch Linux packages.";
+    var _REPORT_KEYWORDS         = "Linux ArchLinux Packages Arch Repo "
+                                 + "core extra community multilib";
+    var _REPORT_CREATOR          = "Reporter Multilang 0.1 - "
+                                 + "https://github.com/rgolubtsov/"
+                                 + "reporter-multilang";
     // ------------------------------------------------------------------------
-    var _RAINY_NIGHT_COLOR    = "#224488";
-    var _WHITE_COLOR          = "#ffffff";
-    var _BLACK_COLOR          = "#000000";
-    var _RAINY_DAY_COLOR      = "#dddddd";
+    var _RAINY_NIGHT_COLOR       = "#224488";
+    var _WHITE_COLOR             = "#ffffff";
+    var _BLACK_COLOR             = "#000000";
+    var _RAINY_DAY_COLOR         = "#dddddd";
     var _VERY_LIGHT_COBALT_COLOR = "#aaaaaa";
-    var _YET_NOT_WHITE_COLOR  = "#eeeeee";
+    var _YET_NOT_WHITE_COLOR     = "#eeeeee";
     // ------------------------------------------------------------------------
-    // --- /usr/share/fonts/TTF/LiberationSan*.ttf ---------
-    var _SANS_FONT            = "Liberation Sans";
-    // --- /usr/share/fonts/TTF/LiberationSeri*.ttf --------
-    var _SERIF_FONT           = "Liberation Serif";
+    var _PANGO_WEIGHT_NORMAL     = "400";
+    var _PANGO_WEIGHT_SEMIBOLD   = "600";
     // ------------------------------------------------------------------------
-    var _ARCH_HEADER          = "Arch";
-    var _REPO_HEADER          = "Repo";
-    var _NAME_HEADER          = "Name";
-    var _VERSION_HEADER       = "Version";
-    var _LAST_UPDATED_HEADER  = "Last Updated";
-    var _FLAG_DATE_HEADER     = "Flag Date";
+    // --- /usr/share/fonts/100dpi/helv*.pcf.gz -------
+//  var _SANS_FONT               = "Helvetica";
+    // --- /usr/share/fonts/TTF/DejaVuSan*.ttf --------
+//  var _SANS_FONT               = "DejaVu Sans";
+    // --- /usr/share/fonts/TTF/LiberationSan*.ttf ----
+    var _SANS_FONT               = "Liberation Sans";
+    // --- /usr/share/fonts/100dpi/tim*.pcf.gz --------
+//  var _SERIF_FONT              = "Times";
+    // --- /usr/share/fonts/TTF/DejaVuSeri*.ttf -------
+//  var _SERIF_FONT              = "DejaVu Serif";
+    // --- /usr/share/fonts/TTF/LiberationSeri*.ttf ---
+    var _SERIF_FONT              = "Liberation Serif";
     // ------------------------------------------------------------------------
-    var _ROWS_IN_SET_FOOTER   = " rows in set";
-    var _ROWS_SHOWN_FOOTER    = "  (" + MAX_ROWS_IN_A_PAGE + " rows shown)";
-    var _PDF_REPORT_SAVED_MSG = "PDF report saved";
+    var _ARCH_HEADER             = "Arch";
+    var _REPO_HEADER             = "Repo";
+    var _NAME_HEADER             = "Name";
+    var _VERSION_HEADER          = "Version";
+    var _LAST_UPDATED_HEADER     = "Last Updated";
+    var _FLAG_DATE_HEADER        = "Flag Date";
+    // ------------------------------------------------------------------------
+    var _ROWS_IN_SET_FOOTER      = " rows in set";
+    var _ROWS_SHOWN_FOOTER       = "  (" + MAX_ROWS_IN_A_PAGE + " rows shown)";
+    var _PDF_REPORT_SAVED_MSG    = "PDF report saved";
 
     /**
      * Generates the PDF report.
@@ -281,6 +292,9 @@ var ReporterController = function() {
 
         // --- Headers txt ----------------------------------------------------
 
+        report._setFont(_PANGO_WEIGHT_SEMIBOLD, aux._EMPTY_STRING, (16 / PT),
+                                                aux._EMPTY_STRING, _SANS_FONT);
+
         report._setFillColor(_WHITE_COLOR);
 
         table_headers = [
@@ -315,8 +329,67 @@ var ReporterController = function() {
         }
 
         // --- Table rows -----------------------------------------------------
+
+        report._setFont(_PANGO_WEIGHT_NORMAL, aux._EMPTY_STRING, (11 / PT),
+                                              aux._EMPTY_STRING, _SANS_FONT);
+
+        var y = 0;
+
+        // Printing table rows.
+//      for (var i = 0; i <           num_rows; i++) {
+        for (var i = 0; i < MAX_ROWS_IN_A_PAGE; i++) {
+            if ((i & 1) === 1) {
+                report._setFillColor(_RAINY_DAY_COLOR);
+
+                report.fillRect((              17       / MM),
+                                (((ZZ - 6) - (260 - y)) / MM),
+                                (             176       / MM),
+                                (               6       / MM));
+            }
+
+            report._setFillColor(_BLACK_COLOR);
+
+            for (var j = 0; j < num_hdrs; j++) {
+                       if (j === 1) {
+                    x =  17;
+                } else if (j === 2) {
+                    x =  40;
+                } else if (j === 3) {
+                    x =  78;
+                } else if (j === 4) {
+                    x = 123;
+                } else if (j === 5) {
+                    x = 148;
+                } else { // <== Includes (j === 0).
+                    x =   0;
+                }
+
+                report.fillText(row_set[i][j], ((20 +        x ) / MM),
+                                               ((ZZ - (262 - y)) / MM));
+            }
+
+            y += 6;
+        }
+
         // --- Footer bar -----------------------------------------------------
+
+        report._setFillColor(_VERY_LIGHT_COBALT_COLOR);
+
+        report.fillRect((            17  / MM),
+                        (((ZZ - 6) - 20) / MM),
+                        (           176  / MM),
+                        (             6  / MM));
+
         // --- Footer txt -----------------------------------------------------
+
+        report._setFont(_PANGO_WEIGHT_SEMIBOLD,aux._EMPTY_STRING, (12 / PT),
+                                               aux._EMPTY_STRING, _SERIF_FONT);
+
+        report._setFillColor(_YET_NOT_WHITE_COLOR);
+
+        report.fillText(num_rows + _ROWS_IN_SET_FOOTER + _ROWS_SHOWN_FOOTER,
+                                               (20 / MM), ((ZZ - 22) / MM));
+
         // --------------------------------------------------------------------
 
         return ret;
