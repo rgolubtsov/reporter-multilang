@@ -101,17 +101,17 @@ var ReporterController = function() {
     var _PANGO_WEIGHT_SEMIBOLD   = "600";
     // ------------------------------------------------------------------------
     // --- /usr/share/fonts/100dpi/helv*.pcf.gz -------
-//  var _SANS_FONT               = "Helvetica";
+    var _SANS_FONT               = "Helvetica";
     // --- /usr/share/fonts/TTF/DejaVuSan*.ttf --------
 //  var _SANS_FONT               = "DejaVu Sans";
     // --- /usr/share/fonts/TTF/LiberationSan*.ttf ----
-    var _SANS_FONT               = "Liberation Sans";
+//  var _SANS_FONT               = "Liberation Sans";
     // --- /usr/share/fonts/100dpi/tim*.pcf.gz --------
-//  var _SERIF_FONT              = "Times";
+    var _SERIF_FONT              = "Times";
     // --- /usr/share/fonts/TTF/DejaVuSeri*.ttf -------
 //  var _SERIF_FONT              = "DejaVu Serif";
     // --- /usr/share/fonts/TTF/LiberationSeri*.ttf ---
-    var _SERIF_FONT              = "Liberation Serif";
+//  var _SERIF_FONT              = "Liberation Serif";
     // ------------------------------------------------------------------------
     var _ARCH_HEADER             = "Arch";
     var _REPO_HEADER             = "Repo";
