@@ -211,6 +211,18 @@ var ReporterController = function() {
         var pdf_stream = _report.createPDFStream();
         var pdf_report = fs.createWriteStream(pdf_report_path);
 
+        // --- Report version -------------------------------------------------
+        /*
+         * Note: The possibility to set the PDF version is not implemented
+         *       currently in the "canvas" npm package. Though in the Cairo
+         *       library it is. See for example the appropriate Vala call:
+         *
+         *       _report.restrict_to_version(PdfVersion.VERSION_1_4);
+         *
+         *       (It is silently hardcoded to be of version 1.5.)
+         */
+//      _report.restrictToVersion(Canvas.VERSION_1_4);
+
         // --- Report metadata ------------------------------------------------
         /*
          * Note: The possibility to inject PDF metadata entries has appeared
@@ -231,11 +243,11 @@ var ReporterController = function() {
          *   - canvas at npm:
          *       https://npmjs.com/package/canvas
          */
-//      _report.set_metadata(Canvas.TITLE,    _REPORT_TITLE   );
-//      _report.set_metadata(Canvas.AUTHOR,   _REPORT_AUTHOR  );
-//      _report.set_metadata(Canvas.SUBJECT,  _REPORT_SUBJECT );
-//      _report.set_metadata(Canvas.KEYWORDS, _REPORT_KEYWORDS);
-//      _report.set_metadata(Canvas.CREATOR,  _REPORT_CREATOR );
+//      _report.setMetadata(Canvas.TITLE,    _REPORT_TITLE   );
+//      _report.setMetadata(Canvas.AUTHOR,   _REPORT_AUTHOR  );
+//      _report.setMetadata(Canvas.SUBJECT,  _REPORT_SUBJECT );
+//      _report.setMetadata(Canvas.KEYWORDS, _REPORT_KEYWORDS);
+//      _report.setMetadata(Canvas.CREATOR,  _REPORT_CREATOR );
 
         /*
          * Attaching the Writable stream to the Readable stream
