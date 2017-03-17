@@ -287,8 +287,6 @@ var ReporterController = function() {
 
         var ret = aux._EXIT_SUCCESS;
 
-        var table_headers = [];
-
         // --- Border ---------------------------------------------------------
 
         report._setStrokeColor(_RAINY_NIGHT_COLOR);
@@ -313,7 +311,7 @@ var ReporterController = function() {
 
         report._setFillColor(_WHITE_COLOR);
 
-        table_headers = [
+        hdr_set = [
             _ARCH_HEADER,
             _REPO_HEADER,
             _NAME_HEADER,
@@ -340,8 +338,7 @@ var ReporterController = function() {
                 x =   0;
             }
 
-            report.fillText(table_headers[i], ((20 +   x) / MM),
-                                              ((ZZ - 270) / MM));
+            report.fillText(hdr_set[i], ((20 +   x) / MM), ((ZZ - 270) / MM));
         }
 
         // --- Table rows -----------------------------------------------------
