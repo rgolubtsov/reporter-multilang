@@ -244,16 +244,20 @@ var ReporterController = function() {
          */
         pdf_stream.pipe(pdf_report);
 
-        // --- Page body (data) -----------------------------------------------
-        ret = _page_body_draw(report,     hdr_set,     row_set,
-                                      num_hdrs,    num_rows,    aux);
+        // --- Page body (data) x MAX_PAGES -----------------------------------
+        for (var i = 0; i < MAX_PAGES; i++) {
+            ret = _page_body_draw(report,     hdr_set,     row_set,
+                                          num_hdrs,    num_rows,    aux);
 
-        if (ret === aux._EXIT_FAILURE) {
-            console.log(__name__ + aux._COLON_SPACE_SEP + aux._ERROR_PREFIX
-                                 + aux._COLON_SPACE_SEP
-                                 + aux._ERROR_NO_REPORT_GEN);
+            if (ret === aux._EXIT_FAILURE) {
+                console.log(__name__ + aux._COLON_SPACE_SEP + aux._ERROR_PREFIX
+                                     + aux._COLON_SPACE_SEP
+                                     + aux._ERROR_NO_REPORT_GEN);
 
-            return ret;
+                return ret;
+            }
+
+            report.addPage();
         }
 
         console.log(_PDF_REPORT_SAVED_MSG + aux._COLON_SPACE_SEP
