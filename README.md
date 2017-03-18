@@ -1,22 +1,24 @@
 # Reporter Multilang
 
 **A tool to generate human-readable reports based on data from various sources
-<br />with the focus on its implementation using a series of programming languages:**&nbsp;&nbsp;:camel:&nbsp;&nbsp;|&nbsp;&nbsp;:snake:&nbsp;&nbsp;|&nbsp;&nbsp;:envelope:&nbsp;&nbsp;|&nbsp;&nbsp;:rat:&nbsp;&nbsp;|&nbsp;&nbsp;:coffee:
+<br />with the focus on its implementation using a series of programming languages
 
-**TODO:** Gentlemen, start your axes! &ndash; I.e. wait a little while there would not be **at least six** complete implementations. For the moment there are the following ones:
+**Note:** Those packages marked as **complete** are considered to be completely implemented and tested. They are ready to use. The **in progress** status means that the appropriate package(s) might be implemented partially or completely, but not yet properly tested:
 * SQL-PDF :small_blue_diamond: Perl 5 (5.10+) implementation (complete)
 * SQL-PDF :small_blue_diamond: Python 3 implementation (complete)
 * SQL-PDF :small_blue_diamond: Vala implementation (complete)
 * SQL-PDF :small_blue_diamond: Genie implementation (complete)
 * SQL-PDF :small_blue_diamond: Go implementation (complete)
-* SQL-PDF :small_blue_diamond: JavaScript (ES5) implementation (in progress)
-* SQL-PDF :small_blue_diamond: D and Java implementations (planned)
+* SQL-PDF :small_blue_diamond: JavaScript (ES5/Node.js) implementation (complete)
+* SQL-PDF :small_orange_diamond: D and Java implementations (planned/postponed)
 
 ---
 
-* SQL-CSV :small_blue_diamond: Perl 5 (5.10+) implementation (planned)
-* SQL-CSV :small_blue_diamond: Python 3 implementation (planned)
-* SQL-CSV :small_blue_diamond: Vala, Genie, Go, JavaScript, D, and Java implementations (planned)
+* SQL-CSV :cd: Perl 5 (5.10+) implementation (in progress)
+* SQL-CSV :small_orange_diamond: Python 3 implementation (planned/postponed)
+* SQL-CSV :small_orange_diamond: Vala, Genie, and Go implementations (planned/postponed)
+* SQL-CSV :small_orange_diamond: JavaScript (ES6/Node.js) implementation (planned/postponed)
+* SQL-CSV :small_orange_diamond: D and Java implementations (planned/postponed)
 
 ---
 
