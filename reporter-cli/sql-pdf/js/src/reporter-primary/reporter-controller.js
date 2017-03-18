@@ -101,17 +101,17 @@ var ReporterController = function() {
     var _PANGO_WEIGHT_SEMIBOLD   = "600";
     // ------------------------------------------------------------------------
     // --- /usr/share/fonts/100dpi/helv*.pcf.gz -------
-//  var _SANS_FONT               = "Helvetica";
+    var _SANS_FONT               = "Helvetica";
     // --- /usr/share/fonts/TTF/DejaVuSan*.ttf --------
 //  var _SANS_FONT               = "DejaVu Sans";
     // --- /usr/share/fonts/TTF/LiberationSan*.ttf ----
-    var _SANS_FONT               = "Liberation Sans";
+//  var _SANS_FONT               = "Liberation Sans";
     // --- /usr/share/fonts/100dpi/tim*.pcf.gz --------
-//  var _SERIF_FONT              = "Times";
+    var _SERIF_FONT              = "Times";
     // --- /usr/share/fonts/TTF/DejaVuSeri*.ttf -------
 //  var _SERIF_FONT              = "DejaVu Serif";
     // --- /usr/share/fonts/TTF/LiberationSeri*.ttf ---
-    var _SERIF_FONT              = "Liberation Serif";
+//  var _SERIF_FONT              = "Liberation Serif";
     // ------------------------------------------------------------------------
     var _ARCH_HEADER             = "Arch";
     var _REPO_HEADER             = "Repo";
@@ -211,6 +211,18 @@ var ReporterController = function() {
         var pdf_stream = _report.createPDFStream();
         var pdf_report = fs.createWriteStream(pdf_report_path);
 
+        // --- Report version -------------------------------------------------
+        /*
+         * Note: The possibility to set the PDF version is not implemented
+         *       currently in the "canvas" npm package. Though in the Cairo
+         *       library it is. See for example the appropriate Vala call:
+         *
+         *       _report.restrict_to_version(PdfVersion.VERSION_1_4);
+         *
+         *       (It is silently hardcoded to be of version 1.5.)
+         */
+//      _report.restrictToVersion(Canvas.VERSION_1_4);
+
         // --- Report metadata ------------------------------------------------
         /*
          * Note: The possibility to inject PDF metadata entries has appeared
@@ -231,11 +243,11 @@ var ReporterController = function() {
          *   - canvas at npm:
          *       https://npmjs.com/package/canvas
          */
-//      _report.set_metadata(Canvas.TITLE,    _REPORT_TITLE   );
-//      _report.set_metadata(Canvas.AUTHOR,   _REPORT_AUTHOR  );
-//      _report.set_metadata(Canvas.SUBJECT,  _REPORT_SUBJECT );
-//      _report.set_metadata(Canvas.KEYWORDS, _REPORT_KEYWORDS);
-//      _report.set_metadata(Canvas.CREATOR,  _REPORT_CREATOR );
+//      _report.setMetadata(Canvas.TITLE,    _REPORT_TITLE   );
+//      _report.setMetadata(Canvas.AUTHOR,   _REPORT_AUTHOR  );
+//      _report.setMetadata(Canvas.SUBJECT,  _REPORT_SUBJECT );
+//      _report.setMetadata(Canvas.KEYWORDS, _REPORT_KEYWORDS);
+//      _report.setMetadata(Canvas.CREATOR,  _REPORT_CREATOR );
 
         /*
          * Attaching the Writable stream to the Readable stream
@@ -244,16 +256,20 @@ var ReporterController = function() {
          */
         pdf_stream.pipe(pdf_report);
 
-        // --- Page body (data) -----------------------------------------------
-        ret = _page_body_draw(report,     hdr_set,     row_set,
-                                      num_hdrs,    num_rows,    aux);
+        // --- Page body (data) x MAX_PAGES -----------------------------------
+        for (var i = 0; i < MAX_PAGES; i++) {
+            ret = _page_body_draw(report,     hdr_set,     row_set,
+                                          num_hdrs,    num_rows,    aux);
 
-        if (ret === aux._EXIT_FAILURE) {
-            console.log(__name__ + aux._COLON_SPACE_SEP + aux._ERROR_PREFIX
-                                 + aux._COLON_SPACE_SEP
-                                 + aux._ERROR_NO_REPORT_GEN);
+            if (ret === aux._EXIT_FAILURE) {
+                console.log(__name__ + aux._COLON_SPACE_SEP + aux._ERROR_PREFIX
+                                     + aux._COLON_SPACE_SEP
+                                     + aux._ERROR_NO_REPORT_GEN);
 
-            return ret;
+                return ret;
+            }
+
+            report.addPage();
         }
 
         console.log(_PDF_REPORT_SAVED_MSG + aux._COLON_SPACE_SEP
@@ -270,8 +286,6 @@ var ReporterController = function() {
                                            num_hdrs,    num_rows,    aux) {
 
         var ret = aux._EXIT_SUCCESS;
-
-        var table_headers = [];
 
         // --- Border ---------------------------------------------------------
 
@@ -297,7 +311,7 @@ var ReporterController = function() {
 
         report._setFillColor(_WHITE_COLOR);
 
-        table_headers = [
+        hdr_set = [
             _ARCH_HEADER,
             _REPO_HEADER,
             _NAME_HEADER,
@@ -324,8 +338,7 @@ var ReporterController = function() {
                 x =   0;
             }
 
-            report.fillText(table_headers[i], ((20 +   x) / MM),
-                                              ((ZZ - 270) / MM));
+            report.fillText(hdr_set[i], ((20 +   x) / MM), ((ZZ - 270) / MM));
         }
 
         // --- Table rows -----------------------------------------------------
