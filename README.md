@@ -1,7 +1,7 @@
 # Reporter Multilang
 
 **A tool to generate human-readable reports based on data from various sources
-<br />with the focus on its implementation using a series of programming languages
+<br />with the focus on its implementation using a series of programming languages**
 
 **Note:** Those packages marked as **complete** are considered to be completely implemented and tested. They are ready to use. The **in progress** status means that the appropriate package(s) might be implemented partially or completely, but not yet properly tested:
 * SQL-PDF :small_blue_diamond: Perl 5 (5.10+) implementation (complete)
