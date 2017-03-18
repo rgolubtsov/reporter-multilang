@@ -6,6 +6,7 @@ $ cd reporter-cli &&                       \
   cd vala         && make clean && cd - && \
   cd genie        && make clean && cd - && \
   cd go           && make clean && cd - && \
+  cd js           && make clean && cd - && \
   cd ..           &&                       \
   cd ..
 
@@ -17,6 +18,7 @@ $ cd reporter-cli &&                       \
   cd vala         && make all   && cd - && \
   cd genie        && make all   && cd - && \
   cd go           && make all   && cd - && \
+  cd js           && make all   && cd - && \
   cd ..           &&                       \
   cd ..
 

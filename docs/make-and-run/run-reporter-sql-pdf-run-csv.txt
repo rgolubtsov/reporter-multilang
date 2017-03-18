@@ -4,18 +4,21 @@ $   ./reporter-cli/sql-pdf/perl/bin/reporter-mysql-pdf
 $ ./reporter-cli/sql-pdf/python/bin/reporter-mysql-pdf
 $   ./reporter-cli/sql-pdf/vala/bin/reporter-mysql-pdf
 $  ./reporter-cli/sql-pdf/genie/bin/reporter-mysql-pdf
+$     ./reporter-cli/sql-pdf/js/bin/reporter-mysql-pdf.js
 
 # --- ('reporter-postgres-pdf' executable or script) --------------------------
 $   ./reporter-cli/sql-pdf/perl/bin/reporter-postgres-pdf
 $ ./reporter-cli/sql-pdf/python/bin/reporter-postgres-pdf
 $   ./reporter-cli/sql-pdf/vala/bin/reporter-postgres-pdf
 $  ./reporter-cli/sql-pdf/genie/bin/reporter-postgres-pdf
+$     ./reporter-cli/sql-pdf/js/bin/reporter-postgres-pdf.js
 
 # --- ('reporter-sqlite-pdf' executable or script) ----------------------------
 $   ./reporter-cli/sql-pdf/perl/bin/reporter-sqlite-pdf
 $ ./reporter-cli/sql-pdf/python/bin/reporter-sqlite-pdf
 $   ./reporter-cli/sql-pdf/vala/bin/reporter-sqlite-pdf
 $  ./reporter-cli/sql-pdf/genie/bin/reporter-sqlite-pdf
+$     ./reporter-cli/sql-pdf/js/bin/reporter-sqlite-pdf.js
 
 # --- ('reporter-sql-pdf' executable) -----------------------------------------
 $     ./reporter-cli/sql-pdf/go/bin/reporter-sql-pdf mysql
@@ -26,24 +29,27 @@ $     ./reporter-cli/sql-pdf/go/bin/reporter-sql-pdf sqlite
 # --- ('reporter-mysql-csv' executable or script) -----------------------------
 $ #  ./reporter-cli/sql-csv/perl/bin/reporter-mysql-csv
 $ #./reporter-cli/sql-csv/python/bin/reporter-mysql-csv
-$ #  ./reporter-cli/sql-pdf/vala/bin/reporter-mysql-csv
-$ # ./reporter-cli/sql-pdf/genie/bin/reporter-mysql-csv
+$ #  ./reporter-cli/sql-csv/vala/bin/reporter-mysql-csv
+$ # ./reporter-cli/sql-csv/genie/bin/reporter-mysql-csv
+$ #    ./reporter-cli/sql-csv/js/bin/reporter-mysql-csv.js
 
 # --- ('reporter-postgres-csv' executable or script) --------------------------
 $ #  ./reporter-cli/sql-csv/perl/bin/reporter-postgres-csv
 $ #./reporter-cli/sql-csv/python/bin/reporter-postgres-csv
-$ #  ./reporter-cli/sql-pdf/vala/bin/reporter-postgres-csv
-$ # ./reporter-cli/sql-pdf/genie/bin/reporter-postgres-csv
+$ #  ./reporter-cli/sql-csv/vala/bin/reporter-postgres-csv
+$ # ./reporter-cli/sql-csv/genie/bin/reporter-postgres-csv
+$ #    ./reporter-cli/sql-csv/js/bin/reporter-postgres-csv.js
 
 # --- ('reporter-sqlite-csv' executable or script) ----------------------------
 $ #  ./reporter-cli/sql-csv/perl/bin/reporter-sqlite-csv
 $ #./reporter-cli/sql-csv/python/bin/reporter-sqlite-csv
-$ #  ./reporter-cli/sql-pdf/vala/bin/reporter-sqlite-csv
-$ # ./reporter-cli/sql-pdf/genie/bin/reporter-sqlite-csv
+$ #  ./reporter-cli/sql-csv/vala/bin/reporter-sqlite-csv
+$ # ./reporter-cli/sql-csv/genie/bin/reporter-sqlite-csv
+$ #    ./reporter-cli/sql-csv/js/bin/reporter-sqlite-csv.js
 
 # --- ('reporter-sql-csv' executable) -----------------------------------------
-$ #    ./reporter-cli/sql-pdf/go/bin/reporter-sql-csv mysql
-$ #    ./reporter-cli/sql-pdf/go/bin/reporter-sql-csv postgres
-$ #    ./reporter-cli/sql-pdf/go/bin/reporter-sql-csv sqlite
+$ #    ./reporter-cli/sql-csv/go/bin/reporter-sql-csv mysql
+$ #    ./reporter-cli/sql-csv/go/bin/reporter-sql-csv postgres
+$ #    ./reporter-cli/sql-csv/go/bin/reporter-sql-csv sqlite
 
 # =============================================================================
