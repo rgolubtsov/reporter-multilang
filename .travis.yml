@@ -24,8 +24,8 @@ sudo: required
 
 dist: trusty
 
-before_install:
-    - sudo apt-get update
+#before_install:
+#    - sudo apt-get update
 
 script:
     ## TODO: Building all the packages under reporter-cli.
