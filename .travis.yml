@@ -28,6 +28,9 @@ before_install:
     ## Installing required Perl modules from CPAN.
     - sudo cpanm Try::Tiny DBI Text::TabularDisplay PDF::API2
 
+    ## TODO: Installing required Python modules as Ubuntu packages.
+#   - sudo apt-get install XXX
+
 script:
     ## TODO: Building all the packages under reporter-cli.
     - cd reporter-cli && ls -al
