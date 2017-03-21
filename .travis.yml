@@ -26,6 +26,7 @@ before_install:
     - sudo apt-get update
 
     ## Installing required Perl modules from CPAN.
+    - sudo apt-get install cpanminus
     - sudo cpanm Try::Tiny DBI Text::TabularDisplay PDF::API2
 
     ## TODO: Installing required Python modules as Ubuntu packages.
