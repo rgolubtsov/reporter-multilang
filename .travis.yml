@@ -25,6 +25,9 @@ dist: trusty
 before_install:
     - sudo apt-get update
 
+    ## Installing required Perl modules from CPAN.
+    - sudo cpanm Try::Tiny DBI Text::TabularDisplay PDF::API2
+
 script:
     ## TODO: Building all the packages under reporter-cli.
     - cd reporter-cli && ls -al
