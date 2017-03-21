@@ -42,6 +42,11 @@ before_install:
       && GOPATH=`pwd` go get -u -v github.com/jung-kurt/gofpdf
       && ls -al && cd -
 
+    ## Installing required JavaScript (Node.js) packages from npm.
+    - cd reporter-cli/sql-pdf/js && ls -al
+      && npm install mysql pg sqlite3 sleep canvas
+      && ls -al && cd -
+
 script:
     ## TODO: Building all the packages under reporter-cli.
     - cd reporter-cli && ls -al
