@@ -34,6 +34,14 @@ before_install:
     ## Installing the Vala compiler to build Vala/Genie impls.
     - sudo apt-get install valac
 
+    ## Installing required Go packages from GitHub.
+    - cd reporter-cli/sql-pdf/go && ls -al
+      && GOPATH=`pwd` go get -u -v github.com/go-sql-driver/mysql
+      && GOPATH=`pwd` go get -u -v github.com/lib/pq
+      && GOPATH=`pwd` go get -u -v github.com/mattn/go-sqlite3
+      && GOPATH=`pwd` go get -u -v github.com/jung-kurt/gofpdf
+      && ls -al && cd -
+
 script:
     ## TODO: Building all the packages under reporter-cli.
     - cd reporter-cli && ls -al
