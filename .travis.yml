@@ -43,7 +43,11 @@ before_install:
       && GOPATH=`pwd` go get -u -v github.com/jung-kurt/gofpdf
       && ls -al && cd -
 
-    ## Installing required JavaScript (Node.js) packages from npm.
+    ##
+    # Installing required JavaScript (Node.js) packages from npm,
+    # and their respective prerequisites as Ubuntu packages.
+    #
+    - sudo apt-get install libgif-dev libpango1.0-dev
     - cd reporter-cli/sql-pdf/js && ls -al
       && npm install mysql pg sqlite3 sleep canvas
       && ls -al && cd -
