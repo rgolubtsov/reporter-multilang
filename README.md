@@ -1,4 +1,4 @@
-# Reporter Multilang
+# Reporter Multilang [![Build Status](https://travis-ci.org/rgolubtsov/reporter-multilang.svg?branch=master)](https://travis-ci.org/rgolubtsov/reporter-multilang)
 
 **A tool to generate human-readable reports based on data from various sources
 <br />with the focus on its implementation using a series of programming languages**
