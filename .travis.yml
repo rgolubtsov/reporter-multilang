@@ -29,8 +29,9 @@ before_install:
     - sudo apt-get install cpanminus
     - sudo cpanm Try::Tiny DBI Text::TabularDisplay PDF::API2
 
-    ## TODO: Installing required Python modules as Ubuntu packages.
-#   - sudo apt-get install XXX
+    ## Installing required Python modules as Ubuntu packages.
+    - sudo apt-get install python3-mysql.connector python3-psycopg2
+                           python3-prettytable     python3-reportlab
 
     ## Installing the Vala compiler to build Vala/Genie impls.
     - sudo apt-get install valac
