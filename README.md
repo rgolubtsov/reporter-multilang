@@ -10,7 +10,7 @@
 * SQL-PDF :small_blue_diamond: Genie implementation (complete)
 * SQL-PDF :small_blue_diamond: Go implementation (complete)
 * SQL-PDF :small_blue_diamond: JavaScript (ES5/Node.js) implementation (complete)
-* SQL-PDF :small_orange_diamond: D and Java implementations (planned/postponed)
+* SQL-PDF :small_orange_diamond: Java implementation (planned/postponed)
 
 ---
 
@@ -18,7 +18,7 @@
 * SQL-CSV :small_orange_diamond: Python 3 implementation (planned/postponed)
 * SQL-CSV :small_orange_diamond: Vala, Genie, and Go implementations (planned/postponed)
 * SQL-CSV :small_orange_diamond: JavaScript (ES6/Node.js) implementation (planned/postponed)
-* SQL-CSV :small_orange_diamond: D and Java implementations (planned/postponed)
+* SQL-CSV :small_orange_diamond: Java implementation (planned/postponed)
 
 ---
 
