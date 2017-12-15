@@ -14,12 +14,4 @@
 
 ---
 
-* SQL-CSV :cd: Perl 5 (5.10+) implementation (in progress)
-* SQL-CSV :small_orange_diamond: Python 3 implementation (planned/postponed)
-* SQL-CSV :small_orange_diamond: Vala, Genie, and Go implementations (planned/postponed)
-* SQL-CSV :small_orange_diamond: JavaScript (ES6/Node.js) implementation (planned/postponed)
-* SQL-CSV :small_orange_diamond: Java implementation (planned/postponed)
-
----
-
 **TODO:** Provide brief description of the project and other related sections (overview, design, building, running, etc.) just like in [this readme doc](https://github.com/rgolubtsov/virtblkiosim/blob/master/README.md "VIRTual BLocK IO SIMulating (virtblkiosim)") or whatsoever.

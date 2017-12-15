@@ -156,15 +156,6 @@ script:
     ## Going one level up.
     - cd .. && ls -al
 
-    ## TODO: Building all the packages under sql-csv.
-    - cd sql-csv && ls -al
-
-    ## Returning to the previous working dir.
-    - cd - && ls -al
-
-    ## Going one level up.
-    - cd .. && ls -al
-
 ...
 
 # vim:set nu:et:ts=4:sw=4:
