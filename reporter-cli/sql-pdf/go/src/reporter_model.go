@@ -344,4 +344,4 @@ func (ReporterModel) get_data_items_by_date(from      string,
     return hdr_set, row_set
 }
 
-// vim:set nu:et:ts=4:sw=4:
+// vim:set nu et ts=4 sw=4:

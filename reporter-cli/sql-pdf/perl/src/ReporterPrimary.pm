@@ -180,4 +180,4 @@ sub _get_sqlite_db_path {
 
 1;
 
-# vim:set nu:et:ts=4:sw=4:
+# vim:set nu et ts=4 sw=4:

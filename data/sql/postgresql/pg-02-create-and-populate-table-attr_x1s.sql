@@ -39,4 +39,4 @@ insert into attr_x1s (name, description) values ('multilib',
 
 select * from attr_x1s;
 
--- vim:set nu:et:ts=4:sw=4:
+-- vim:set nu et ts=4 sw=4:

@@ -387,4 +387,4 @@ func (ReporterController) _get_pdf_report_path(exec string) string {
     return pdf_report_path
 }
 
-// vim:set nu:et:ts=4:sw=4:
+// vim:set nu et ts=4 sw=4:

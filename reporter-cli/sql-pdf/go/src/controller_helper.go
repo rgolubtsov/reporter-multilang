@@ -243,4 +243,4 @@ func (TabularDisplay) _separator_draw(num_hdrs      uint,
     return c.tableau
 }
 
-// vim:set nu:et:ts=4:sw=4:
+// vim:set nu et ts=4 sw=4:

@@ -42,4 +42,4 @@ insert into attr_x0s (name, description) values ('x86_64', 'X86_64 =======');
 
 select * from attr_x0s;
 
--- vim:set nu:et:ts=4:sw=4:
+-- vim:set nu et ts=4 sw=4:

@@ -68,4 +68,4 @@ all: $(BIN_DIR) $(OBJ_DIR) $(LIB_DIR)
 clean:
 	$(RM) $(RMFLAGS) $(BIN_DIR) $(OBJ_DIR) $(LIB_DIR)
 
-# vim:set nu:et:ts=4:sw=4:
+# vim:set nu ts=4 sw=4:

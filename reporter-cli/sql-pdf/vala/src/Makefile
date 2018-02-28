@@ -81,4 +81,4 @@ all: mysql-pdf postgres-pdf sqlite-pdf
 clean:
 	$(RM) $(EXEC1) $(EXEC2) $(EXEC3)
 
-# vim:set nu:et:ts=4:sw=4:
+# vim:set nu ts=4 sw=4:

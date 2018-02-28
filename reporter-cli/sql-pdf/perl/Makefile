@@ -104,7 +104,7 @@ use constant _MY_CONNECT => \"mysql\";\n\
 # Starting up the app.\n\
 $(BASE_PACKAGE)->startup([_MY_CONNECT]);\n\
 \n\
-# vim:set nu:et:ts=4:sw=4:
+# vim:set nu et ts=4 sw=4:
 endef
 
 # PostgreSQL:
@@ -153,7 +153,7 @@ use constant _PG_CONNECT => \"postgres\";\n\
 # Starting up the app.\n\
 $(BASE_PACKAGE)->startup([_PG_CONNECT]);\n\
 \n\
-# vim:set nu:et:ts=4:sw=4:
+# vim:set nu et ts=4 sw=4:
 endef
 
 # SQLite:
@@ -202,7 +202,7 @@ use constant _SL_CONNECT => \"sqlite\";\n\
 # Starting up the app.\n\
 $(BASE_PACKAGE)->startup([_SL_CONNECT]);\n\
 \n\
-# vim:set nu:et:ts=4:sw=4:
+# vim:set nu et ts=4 sw=4:
 endef
 
 # Making the target.
@@ -239,4 +239,4 @@ all: $(BIN_DIR) $(LIB_DIR)
 clean:
 	$(RM) $(RMFLAGS) $(BIN_DIR) $(LIB_DIR)
 
-# vim:set nu:et:ts=4:sw=4:
+# vim:set nu ts=4 sw=4:

@@ -106,7 +106,7 @@ if (__name__ == \"__main__\"):\n\
 " "" "" "" "# Starting up the app.\n\
 " "" "" "" "reporter.startup([_MY_CONNECT])\n\
 \n\
-# vim:set nu:et:ts=4:sw=4:
+# vim:set nu et ts=4 sw=4:
 endef
 
 # PostgreSQL:
@@ -155,7 +155,7 @@ if (__name__ == \"__main__\"):\n\
 " "" "" "" "# Starting up the app.\n\
 " "" "" "" "reporter.startup([_PG_CONNECT])\n\
 \n\
-# vim:set nu:et:ts=4:sw=4:
+# vim:set nu et ts=4 sw=4:
 endef
 
 # SQLite:
@@ -204,7 +204,7 @@ if (__name__ == \"__main__\"):\n\
 " "" "" "" "# Starting up the app.\n\
 " "" "" "" "reporter.startup([_SL_CONNECT])\n\
 \n\
-# vim:set nu:et:ts=4:sw=4:
+# vim:set nu et ts=4 sw=4:
 endef
 
 # Making the target.
@@ -249,4 +249,4 @@ clean:
 	$(SRC_DIR)/$(BASE_PACKAGE)/*.pyc \
 	$(SRC_DIR)/$(BASE_PACKAGE)/$(PYCACHE_DIR)
 
-# vim:set nu:et:ts=4:sw=4:
+# vim:set nu ts=4 sw=4:

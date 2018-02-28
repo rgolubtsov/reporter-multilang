@@ -26,4 +26,4 @@ drop table attr_x0s;
 
 \d
 
--- vim:set nu:et:ts=4:sw=4:
+-- vim:set nu et ts=4 sw=4:

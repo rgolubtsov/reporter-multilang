@@ -429,4 +429,4 @@ var ReporterController = function() {
 
 module.exports = exports = ReporterController;
 
-// vim:set nu:et:ts=4:sw=4:
+// vim:set nu et ts=4 sw=4:
