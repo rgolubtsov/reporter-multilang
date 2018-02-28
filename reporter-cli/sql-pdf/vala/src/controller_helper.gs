@@ -223,4 +223,4 @@ namespace CliSqlPdf
             else
                 hdr_set = new array of string[0]
 
-// vim:set nu:et:ts=4:sw=4:
+// vim:set nu et ts=4 sw=4:

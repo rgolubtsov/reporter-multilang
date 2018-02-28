@@ -204,4 +204,4 @@ select items.id,
 
 select count(id) from data_items;
 
--- vim:set nu:et:ts=4:sw=4:
+-- vim:set nu et ts=4 sw=4:

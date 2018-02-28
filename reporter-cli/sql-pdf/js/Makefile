@@ -80,7 +80,7 @@ var ret = reporter.startup([_MY_CONNECT]);\n\
 \n\
 process.exitCode = ret;\n\
 \n\
-// vim:set nu:et:ts=4:sw=4:
+// vim:set nu et ts=4 sw=4:
 endef
 
 # PostgreSQL:
@@ -112,7 +112,7 @@ var ret = reporter.startup([_PG_CONNECT]);\n\
 \n\
 process.exitCode = ret;\n\
 \n\
-// vim:set nu:et:ts=4:sw=4:
+// vim:set nu et ts=4 sw=4:
 endef
 
 # SQLite:
@@ -144,7 +144,7 @@ var ret = reporter.startup([_SL_CONNECT]);\n\
 \n\
 process.exitCode = ret;\n\
 \n\
-// vim:set nu:et:ts=4:sw=4:
+// vim:set nu et ts=4 sw=4:
 endef
 
 # Making the target.
@@ -174,4 +174,4 @@ all: $(BIN_DIR) $(LIB_DIR)
 clean:
 	$(RM) $(RMFLAGS) $(BIN_DIR) $(LIB_DIR)
 
-# vim:set nu:et:ts=4:sw=4:
+# vim:set nu ts=4 sw=4:
