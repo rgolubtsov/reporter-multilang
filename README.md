@@ -10,7 +10,7 @@ The following implementations are on the workbench (:small_blue_diamond: &ndash;
 * SQL-PDF :small_blue_diamond: **Vala ([Cairo](https://valadoc.org/cairo/index.html "Cairo"))**: `reporter-cli/sql-pdf/vala/`
 * SQL-PDF :small_blue_diamond: **Genie ([Cairo](https://valadoc.org/cairo/index.html "Cairo"))**: `reporter-cli/sql-pdf/genie/`
 * SQL-PDF :small_blue_diamond: **Go ([gofpdf](https://godoc.org/github.com/jung-kurt/gofpdf "Kurt Jung's gofpdf"))**: `reporter-cli/sql-pdf/go/`
-* SQL-PDF :small_blue_diamond: **JavaScript ([ES5/Node.js + node-canvas](https://www.npmjs.com/package/canvas "ES5/Node.js + node-canvas"))**: `reporter-cli/sql-pdf/js/`
+* SQL-PDF :small_blue_diamond: **JavaScript (ES5/Node.js + [node-canvas](https://www.npmjs.com/package/canvas "node-canvas"))**: `reporter-cli/sql-pdf/js/`
 
 ---
 
