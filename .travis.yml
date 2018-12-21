@@ -14,13 +14,11 @@
 %YAML 1.1
 ---
 
-language: node_js
-
-node_js:  "7"
+language: generic
 
 sudo: required
 
-dist: trusty
+dist: xenial
 
 before_install:
     - sudo apt-get update
