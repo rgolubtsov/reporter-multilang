@@ -37,6 +37,7 @@ before_install:
     ## Installing required Go packages from GitHub.
     - cd reporter-cli/sql-pdf/go && ls -al
       && GOPATH=`pwd` go get -u -v github.com/go-sql-driver/mysql
+      && GOPATH=`pwd` go get -u -v github.com/lib/pq/oid
       && GOPATH=`pwd` go get -u -v github.com/lib/pq
       && GOPATH=`pwd` go get -u -v github.com/mattn/go-sqlite3
       && GOPATH=`pwd` go get -u -v github.com/jung-kurt/gofpdf
