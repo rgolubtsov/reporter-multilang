@@ -8,7 +8,7 @@
 #
 # (See outer Makefile to understand how this one is processed.)
 # =============================================================================
-# Written by Radislav (Radicchio) Golubtsov, 2016-2017
+# Written by Radislav (Radicchio) Golubtsov, 2016-2019
 #
 # This is free and unencumbered software released into the public domain.
 #
