@@ -14,8 +14,4 @@ The following implementations are on the workbench (:small_blue_diamond: &ndash;
 
 ---
 
-**TODO:** Provide brief description of the project and other related sections (overview, design, building, running, etc.) just like in [this readme doc](https://github.com/rgolubtsov/virtblkiosim/blob/master/README.md "VIRTual BLocK IO SIMulating (virtblkiosim)") or whatsoever.
-
----
-
-:cd:
+**TODO:** Provide a brief description of the project and other related sections (overview, design, building, running, etc.) just like in [this readme doc](https://github.com/rgolubtsov/virtblkiosim/blob/master/README.md "VIRTual BLocK IO SIMulating (virtblkiosim)") or whatsoever. :cd:
