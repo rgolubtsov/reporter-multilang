@@ -16,9 +16,9 @@
 
 language: generic
 
-sudo: required
+os:       linux
 
-dist: xenial
+dist:     xenial
 
 before_install:
     - sudo apt-get update
@@ -53,6 +53,14 @@ before_install:
       && ls -al && cd -
 
 script:
+    ## Querying the system for characteristics and available resources.
+    - cat /proc/cpuinfo | grep name && echo
+                                    && uname -a
+                                    && echo
+                                    && df -h
+                                    && echo
+                                    && free
+
     ## TODO: Building all the packages under reporter-cli.
     - cd reporter-cli && ls -al
 
